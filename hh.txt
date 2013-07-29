@@ -1,0 +1,3 @@
+C:\Documents and Settings\Administrator>"C:\Program Files\Foxit Software\Foxit R
+eader\Foxit Reader.exe" -t "C:\wamp\www\f\resp\2012_02_07\pdf\9000000.pdf" "pedi
+dos"

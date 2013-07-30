@@ -110,6 +110,24 @@ class A_surtido extends CI_Controller
         }
         
     }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  public function captura_sob_fal()
+    {  
+        $this->load->model('a_surtido_model');
+        //$data['tabla'] = $this->a_surtido_model->folios_sob_fal();
+        
+        $data['titulo'] = "CAPTURA DE SOBRANTES Y/O FALTANTES";
+        //$data['titulo1'] = "FOLIO $fol";
+        $data['contenido'] = "a_folio_sob_fal";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+        
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   public function tabla_control_fol_var($fol)

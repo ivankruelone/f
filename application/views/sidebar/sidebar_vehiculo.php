@@ -1,6 +1,5 @@
       <div class="sidebar">
 <?php
-
 echo anchor('equipos/muestra_vehiculo', 'PENDIENTES POR VALIDAR<br />', 'class="button-link blue"');
 echo ('<br /><br />');
 echo anchor('equipos/vehiculos_activos', 'VEHICULOS EN USO<br />', 'class="button-link blue"');

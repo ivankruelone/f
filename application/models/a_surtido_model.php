@@ -227,8 +227,9 @@ function actualiza_surtido(id, valor){
     {
         $id_user= $this->session->userdata('id');
         $s = "SELECT *from catalogo.folio_pedidos_cedis where id=$fol and tid='A' ";
+        
         $q = $this->db->query($s);
-if($q->num_rows() >0){
+if($q->num_rows() > 0){
 //++++++++++++++++++++++++++++//++++++++++++++++++++++++++++/++++++++++++++++++++++++++++/++++++++++++++++++++++++++++/inv        
         $sql = "SELECT *from desarrollo.pedidos where fol=$fol and inv='N'";
         $query = $this->db->query($sql);
@@ -286,6 +287,7 @@ if($query->num_rows() >0){
         );
         $this->db->where('id', $fol);
         $this->db->update('catalogo.folio_pedidos_cedis', $dataf);
+		echo $this->db->last_query();
 
 }
 }

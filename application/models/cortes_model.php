@@ -1111,7 +1111,13 @@ if($id_cc>0){
 ///////////////////////////////////////////////////////////////////////faltantes
 echo $fal1;
 if($fal1>2.99){
- $sqlz2 = "SELECT a.* FROM catalogo.cat_empleado a where  nomina=$rowz1->turno1_cajera and id_user=$id_user";
+//SELECT ifnull(b.fal,'NO')as parametro,b.turno,b.fal, b.fecha,a.* FROM catalogo.cat_empleado a
+//left join fal_c b on a.nomina=b.nomina and clave=520 and fecha='2013-07-15' and turno=2
+//where  a.nomina=75853
+ $sqlz2 = "SELECT ifnull(b.fal,'NO')as parametro,b.turno,b.fal, b.fecha,a.* 
+ FROM catalogo.cat_empleado a
+left join fal_c b on a.nomina=b.nomina and b.clave=520 and b.fecha=$rowz1->fechacorte and b.turno=1
+where  a.nomina=$rowz1->turno1_cajera and a.id_user=$id_user";
  $queryz2 = $this->db->query($sqlz2);
  if($queryz2->num_rows()> 0){
  $rowz2= $queryz2->row();
@@ -1119,7 +1125,8 @@ if($fal1>2.99){
  $plazanom=$rowz2->plaza;
  $succ=$rowz2->succ;
  $id_plaza=$rowz2->id_plaza;
- }else{$plazanom=0;$cianom=0;$id_plaza=0;}   
+ }else{$plazanom=0;$cianom=0;$id_plaza=0;}
+ if($rowz2->parametro<>'NO'){   
 $dataz= array(
             'fecha'   =>$rowz1->fechacorte,  
             'corte'   =>$id_cc,  
@@ -1138,16 +1145,20 @@ $dataz= array(
             'cianom' =>$cianom
             );
 $insert = $this->db->insert('desarrollo.fal_c', $dataz);
-}
+}}
 if($fal2>2.99){
- $sqlz2 = "SELECT a.* FROM catalogo.cat_empleado a where  nomina=$rowz1->turno2_cajera and id_user=$id_user";
+ $sqlz2 = "SELECT ifnull(b.fal,'NO')as parametro,b.turno,b.fal, b.fecha,a.* 
+ FROM catalogo.cat_empleado a
+left join fal_c b on a.nomina=b.nomina and b.clave=520 and b.fecha=$rowz1->fechacorte and b.turno=2
+where  a.nomina=$rowz1->turno2_cajera and a.id_user=$id_user";
  $queryz2 = $this->db->query($sqlz2);
  if($queryz2->num_rows()> 0){
  $rowz2= $queryz2->row();
  $cianom=$rowz2->cia;
  $plazanom=$rowz2->plaza;
  $id_plaza=$rowz2->id_plaza;
- }else{$cianom=0;$plazanom=0;$id_plaza=0;}  
+ }else{$cianom=0;$plazanom=0;$id_plaza=0;}
+ if($rowz2->parametro<>'NO'){     
 $dataz= array(
             'fecha'   =>$rowz1->fechacorte,  
             'corte'   =>$id_cc,  
@@ -1165,16 +1176,20 @@ $dataz= array(
             'cianom' =>$cianom
             );
 $insert = $this->db->insert('desarrollo.fal_c', $dataz);
-}
+}}
 if($fal3>2.99){
- $sqlz2 = "SELECT a.* FROM catalogo.cat_empleado a where  nomina=$rowz1->turno3_cajera and id_user=$id_user";
+ $sqlz2 = "SELECT ifnull(b.fal,'NO')as parametro,b.turno,b.fal, b.fecha,a.* 
+ FROM catalogo.cat_empleado a
+left join fal_c b on a.nomina=b.nomina and b.clave=520 and b.fecha=$rowz1->fechacorte and b.turno=3
+where  a.nomina=$rowz1->turno3_cajera and a.id_user=$id_user";
  $queryz2 = $this->db->query($sqlz2);
  if($queryz2->num_rows()> 0){
  $rowz2= $queryz2->row();
  $cianom=$rowz2->cia;
  $plazanom=$rowz2->plaza;
  $id_plaza=$rowz2->id_plaza;
- }else{$cianom=0;$plazanom=0;$id_plaza=0;}  
+ }else{$cianom=0;$plazanom=0;$id_plaza=0;}
+ if($rowz2->parametro<>'NO'){     
 $dataz= array(
             'fecha'   =>$rowz1->fechacorte,  
             'corte'   =>$id_cc,  
@@ -1192,16 +1207,20 @@ $dataz= array(
             'cianom' =>$cianom
             );
 $insert = $this->db->insert('desarrollo.fal_c', $dataz);
-}
+}}
 if($fal4>2.99){
- $sqlz2 = "SELECT a.* FROM catalogo.cat_empleado a where  nomina=$rowz1->turno4_cajera and id_user=$id_user";
+ $sqlz2 = "SELECT ifnull(b.fal,'NO')as parametro,b.turno,b.fal, b.fecha,a.* 
+ FROM catalogo.cat_empleado a
+left join fal_c b on a.nomina=b.nomina and b.clave=520 and b.fecha=$rowz1->fechacorte and b.turno=4
+where  a.nomina=$rowz1->turno4_cajera and a.id_user=$id_user";
  $queryz2 = $this->db->query($sqlz2);
  if($queryz2->num_rows()> 0){
  $rowz2= $queryz2->row();
  $cianom=$rowz2->cia;
  $plazanom=$rowz2->plaza;
  $id_plaza=$rowz2->id_plaza;
- }else{$cianom=0;$plazanom=0;$id_plaza=0;}  
+ }else{$cianom=0;$plazanom=0;$id_plaza=0;}
+ if($rowz2->parametro<>'NO'){     
 $dataz= array(
             'fecha'   =>$rowz1->fechacorte,  
             'corte'   =>$id_cc,  
@@ -1219,7 +1238,7 @@ $dataz= array(
             'cianom' =>$cianom
             );
 $insert = $this->db->insert('desarrollo.fal_c', $dataz);
-}
+}}
 ////
 }
 //////////////////////////////////////////////////////////////////////faltantes
@@ -1267,6 +1286,7 @@ $aaac==$aaa and $mesc<>$mes and $mes==($mesc+1) and $diac>15 and $dia<=10){
 }
 } 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     function control_validado_ctl()
     {

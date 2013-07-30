@@ -1196,6 +1196,18 @@ class Checador extends CI_Controller
         $this->load->view('impresiones/asistencias_justificaciones_concentrado', $data);
     }
     
+     public function reporte_puntualidad_moronatti()
+    {
+        $quincena = $this->input->post('quincena');
+        $periodo = $this->checador_model->get_quincena($quincena);
+        $row_periodo = $periodo->row();
+        $data['perini'] = $row_periodo->inicio;
+        $data['perfin'] = $row_periodo->fin;
+        $data['quincena'] = $quincena;
+        $data['query'] = $this->checador_model->get_deptos_justi1();
+        $this->load->view('impresiones/reporte_puntualidad', $data);
+    }
+    
     
     function calcula_tiempo_dias()
     {

@@ -61,17 +61,8 @@
 	<td align="left" ><font size="+1">Dia: </font></td>
     <td><?php echo form_input($data_dia, "", 'required');?></td>
  </tr>
- <tr>
-	<td align="left" colspan="2"><font size="+1"><strong>PAR&Aacute;METROS PARA TOMAR ENCUENTA EL DESPLAZAMIENTO DEL A&Ntilde;O ANTERIOR</strong></font></td>
- </tr>
-<tr>
-	<td align="left" ><font size="+1"><strong>A&Ntilde;O: </strong></font></td>
-	<td><font size="+2"><?php echo  $aaa2?></font></td>
- </tr>
- <tr>
-	<td align="left" ><font size="+1"><strong>MES: </strong></font></td>
-	<td align="left"><?php echo form_dropdown('mes2', $mesx2, '', 'id="mes2"') ;?> </td>
- </tr>
+ 
+
  <tr>
 	<td align="left" ><font size="+1"><strong>DIAS LETRA A: </strong></font></td>
 	<td align="left"><?php echo form_dropdown('por1', $por1, '', 'id="por1"') ;?> </td>
@@ -87,6 +78,10 @@
  <tr>
 	<td align="left" ><font size="+1"><strong>DIAS LETRA D: </strong></font></td>
 	<td align="left"><?php echo form_dropdown('por4', $por4, '', 'id="por4"') ;?> </td>
+ </tr>
+  <tr>
+	<td align="left" ><font size="+1"><strong>DIAS LETRA E: </strong></font></td>
+	<td align="left"><?php echo form_dropdown('por5', $por5, '', 'id="por5"') ;?> ESTAN LAS CLAVES NUEVAS </td>
  </tr>
 
 	<td colspan="2"align="center"><?php echo form_submit('envio', 'ACEPTAR');?></td>

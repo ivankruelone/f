@@ -113,20 +113,75 @@ class A_surtido extends CI_Controller
     
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   public function captura_sob_fal()
-    {  
+    {   $data['mensaje']= '';
+        $data['titulo']= 'CAPTURA DE SOBRANTES Y/O FALTANTES';
+        $data['titulo1']= '';
         $this->load->model('a_surtido_model');
-        //$data['tabla'] = $this->a_surtido_model->folios_sob_fal();
-        
-        $data['titulo'] = "CAPTURA DE SOBRANTES Y/O FALTANTES";
-        //$data['titulo1'] = "FOLIO $fol";
-        $data['contenido'] = "a_folio_sob_fal";
+        $data['tabla'] = $this->a_surtido_model->folios_sob_fal();
+
+		$data['contenido'] = "a_folio_sob_fal";
         $data['selector'] = "a_surtido";
         $data['sidebar'] = "sidebar_a_surtido";
-        
+              
         $this->load->view('header');
         $this->load->view('main', $data);
         $this->load->view('extrafooter');
     }
+    
+    public function captura_faltante($id)
+    {
+        $data['mensaje']= '';
+        $data['titulo']= 'INGRESA FALTANTE';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');  
+
+		$data['contenido'] = "a_folio_fal";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+        $data['id'] = $id;
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+        
+    }
+    
+    
+    public function captura_sobrante($id)
+    {
+        $data['mensaje']= '';
+        $data['titulo']= 'INGRESA SOBRANTE';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');  
+
+		$data['contenido'] = "a_folio_sob";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+        $data['id'] = $id;
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+        }
+        
+        
+    public function actualiza_fal()
+    {
+     $id=$this->input->post('id');
+     $faltante=$this->input->post('faltante');
+     $this->load->model('a_surtido_model');
+     $this->a_surtido_model->actualiza_fal_model($id, $faltante);
+     redirect('a_surtido/captura_sob_fal');
+    }       
+    
+    public function actualiza_sob()
+    {
+     $id=$this->input->post('id');
+     $faltante=$this->input->post('sobrante');
+     $this->load->model('a_surtido_model');
+     $this->a_surtido_model->actualiza_sob_model($id, $sobrante);
+     redirect('a_surtido/captura_sob_fal');
+    }       
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -686,12 +686,12 @@ $num=0;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-function previo_orden_cedis($aaa1,$mes1,$dia1,$aaa,$mes,$di1,$di2,$di3,$di4)
+function previo_orden_cedis($aaa1,$mes1,$dia1,$di1,$di2,$di3,$di4,$di5)
     {
-$venta='ventaa'.$mes;
+
 $fectran=$aaa1.str_pad($mes1,2,"0",STR_PAD_LEFT).str_pad($dia1,2,"0",STR_PAD_LEFT);
 $s1="insert into almacen.compra_for_cedis (fecha, sec, desplaza, transito, inv_cedis, pedido, prv, prvx, costo,fectran,por,mesdes)
-(select date(now()),sec,0,0,0,0,0,'',0,$fectran,0,$mes from catalogo.sec_generica WHERE SEC>0 and sec<=2000)";
+(select date(now()),sec,0,0,0,0,0,'',0,$fectran,0,0 from catalogo.sec_generica WHERE SEC>0 and sec<=2000)";
 $this->db->query($s1);
 
 $s1x="update almacen.compra_for_cedis a, catalogo.cat_almacen_clasifica b
@@ -701,6 +701,7 @@ when tipo='a' then '$di1'
 when tipo='b' then '$di2'
 when tipo='c' then '$di3'
 when tipo='d' then '$di4'
+when tipo='e' then '$di5'
 else
 0
 end
@@ -721,13 +722,13 @@ $s4="update almacen.compra_for_cedis a, catalogo.almacen_borrar b
 set a.descon='S'
 where a.sec=b.sec";
 $this->db->query($s4);    
-$s5="update almacen.compra_for_cedis a, vtadc.producto_mes_sec12 b
-set a.desplaza=$venta
+$s5="update almacen.compra_for_cedis a, almacen.max_sucursal_sec b
+set a.desplaza=final
 where a.sec=b.sec";
 $this->db->query($s5);    
-$s6="update almacen.compra_for_cedis a, vtadc.producto_mes_sec12 b
-set a.desplaza=ventaa12
-where a.sec=b.sec and a.sec and desplaza<100 and ventaa12>desplaza";
+$s6="update almacen.compra_for_cedis a, almacen.max_sucursal_sec b
+set a.desplaza=final
+where a.sec=b.sec";
 $this->db->query($s6);    
 $s7="update almacen.compraped a, desarrollo.compra_d_orden_sec b
 set a.aplica=b.can

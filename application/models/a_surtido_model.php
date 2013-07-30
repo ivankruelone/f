@@ -3208,8 +3208,71 @@ function actualiza_mue(id, valor){
 
 
 
+        function folios_sob_fal()
+        {
+        
+        $sql = "SELECT * FROM catalogo.folio_pedidos_cedis f where fechas>='2013-07-01';";
+        $query = $this->db->query($sql);
+        
+        $tabla= "
+        <table style=\"font-size: medium; \">
+        <thead>
+        <tr>
+        <th>Folio</th>
+        <th>Sucursal</th>
+        <th>Fecha</th>
+        <th>Faltate</th>
+        <th>Sobrante</th>
+        <th>Validar</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+     
+        foreach($query->result() as $row)
+        {
+            //$l1 = anchor('catalogo/cambiar_usuario/'.$row->id, '<img src="'.base_url().'img/user.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para agregar ticket!', 'class' => 'encabezado'));        
+            $tabla.="
+            <tr>
+            <td align=\"right\">".$row->id."</td>
+            <td align=\"left\">".$row->suc."</td>
+            <td align=\"left\">".$row->fechas."</td>
+            <td align=\"left\">".anchor('a_surtido/captura_faltante/'.$row->id, $row->faltante)."</td>
+            <td align=\"left\">".anchor('a_surtido/captura_sobrante/'.$row->id, $row->sobrante)."</td>
+            </tr>
+            ";
+        }
+        
+        $tabla.="
+        </tbody>
+        </table>";
+        
+        return $tabla;
+    }
+    
+    
+    function actualiza_fal_model($id, $faltante)
+    {
+     $data = array(
+           
+           'faltante' => $faltante,
+        );
+ 	 $this->db->where('id', $id);
+     $this->db->update('catalogo.folio_pedidos_cedis', $data);
+     return $this->db->affected_rows(); 	 
+     }
 
 
+    function actualiza_sob_model($id, $sobrante)
+    {
+     $data = array(
+           
+           'sobrante' => $sobrante,
+        );
+ 	 $this->db->where('id', $id);
+     $this->db->update('catalogo.folio_pedidos_cedis', $data);
+     return $this->db->affected_rows(); 	 
+     }
 
 
 

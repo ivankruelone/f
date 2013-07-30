@@ -311,13 +311,13 @@ ini_set('memory_limit','2000M');
         $this->load->model('catalogo_model');
 		$data['mesx1'] = $this->catalogo_model->busca_mes();
         $data['aaax1'] = $this->catalogo_model->busca_anio();
-        $data['mesx2'] = $this->catalogo_model->busca_mes();
-        $data['aaa2'] = (date('Y')-1);
+        //$data['mesx2'] = $this->catalogo_model->busca_mes();
+        //$data['aaa2'] = (date('Y')-1);
         $data['por1'] = $this->catalogo_model->busca_ord_dias();
         $data['por2'] = $this->catalogo_model->busca_ord_dias();
         $data['por3'] = $this->catalogo_model->busca_ord_dias();
         $data['por4'] = $this->catalogo_model->busca_ord_dias();
-        
+        $data['por5'] = $this->catalogo_model->busca_ord_dias();
          $this->load->model('compras_model');
         $data['tabla'] = $this->compras_model->pre_orden_cedis_pediente();
         $data['titulo']= 'GENERAR PROCESO DE ORDEN DE COMPRA';
@@ -338,14 +338,12 @@ ini_set('memory_limit','2000M');
   {
      ini_set('memory_limit','2000M');
      set_time_limit(0);
-     
      if($this->input->post('pass') == 'unicoo'){
      $this->load->model('compras_model');
      $this->compras_model->previo_orden_cedis(
      $this->input->post('aaa1'),$this->input->post('mes1'),$this->input->post('dia1'),
-     $this->input->post('aaa2'),$this->input->post('mes2'),
-     $this->input->post('por1'),$this->input->post('por2'),
-     $this->input->post('por3'),$this->input->post('por4'));
+     $this->input->post('por1'),$this->input->post('por2'),$this->input->post('por3'),
+     $this->input->post('por4'),$this->input->post('por5'));
      }
     redirect('compras/tabla_orden_cedis');
   }   

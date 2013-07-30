@@ -596,7 +596,18 @@ function busca_orden()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+public function reporte_puntualidad()
+    {
+        $this->load->model('checador_model');
+        $data['contenido'] = "formulario_quince1";
+        $data['selector'] = "reportes";
+        $data['sidebar'] = "sidebar_rep_moronatti";
+        $data['quincenas'] = $this->checador_model->get_quincenas();
 
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+   }
 
 
 

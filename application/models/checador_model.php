@@ -1440,6 +1440,123 @@ order by nombre, e.completo, fecha;";
         
     }
     
+    public function get_reporte_juntificacion2_moronatti($quincena, $succ)
+    {
+        $this->db->where('id', $quincena);
+        $q1 = $this->db->get('checador_quincenas');
+        
+        $r1 = $q1->row();
+        
+        $sql = "select f.nombre, e.nomina, e.completo, dias_laborados, count(*) as eficiencia, c.id, c.fecha, c.entrada, c.hentrada, TIME_TO_SEC(TIMEDIFF(c.entrada, concat(c.fecha, ' ', c.hentrada)))/3600 as diferencia
+from desarrollo.checador_asistencia c
+left join catalogo.cat_empleado e on c.empleado_id = e.id
+left join desarrollo.checador_quincenas q on c.fecha >= inicio and c.fecha <= fin
+left join catalogo.sucursal f on e.succ=f.suc
+where c.entrada between ? and ? and falta = 0 and checa = 1 and succ = ? and e.nocturno=0 and dayofweek(c.fecha) not in(7, 1) and TIME_TO_SEC(TIMEDIFF(c.entrada, concat(c.fecha, ' ', c.hentrada)))/3600 <= 0
+group by empleado_id
+order by eficiencia desc";
+
+        $query = $this->db->query($sql, array($r1->inicio, $r1->fin.' 11:59:59', $succ));
+        
+        //echo $this->db->last_query();
+        //die();
+        
+        $tabla = '
+        <h4>REPORTE DE PUNTUALIDAD TURNO MATUTINO.</h4>
+        <table style="font-size: 18px;" border="1" cellpadding="3">
+        <thead>
+            <tr>
+                <th width="6%" style="font-size: 25px;">#</th>
+                <th width="17%" style="font-size: 25px;">Depto.</th>
+                <th width="6%" style="font-size: 25px;"># Nomina</th>
+                <th width="29%" style="font-size: 25px;">Nombre</th>
+                <th width="6%" style="font-size: 25px;">Dias Totales</th>
+                <th width="6%" style="font-size: 25px;">Dias Puntuales</th>
+            </tr>
+        </thead>
+        <tbody>';
+        $num=0;
+        
+        foreach($query->result() as $row)
+        {
+            $num=$num+1;
+            
+            $tabla .= '<tr>
+                <td width="6%" style="font-size: 25px;">' .$num. '</td>
+                <td width="17%" style="font-size: 25px;">' . $row->nombre . '</td>
+                <td width="6%" style="font-size: 25px;">' . $row->nomina . '</td>
+                <td width="29%" style="font-size: 25px;">' . $row->completo . '</td>
+                <td width="6%" style="font-size: 25px;">' . $row->dias_laborados . '</td>
+                <td width="6%" style="font-size: 25px;">' . $row->eficiencia . '</td>
+            </tr>';
+        }
+        
+        $tabla .= '</tbody>
+        </table>';
+        
+        
+        return $tabla;
+        
+    }
+    
+    public function get_reporte_juntificacion1_moronatti($quincena, $succ)
+    {
+        $this->db->where('id', $quincena);
+        $q1 = $this->db->get('checador_quincenas');
+        
+        $r1 = $q1->row();
+        
+        $sql = "select f.nombre, e.nomina, e.completo, dias_laborados, count(*) as eficiencia, c.id, c.fecha, c.entrada, c.hentrada, TIME_TO_SEC(TIMEDIFF(c.entrada, concat(c.fecha, ' ', c.hentrada)))/3600 as diferencia
+from desarrollo.checador_asistencia c
+left join catalogo.cat_empleado e on c.empleado_id = e.id
+left join desarrollo.checador_quincenas q on c.fecha >= inicio and c.fecha <= fin
+left join catalogo.sucursal f on e.succ=f.suc
+where c.entrada between ? and ? and falta = 0 and checa = 1 and succ= ? and nocturno=1 and dayofweek(c.fecha) not in(7, 1) and TIME_TO_SEC(TIMEDIFF(c.entrada, concat(c.fecha, ' ', c.hentrada)))/3600 <= 0
+group by empleado_id
+order by eficiencia desc";
+
+        $query = $this->db->query($sql, array($r1->inicio.' 12:00:00', $r1->fin.' 23:59:59', $succ));
+        
+        //echo $this->db->last_query();
+        //die();
+        
+        $tabla = '
+        <h4>REPORTE DE PUNTUALIDAD TURNO NOCTURNO.</h4>
+        <table style="font-size: 18px;" border="1" cellpadding="3">
+        <thead>
+            <tr>
+                <th width="6%" style="font-size: 25px;">#</th>
+                <th width="17%" style="font-size: 25px;">Depto.</th>
+                <th width="6%" style="font-size: 25px;"># Nomina</th>
+                <th width="29%" style="font-size: 25px;">Nombre</th>
+                <th width="6%" style="font-size: 25px;">Dias Totales</th>
+                <th width="6%" style="font-size: 25px;">Dias Puntuales</th>
+            </tr>
+        </thead>
+        <tbody>';
+        $num=0;
+        
+        foreach($query->result() as $row)
+        {
+            $num=$num+1;
+            
+            $tabla .= '<tr>
+                <td width="6%" style="font-size: 25px;">' .$num. '</td>
+                <td width="17%" style="font-size: 25px;">' . $row->nombre . '</td>
+                <td width="6%" style="font-size: 25px;">' . $row->nomina . '</td>
+                <td width="29%" style="font-size: 25px;">' . $row->completo . '</td>
+                <td width="6%" style="font-size: 25px;">' . $row->dias_laborados . '</td>
+                <td width="6%" style="font-size: 25px;">' . $row->eficiencia . '</td>
+            </tr>';
+        }
+        
+        $tabla .= '</tbody>
+        </table>';
+        
+        
+        return $tabla;
+        
+    }
     
 
     public function get_reporte_juntificacion3($quincena, $succ)
@@ -2711,6 +2828,27 @@ where c.tipo = 1 and c.id_checador > 0 $where
 group by succ
 order by s.nombre;";
         $query = $this->db->query($sql);
+        return $query;
+    }
+    
+    function get_deptos_justi1()
+    {
+        
+        if($this->session->userdata('nivel') == 55){
+            $where = " and c.depto in (100,90002,6050)";
+        }else{
+            $where = null;
+        }
+        
+        $sql = "SELECT succ, s.nombre
+FROM catalogo.cat_empleado c
+left join catalogo.sucursal s on c.succ = s.suc
+where c.tipo = 1 and c.id_checador > 0 $where
+group by succ
+order by s.nombre;";
+        $query = $this->db->query($sql);
+        //echo $this->db->last_query();
+        //die();
         return $query;
     }
     

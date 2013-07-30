@@ -614,6 +614,7 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
         <ul id="menu">
         <li<?php if(isset($selector) && $selector == "catalogo") echo " class=\"selected\"";?>><?php echo anchor('a_gerente/index', 'COMPRA');?></li>
         <li<?php if(isset($selector) && $selector == "catalogo") echo " class=\"selected\"";?>><?php echo anchor('a_gerente/index_inv', 'Inv');?></li>
+        <li<?php if(isset($selector) && $selector == "reportes") echo " class=\"selected\"";?>><?php echo anchor('a_gerente/reporte_puntualidad', 'Reportes');?></li>
       </div>      
       
 <?php

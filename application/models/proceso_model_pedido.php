@@ -81,7 +81,23 @@ if($dianombre=='Wed'){$dia='MIE';}
 if($dianombre=='Thu'){$dia='JUE';}
 if($dianombre=='Fri'){$dia='VIE';}
 
-
+$l0="insert ignore into almacen.max_sucursal (sec, suc, susa, m2011, m2012, m2013, m2014, final, paquete)
+(select b.sec,a.suc,b.susa,0,0,0,0,2,0 from catalogo.sucursal a,  catalogo.cat_almacen_clasifica b
+where tipo2<>'F' and suc>100 and suc<=1600 and tlid=1
+and suc<>170
+and suc<>171
+and suc<>172
+and suc<>173
+and suc<>174
+and suc<>175
+and suc<>176
+and suc<>177
+and suc<>178
+and suc<>179
+and suc<>180
+and suc<>181
+and suc<>187 and suc=$suc)";
+$this->db->query($l0);
 $sql = "SELECT * FROM catalogo.sucursal where dia='$dia' and suc=$suc and tlid=1";
         
         $sql2 = "select a.*,b.final from catalogo.almacen a
@@ -154,24 +170,12 @@ $tip=0;
 }
 $promeant=0;
 $promeact=$row2->final;
-if($tip=='a'){$por=$por1;}elseif($tip=='b'){$por=$por2;}elseif($tip=='c'){$por=$por3;}elseif($tip=='d'){$por=$por4;}else{$por=0;}
+if($tip=='a'){$por=$por1;}elseif($tip=='b'){$por=$por2;}elseif($tip=='c'){$por=$por3;}elseif($tip=='d'){$por=$por4;}elseif($tip=='e'){$por=$por5;}else{$por=0;}
 if($promeact==0){$maxi=round($promeant*$por);}else{$maxi=round($promeact*$por);}
 if($maxi > $inv){$ped=$maxi-$inv;$exc=0;}else{$ped=0;$exc=$inv-$maxi;}
 if($paq > 0 and $ped>0){$ped=round(($ped/$paq),0)*$paq;}
 if($inv==0 & $ped==0 & $exc=0 & $paq>0){$ped=$paq;} 
-    if($inv==0 & $ped==0 and $row2->sec==880){$ped=8;}
-elseif($inv==0 & $ped==0 and $row2->sec==881){$ped=4;}
-elseif($inv==0 & $ped==0 and $row2->sec==882){$ped=5;}
-elseif($inv==0 & $ped==0 and $row2->sec==883){$ped=12;}
-elseif($inv==0 & $ped==0 and $row2->sec==884){$ped=12;}
-elseif($inv==0 & $ped==0 and $row2->sec==885){$ped=12;}
-elseif($inv==0 & $ped==0 and $row2->sec==886){$ped=3;}
-elseif($inv==0 & $ped==0 and $row2->sec==887){$ped=6;}
-elseif($inv==0 & $ped==0 and $row2->sec==888){$ped=4;}
-elseif($inv==0 & $ped==0 and $row2->sec==889){$ped=4;}
-elseif($inv==0 & $ped==0 and $row2->sec==890){$ped=5;}
-elseif($inv==0 & $ped==0 and $row2->sec==891){$ped=3;}
-elseif($inv==0 & $ped==0 and $row2->sec==892){$ped=15;}
+
 if($row->tipo2=='D'){$vta=$row2->vtaddr;}else{$vta=$row2->vtagen;}
             $a[$row->suc][$row2->sec]['tsuc'] = $row->tipo2;
 			$a[$row->suc][$row2->sec]['suc'] = $row->suc;
@@ -203,9 +207,9 @@ if($row->tipo2=='D'){$vta=$row2->vtaddr;}else{$vta=$row2->vtagen;}
     
 }    
 
-   function inserta_pedido_for_una($suc,$por1,$por2,$por3,$por4)
+   function inserta_pedido_for_una($suc,$por1,$por2,$por3,$por4,$por5)
     {
-        $a = $this->__arreglo_pedido_formulado_una($suc,$por1,$por2,$por3,$por4);
+        $a = $this->__arreglo_pedido_formulado_una($suc,$por1,$por2,$por3,$por4,$por5);
         $fec=date('Y-m-d');
         $b = "insert ignore into desarrollo.pedido_formulado (promant, fecg, tsuc, suc, sec, porce, descri, promact, 
         maxi, inv, ped, exc, costo, venta, impo, lin, iva,inv_cedis,mue,bloque) values ";
@@ -293,7 +297,7 @@ $this->db->query($sx14);
 ///////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////*********************************
 //////////////////////////////////////////////////////////////////////////////////////*********************************
-   function __arreglo_pedido_formulado($por1,$por2,$por3,$por4,$suc)
+   function __arreglo_pedido_formulado($por1,$por2,$por3,$por4,$por5,$suc)
     {
 $dianombre=date('D');
 $a='';
@@ -387,19 +391,7 @@ if($promeact==0){$maxi=round($promeant*$por);}else{$maxi=round($promeact*$por);}
 if($maxi > $inv){$ped=$maxi-$inv;$exc=0;}else{$ped=0;$exc=$inv-$maxi;}
 if($paq > 0 and $ped>0){$ped=round(($ped/$paq),0)*$paq;}
 if($inv==0 & $ped==0 & $exc=0 & $pag>0){$ped=$paq;}
-    if($inv==0 & $ped==0 and $row2->sec==880){$ped=8;}
-elseif($inv==0 & $ped==0 and $row2->sec==881){$ped=4;}
-elseif($inv==0 & $ped==0 and $row2->sec==882){$ped=5;}
-elseif($inv==0 & $ped==0 and $row2->sec==883){$ped=12;}
-elseif($inv==0 & $ped==0 and $row2->sec==884){$ped=12;}
-elseif($inv==0 & $ped==0 and $row2->sec==885){$ped=12;}
-elseif($inv==0 & $ped==0 and $row2->sec==886){$ped=3;}
-elseif($inv==0 & $ped==0 and $row2->sec==887){$ped=6;}
-elseif($inv==0 & $ped==0 and $row2->sec==888){$ped=4;}
-elseif($inv==0 & $ped==0 and $row2->sec==889){$ped=4;}
-elseif($inv==0 & $ped==0 and $row2->sec==890){$ped=5;}
-elseif($inv==0 & $ped==0 and $row2->sec==891){$ped=3;}
-elseif($inv==0 & $ped==0 and $row2->sec==892){$ped=15;}
+
 if($row->tipo2=='D'){$vta=$row2->vtaddr;}else{$vta=$row2->vtagen;}
        
             $a[$row->suc][$row2->sec]['tsuc'] = $row->tipo2;
@@ -427,7 +419,7 @@ if($row->tipo2=='D'){$vta=$row2->vtaddr;}else{$vta=$row2->vtagen;}
         return $a;
 }    
 
-   function inserta_pedido_for($por1,$por2,$por3,$por4)
+   function inserta_pedido_for($por1,$por2,$por3,$por4,$por5)
     {
     ini_set('memory_limit','15000M');
     set_time_limit(0);
@@ -442,12 +434,29 @@ if($dianombre=='Tue'){$dia='MAR';}
 if($dianombre=='Wed'){$dia='MIE';}
 if($dianombre=='Thu'){$dia='JUE';}
 if($dianombre=='Fri'){$dia='VIE';}
+$l0="insert ignore into almacen.max_sucursal (sec, suc, susa, m2011, m2012, m2013, m2014, final, paquete)
+(select b.sec,a.suc,b.susa,0,0,0,0,2,0 from catalogo.sucursal a,  catalogo.cat_almacen_clasifica b
+where tipo2<>'F' and suc>100 and suc<=1600 and tlid=1
+and suc<>170
+and suc<>171
+and suc<>172
+and suc<>173
+and suc<>174
+and suc<>175
+and suc<>176
+and suc<>177
+and suc<>178
+and suc<>179
+and suc<>180
+and suc<>181
+and suc<>187)";
+$this->db->query($l0);
         $x1="SELECT * FROM catalogo.sucursal where dia='$dia' and tlid=1";
         $q1=$this->db->query($x1);
  foreach($q1->result() as $r1)
         {
         $suc=$r1->suc;
-        $a = $this->__arreglo_pedido_formulado($por1,$por2,$por3,$por4,$suc);
+        $a = $this->__arreglo_pedido_formulado($por1,$por2,$por3,$por4,$por5,$suc);
         $fec=date('Y-m-d');
         $b = "insert ignore into desarrollo.pedido_formulado (promant, fecg, tsuc, suc, sec, porce, descri, promact, 
         maxi, inv, ped, exc, costo, venta, impo, lin, iva,inv_cedis,mue,bloque) values ";

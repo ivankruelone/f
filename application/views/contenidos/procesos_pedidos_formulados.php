@@ -25,6 +25,10 @@
     <td align="left" ><font size="+1"><strong>Clasificacion D: </strong></font></td>
 	<td align="center"><?php echo form_dropdown('por4', $por4, '', 'id="por4"') ;?> </td>
 </tr>
+<tr>
+    <td align="left" ><font size="+1"><strong>Clasificacion E: </strong></font></td>
+	<td align="center"><?php echo form_dropdown('por5', $por5, '', 'id="por4"') ;?> </td>
+</tr>
 </table>
 <?php  
     echo form_submit('mysubmit', 'Generar!');

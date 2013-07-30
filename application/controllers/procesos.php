@@ -262,6 +262,7 @@ class Procesos extends CI_Controller
         $data['por2'] = $this->catalogo_model->busca_ord_dias();
         $data['por3'] = $this->catalogo_model->busca_ord_dias();
         $data['por4'] = $this->catalogo_model->busca_ord_dias();
+        $data['por5'] = $this->catalogo_model->busca_ord_dias();
         $data['tabla'] = $this->proceso_model_pedido->invd();
         $data['contenido'] = "procesos_pedidos_formulados";
         $data['selector'] = "procesos";
@@ -282,7 +283,8 @@ class Procesos extends CI_Controller
      $this->input->post('por1'),
      $this->input->post('por2'),
      $this->input->post('por3'),
-     $this->input->post('por4'));
+     $this->input->post('por4'),
+     $this->input->post('por5'));
   die();
     redirect('procesos/index');
   }   
@@ -298,6 +300,7 @@ class Procesos extends CI_Controller
         $data['por2'] = $this->catalogo_model->busca_ord_dias();
         $data['por3'] = $this->catalogo_model->busca_ord_dias();
         $data['por4'] = $this->catalogo_model->busca_ord_dias();
+        $data['por5'] = $this->catalogo_model->busca_ord_dias();
         $data['contenido'] = "procesos_pedidos_formulados_una";
         $data['selector'] = "procesos";
         $data['sidebar'] = "sidebar_procesos";
@@ -318,7 +321,8 @@ class Procesos extends CI_Controller
      $this->input->post('por1'),
      $this->input->post('por2'),
      $this->input->post('por3'),
-     $this->input->post('por4'));
+     $this->input->post('por4'),
+     $this->input->post('por5'));
     redirect('procesos/index');
   }   
 ///////////***********************************************///////////// 

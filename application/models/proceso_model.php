@@ -3060,6 +3060,56 @@ venta11=values(venta11),importe11=values(importe11),
 venta12=values(venta12),importe12=values(importe12)
 ";
 $this->db->query($sz2);
+$lidia="insert into vtadc.producto_mes_suc_gen( aaa, sec, suc, descripcion,
+venta1, venta2, venta3, venta4, venta5, venta6, venta7, venta8, venta9, venta10, venta11, venta12,
+importe1, importe2, importe3, importe4, importe5, importe6, importe7, importe8, importe9, importe10, importe11, importe12)
+(select aaa,sec,suc,descripcion,
+sum(venta1)as venta1,
+sum(venta2)as venta2,
+sum(venta3)as venta3,
+sum(venta4)as venta4,
+sum(venta5)as venta5,
+sum(venta6)as venta6,
+sum(venta7)as venta7,
+sum(venta8)as venta8,
+sum(venta9)as venta9,
+sum(venta10)as venta10,
+sum(venta11)as venta11,
+sum(venta12)as venta12,
+sum(importe1),
+sum(importe2),
+sum(importe3),
+sum(importe4),
+sum(importe5),
+sum(importe6),
+sum(importe7),
+sum(importe8),
+sum(importe9),
+sum(importe10),
+sum(importe11),
+sum(importe12)
+from  vtadc.producto_mes_suc
+where sec>0 and sec<=2000
+group by suc,sec) 
+on duplicate key update
+venta1=values(venta1),importe1=values(importe1),
+venta2=values(venta2),importe2=values(importe2),
+venta3=values(venta3),importe3=values(importe3),
+venta4=values(venta4),importe4=values(importe4),
+venta5=values(venta5),importe5=values(importe5),
+venta6=values(venta6),importe6=values(importe6),
+venta7=values(venta7),importe7=values(importe7),
+venta8=values(venta8),importe8=values(importe8),
+venta9=values(venta9),importe9=values(importe9),
+venta10=values(venta10),importe10=values(importe10),
+venta11=values(venta11),importe11=values(importe11),
+venta12=values(venta12),importe12=values(importe12)
+";
+$this->db->query($lidia);
+$lidia1="update vtadc.producto_mes_suc_gen a, almacen.max_sucursal b
+set a.m2013=b.m2013,a.m2012=b.m2012,a.m2011=b.m2011,a.final=b.final
+where a.sec=b.sec and a.suc=b.suc";
+$this->db->query($lidia1);
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////grabar CONCENTRADOS EN DESPLAZAMIENTOS ESPECIFICOS DE DIRECCION
 $sa1="insert into vtadc.n_prox_det(aaa, codigo, lab,nlab, suc,fami,

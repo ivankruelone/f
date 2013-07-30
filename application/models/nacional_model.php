@@ -681,20 +681,21 @@ when sum($uno)=0 and sum($dos)=0 and sum($tres)>0 then 1
 when sum($uno)>0 and sum($dos)=0 and sum($tres)=0 then 1
 when sum($uno)=0 and sum($dos)>0 and sum($tres)=0 then 1
 end)as prome,
-sum(venta1)as venta1,
-sum(venta2)as venta2,
-sum(venta3)as venta3,
-sum(venta4)as venta4,
-sum(venta5)as venta5,
-sum(venta6)as venta6,
-sum(venta7)as venta7,
-sum(venta8)as venta8,
-sum(venta9)as venta9,
-sum(venta10)as venta10,
-sum(venta11)as venta11,
-sum(venta12)as venta12
+ifnull(final,2)as final,
+ifnull(sum(venta1),0)as venta1,
+ifnull(sum(venta2),0)as venta2,
+ifnull(sum(venta3),0)as venta3,
+ifnull(sum(venta4),0)as venta4,
+ifnull(sum(venta5),0)as venta5,
+ifnull(sum(venta6),0)as venta6,
+ifnull(sum(venta7),0)as venta7,
+ifnull(sum(venta8),0)as venta8,
+ifnull(sum(venta9),0)as venta9,
+ifnull(sum(venta10),0)as venta10,
+ifnull(sum(venta11),0)as venta11,
+ifnull(sum(venta12),0)as venta12
          from catalogo.cat_almacen_clasifica aa
-        left join vtadc.producto_mes_suc a on aa.sec=a.sec and a.suc=$suc
+        left join vtadc.producto_mes_suc_gen a on aa.sec=a.sec and a.suc=$suc
   where aa.tipo in($var0) 
   group by aa.sec order by prome desc"; 
         $q = $this->db->query($s);
@@ -711,6 +712,7 @@ $num=0;
         <th>Sec</th>
         <th>Sustancia activa</th>
         <th>Promedio de 3 meses</th>
+        <th>Nuevo Maximo</th>
         <th>Enero</th>
         <th>Febrero</th>
         <th>Marzo</th>
@@ -750,6 +752,7 @@ $num=0;
             <td align=\"left\">".$r->sec."</td>
             <td align=\"left\">".$r->susa."</td>
             <td align=\"right\"><font color=\"green\">".number_format($r->prome,0)."</font></td>
+            <td align=\"right\"><font color=\"green\">".number_format($r->final,0)."</font></td>
             <td align=\"right\">".number_format($r->venta1,0)."</td>
             <td align=\"right\">".number_format($r->venta2,0)."</td>
             <td align=\"right\">".number_format($r->venta3,0)."</td>
@@ -2535,77 +2538,28 @@ $uno=date('m')-3;
 $dos=date('m')-2;
 $tres=date('m')-1;
 $fec=date('Y-m-d');
-if($uno=='01'){$uno='venta1';}
-elseif($uno=='02'){$uno='venta2';}
-elseif($uno=='03'){$uno='venta3';}
-elseif($uno=='04'){$uno='venta4';}
-elseif($uno=='05'){$uno='venta5';}
-elseif($uno=='06'){$uno='venta6';}
-elseif($uno=='07'){$uno='venta7';}
-elseif($uno=='08'){$uno='venta8';}
-elseif($uno=='09'){$uno='venta9';}
-elseif($uno=='10'){$uno='venta10';}
-elseif($uno=='11'){$uno='venta11';}
-elseif($uno=='12'){$uno='venta12';}
 
-if($dos=='01'){$dos='venta1';}
-elseif($dos=='02'){$dos='venta2';}
-elseif($dos=='03'){$dos='venta3';}
-elseif($dos=='04'){$dos='venta4';}
-elseif($dos=='05'){$dos='venta5';}
-elseif($dos=='06'){$dos='venta6';}
-elseif($dos=='07'){$dos='venta7';}
-elseif($dos=='08'){$dos='venta8';}
-elseif($dos=='09'){$dos='venta9';}
-elseif($dos=='10'){$dos='venta10';}
-elseif($dos=='11'){$dos='venta11';}
-elseif($dos=='12'){$dos='venta12';}
-
-if($tres=='01'){$tres='venta2';}
-elseif($tres=='02'){$tres='venta2';}
-elseif($tres=='03'){$tres='venta3';}
-elseif($tres=='04'){$tres='venta4';}
-elseif($tres=='05'){$tres='venta5';}
-elseif($tres=='06'){$tres='venta6';}
-elseif($tres=='07'){$tres='venta7';}
-elseif($tres=='08'){$tres='venta8';}
-elseif($tres=='09'){$tres='venta9';}
-elseif($tres=='10'){$tres='venta10';}
-elseif($tres=='11'){$tres='venta11';}
-elseif($tres=='12'){$tres='venta12';}
-         $s="select c.tipo,c.susa,a.suc,c.tipo,a.sec,c.susa,b.nombre as sucx,b.regional,
-sum($uno+$dos+$tres)/(case
-when sum($uno)>0 and sum($dos)>0 and sum($tres)>0 then 3
-when sum($uno)=0 and sum($dos)>0 and sum($tres)>0 then 2
-when sum($uno)>0 and sum($dos)=0 and sum($tres)>0 then 2
-when sum($uno)>0 and sum($dos)>0 and sum($tres)=0 then 2
-when sum($uno)=0 and sum($dos)=0 and sum($tres)>0 then 1
-when sum($uno)>0 and sum($dos)=0 and sum($tres)=0 then 1
-when sum($uno)=0 and sum($dos)>0 and sum($tres)=0 then 1
-end)as prome,
-sum(venta1)as venta1,
-sum(venta2)as venta2,
-sum(venta3)as venta3,
-sum(venta4)as venta4,
-sum(venta5)as venta5,
-sum(venta6)as venta6,
-sum(venta7)as venta7,
-sum(venta8)as venta8,
-sum(venta9)as venta9,
-sum(venta10)as venta10,
-sum(venta11)as venta11,
-sum(venta12)as venta12
-
-from vtadc.producto_mes_suc a
-left join catalogo.sucursal b on b.suc=a.suc
-left join catalogo.cat_almacen_clasifica c on c.sec=a.sec
-where  
-b.regional=$reg and a.sec>0 and a.sec<=2000 and b.tipo2<>'F' and c.tipo in($var0) and a.suc=$suc
-or
-b.superv=$reg and a.sec>0 and a.sec<=2000 and b.tipo2<>'F' and c.tipo in($var0) and a.suc=$suc 
- 
-group by regional,a.suc,a.sec
-order by prome desc
+         $s="select a.*,
+ifnull(m2013,0)as m2013,
+ifnull(m2012,0)as m2012,
+ifnull(m2011,0)as m2011,
+ifnull(final,2)as final,
+ifnull(venta1,0)as venta1,
+ifnull(venta2,0)as venta2,
+ifnull(venta3,0)as venta3,
+ifnull(venta4,0)as venta4,
+ifnull(venta5,0)as venta5,
+ifnull(venta6,0)as venta6,
+ifnull(venta7,0)as venta7,
+ifnull(venta8,0)as venta8,
+ifnull(venta9,0)as venta9,
+ifnull(venta10,0)as venta10,
+ifnull(venta11,0)as venta11,
+ifnull(venta12,0)as venta12
+from catalogo.cat_almacen_clasifica a
+left join vtadc.producto_mes_suc_gen b on a.sec=b.sec  and  b.suc=$suc
+where  a.tipo in($var0) 
+order by final desc
 "; 
         $q = $this->db->query($s);
         
@@ -2629,9 +2583,7 @@ $num=0;
         <th>2012</th>
         <th>2013</th>
         <th>Final</th>
-        <th>Max.Nuevo</th>
-        <th>Promedio de 3 meses</th>
-        <th>Maximo</th>
+        <th>Nuevo<br />Maximo</th>
         <th>Enero</th>
         <th>Febrero</th>
         <th>Marzo</th>
@@ -2665,35 +2617,25 @@ $num=0;
             $inv=$rr->cantidad; 
             $fechai=$rr->fechai; 
          }else{$inv=0; $fechai='';}
-         $s3="select *from almacen.max_sucursal where suc=$r->suc and sec=$r->sec";
-         $q3=$this->db->query($s3);
-         if($q3->num_rows() == 1){
-            $r3=$q3->row();
-            $m2011=$r3->m2011; 
-            $m2012=$r3->m2012; 
-            $m2013=$r3->m2013;
-            $final=$r3->final;  
-         }else{$m2011=0;$m2012=0;$m2013=0;$final=0;} 
          
-           if($r->tipo=='a'){$maxi=$r->prome*1.5; $finalm=$final*1.5;}////45
-       	elseif($r->tipo=='b'){$maxi=$r->prome*1.333333; $finalm=$final*1.333333;}////40
-       	elseif($r->tipo=='c'){$maxi=$r->prome*1; $finalm=$final*1;}/////30
-       	elseif($r->tipo=='d'){$maxi=$r->prome*1; $finalm=$final*1;}/////30  
+         
+           if($r->tipo=='a'){$maxi=$r->final*1.5; $finalm=$r->final*1.5;}////45
+       	elseif($r->tipo=='b'){$maxi=$r->final*1.333333; $finalm=$r->final*1.333333;}////40
+       	elseif($r->tipo=='c'){$maxi=$r->final*1; $finalm=$r->final*1;}/////30
+       	elseif($r->tipo=='d'){$maxi=$r->final*1; $finalm=$r->final*1;}/////30  
 		$num=$num+1;
-         $l1 = anchor('nacional/tabla_desplaza_t_ger_suc_nid_ped/'.$var.'/'.$reg.'/'.$r->suc.'/'.$r->sec,'Detalle'.'</a>', array('title' => 'Haz Click aqui para ver el detalle!', 'class' => 'encabezado'));   
+         $l1 = anchor('nacional/tabla_desplaza_t_ger_suc_nid_ped/'.$var.'/'.$reg.'/'.$suc.'/'.$r->sec,'Detalle'.'</a>', array('title' => 'Haz Click aqui para ver el detalle!', 'class' => 'encabezado'));   
             $tabla.="
             <tr>
             <td align=\"left\"><font color=\"orange\">".$num."</font></td>
             <td align=\"left\">".$r->sec."</td>
             <td align=\"center\">".$r->tipo."</td>
             <td align=\"left\">".$r->susa."</td>
-            <td align=\"right\">".number_format($m2011,0)."</td>
-            <td align=\"right\">".number_format($m2012,0)."</td>
-            <td align=\"right\">".number_format($m2013,0)."</td>
-            <td align=\"right\">".number_format($final,0)."</td>
+            <td align=\"right\"><font color=\"red\">".number_format($r->m2011,0)."</font></td>
+            <td align=\"right\"><font color=\"red\">".number_format($r->m2012,0)."</font></td>
+            <td align=\"right\"><font color=\"red\">".number_format($r->m2013,0)."</font></td>
+            <td align=\"right\"><font color=\"red\">".number_format($r->final,0)."</font></td>
             <td align=\"right\"><font color=\"red\">".number_format($finalm,0)."</font></td>
-            <td align=\"right\"><font color=\"green\">".number_format($r->prome,0)."</font></td>
-            <td align=\"right\"><font color=\"red\">".number_format($maxi,0)."</font></td>
             <td align=\"right\">".number_format($r->venta1,0)."</td>
             <td align=\"right\">".number_format($r->venta2,0)."</td>
             <td align=\"right\">".number_format($r->venta3,0)."</td>
@@ -2727,7 +2669,7 @@ $t12=$t12+($r->venta12);
 }
          $tabla.="
         <tr>   
-            <td align=\"right\" colspan=\"11\">TOTAL</td>
+            <td align=\"right\" colspan=\"9\">TOTAL</td>
             <td align=\"right\">".number_format($t1,0)."</td>
             <td align=\"right\">".number_format($t2,0)."</td>
             <td align=\"right\">".number_format($t3,0)."</td>

@@ -388,7 +388,7 @@ public function reporte_jus()
     {
         $this->load->model('checador_model');
         $data['contenido'] = "formulario_quince";
-        $data['selector'] = "compras";
+        $data['selector'] = "rh";
         $data['sidebar'] = "sidebar_direccion_rh";
         $data['quincenas'] = $this->checador_model->get_quincenas();
 

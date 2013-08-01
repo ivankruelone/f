@@ -1452,7 +1452,7 @@ from desarrollo.checador_asistencia c
 left join catalogo.cat_empleado e on c.empleado_id = e.id
 left join desarrollo.checador_quincenas q on c.fecha >= inicio and c.fecha <= fin
 left join catalogo.sucursal f on e.succ=f.suc
-where c.entrada between ? and ? and falta = 0 and checa = 1 and succ = ? and e.nocturno=0 and dayofweek(c.fecha) not in(7, 1) and TIME_TO_SEC(TIMEDIFF(c.entrada, concat(c.fecha, ' ', c.hentrada)))/3600 <= 0
+where c.entrada between ? and ? and falta = 0 and checa = 1 and succ = ? and e.nocturno=0 and dayofweek(c.fecha) not in(7, 1) and e.cia <> 8 and TIME_TO_SEC(TIMEDIFF(c.entrada, concat(c.fecha, ' ', c.hentrada)))/3600 <= 0
 group by empleado_id
 order by eficiencia desc";
 
@@ -1511,7 +1511,7 @@ from desarrollo.checador_asistencia c
 left join catalogo.cat_empleado e on c.empleado_id = e.id
 left join desarrollo.checador_quincenas q on c.fecha >= inicio and c.fecha <= fin
 left join catalogo.sucursal f on e.succ=f.suc
-where c.entrada between ? and ? and falta = 0 and checa = 1 and succ= ? and nocturno=1 and dayofweek(c.fecha) not in(7, 1) and TIME_TO_SEC(TIMEDIFF(c.entrada, concat(c.fecha, ' ', c.hentrada)))/3600 <= 0
+where c.entrada between ? and ? and falta = 0 and checa = 1 and succ= ? and nocturno=1 and dayofweek(c.fecha) not in(7, 1) and e.cia <> 8 and TIME_TO_SEC(TIMEDIFF(c.entrada, concat(c.fecha, ' ', c.hentrada)))/3600 <= 0
 group by empleado_id
 order by eficiencia desc";
 

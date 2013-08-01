@@ -3211,7 +3211,232 @@ function actualiza_mue(id, valor){
         function folios_sob_fal()
         {
         
-        $sql = "SELECT * FROM catalogo.folio_pedidos_cedis f where fechas>='2013-07-01';";
+        $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis f
+        left join catalogo.sucursal s on f.suc=s.suc
+        where fechas>='2013-07-01' and validar=0;";
+        $query = $this->db->query($sql);
+        
+        $tabla= "
+        <table style=\"font-size: medium; \">
+        <thead>
+        <tr>
+        <th>Folio</th>
+        <th>Sucursal</th>
+        <th>Fecha</th>
+        <th colspan=\"2\" align=\"center\">Faltate</th>
+        <th colspan=\"2\" align=\"center\">Sobrante</th>
+        <th>Val</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+     
+        foreach($query->result() as $row)
+        {
+             $tabla.="
+            <tr>
+            <td align=\"right\">".$row->id."</td>
+            <td align=\"left\">".$row->suc." - ".$row->nombre."</td>
+            <td align=\"left\">".$row->fechas."</td>
+            <td align=\"right\">".number_format($row->faltante,2)."</td>
+            <td align='right'><font size='-1'><input name='fal_$row->id' type='text' id='fal_$row->id' size='11' maxlength='11' value='$row->faltante' /></font></td>
+            <td align=\"right\">".number_format($row->sobrante,2)."</td>
+            <td align='right'><font size='-1'><input name='sob_$row->id' type='text' id='sob_$row->id' size='11' maxlength='11' value='$row->sobrante' /></font></td>
+            
+            <td align=\"left\">".anchor('a_surtido/validar_falsob/'.$row->id.'/'.$row->validar, '<img src="'.base_url().'img/good.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para validar', 'class' => 'encabezado'))."</td>
+            </tr>
+            ";
+        }
+        
+        $tabla.="
+        </tbody>
+        </table>
+ <script language=\"javascript\" type=\"text/javascript\">
+
+$('input:text[name^=\"fal_\"]').change(function() {
+    
+    var nombre = $(this).attr('name');
+    var valor = $(this).attr('value');
+     var id = nombre.split('_');
+    id = id[1];
+    //alert(id + \" \" + valor);
+    actualiza_fal(id, valor);
+
+});
+
+function actualiza_fal(id, valor){
+    $.ajax({type: \"POST\",
+        url: \"".site_url()."/a_surtido/actualiza_faltante/\", data: ({ id: id, valor: valor }),
+            success: function(data){
+                
+                
+
+        },
+        beforeSend: function(data){
+
+        }
+        });
+}
+
+
+$('input:text[name^=\"sob_\"]').change(function() {
+    
+    var nombre = $(this).attr('name');
+    var valor = $(this).attr('value');
+     var id = nombre.split('_');
+    id = id[1];
+    alert(id + \" \" + valor);
+    actualiza_sob(id, valor);
+
+});
+
+function actualiza_sob(id, valor){
+    $.ajax({type: \"POST\",
+        url: \"".site_url()."/a_surtido/actualiza_sobrante/\", data: ({ id: id, valor: valor }),
+            success: function(data){
+                
+                
+
+        },
+        beforeSend: function(data){
+
+        }
+        });
+}
+</script>       
+        
+     ";
+        
+        return $tabla;
+    }
+    
+    
+
+    function validar_falsob_model($id)
+    {
+        $sql="update catalogo.folio_pedidos_cedis set validar=1 where id=$id";
+        $query = $this->db->query($sql);
+    }
+
+
+
+    function folios_sob_fal_esp()
+        {
+        
+        $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis_especial f
+        left join catalogo.sucursal s on f.suc=s.suc
+        where fechas>='2013-07-01' and validar=0;";
+        $query = $this->db->query($sql);
+        
+        $tabla= "
+        <table style=\"font-size: medium; \">
+        <thead>
+        <tr>
+        <th>Folio</th>
+        <th>Sucursal</th>
+        <th>Fecha</th>
+        <th colspan=\"2\" align=\"center\">Faltate</th>
+        <th colspan=\"2\" align=\"center\">Sobrante</th>
+        <th>Val</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+     
+        foreach($query->result() as $row)
+        {
+                    
+            $tabla.="
+            <tr>
+            <td align=\"right\">".$row->id."</td>
+            <td align=\"left\">".$row->suc." - ".$row->nombre."</td>
+            <td align=\"left\">".$row->fechas."</td>
+            <td align=\"right\">".number_format($row->faltante,2)."</td>
+            <td align='right'><font size='-1'><input name='fal_$row->id' type='text' id='fal_$row->id' size='11' maxlength='11' value='$row->faltante' /></font></td>
+            <td align=\"right\">".number_format($row->sobrante,2)."</td>
+            <td align='right'><font size='-1'><input name='sob_$row->id' type='text' id='sob_$row->id' size='11' maxlength='11' value='$row->sobrante' /></font></td>
+            
+            <td align=\"left\">".anchor('a_surtido/validar_falsob_esp/'.$row->id.'/'.$row->validar, '<img src="'.base_url().'img/good.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para validar', 'class' => 'encabezado'))."</td>
+            </tr>
+            ";
+        }
+        
+        $tabla.="
+        </tbody>
+        </table>
+        <script language=\"javascript\" type=\"text/javascript\">
+
+        $('input:text[name^=\"fal_\"]').change(function() {
+    
+        var nombre = $(this).attr('name');
+        var valor = $(this).attr('value');
+        var id = nombre.split('_');
+        id = id[1];
+        //alert(id + \" \" + valor);
+        actualiza_fal(id, valor);
+
+        });
+
+        function actualiza_fal(id, valor){
+        $.ajax({type: \"POST\",
+        url: \"".site_url()."/a_surtido/actualiza_faltante_esp/\", data: ({ id: id, valor: valor }),
+            success: function(data){
+                
+                
+
+        },
+        beforeSend: function(data){
+
+        }
+        });
+        }
+
+
+        $('input:text[name^=\"sob_\"]').change(function() {
+    
+        var nombre = $(this).attr('name');
+        var valor = $(this).attr('value');
+        var id = nombre.split('_');
+        id = id[1];
+        alert(id + \" \" + valor);
+        actualiza_sob(id, valor);
+
+        });
+
+        function actualiza_sob(id, valor){
+        $.ajax({type: \"POST\",
+        url: \"".site_url()."/a_surtido/actualiza_sobrante_esp/\", data: ({ id: id, valor: valor }),
+            success: function(data){
+                
+                
+
+        },
+        beforeSend: function(data){
+
+        }
+        });
+        }
+        </script>       
+        
+        ";
+        
+        return $tabla;
+    }
+    
+
+
+    function validar_falsob_model_esp($id)
+    {
+        $sql="update catalogo.folio_pedidos_cedis_especial  set validar=1 where id=$id";
+        $query = $this->db->query($sql);
+    }
+    
+    function folios_sob_fal_tabla()
+        {
+        
+        $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis f
+        left join catalogo.sucursal s on f.suc=s.suc
+        where fechas>='2013-07-01' and validar=1;";
         $query = $this->db->query($sql);
         
         $tabla= "
@@ -3223,7 +3448,6 @@ function actualiza_mue(id, valor){
         <th>Fecha</th>
         <th>Faltate</th>
         <th>Sobrante</th>
-        <th>Validar</th>
         </tr>
         </thead>
         <tbody>
@@ -3231,14 +3455,14 @@ function actualiza_mue(id, valor){
      
         foreach($query->result() as $row)
         {
-            //$l1 = anchor('catalogo/cambiar_usuario/'.$row->id, '<img src="'.base_url().'img/user.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para agregar ticket!', 'class' => 'encabezado'));        
+                    
             $tabla.="
             <tr>
             <td align=\"right\">".$row->id."</td>
-            <td align=\"left\">".$row->suc."</td>
+            <td align=\"left\">".$row->suc." - ".$row->nombre."</td>
             <td align=\"left\">".$row->fechas."</td>
-            <td align=\"left\">".anchor('a_surtido/captura_faltante/'.$row->id, $row->faltante)."</td>
-            <td align=\"left\">".anchor('a_surtido/captura_sobrante/'.$row->id, $row->sobrante)."</td>
+            <td align=\"left\">".$row->faltante."</td>
+            <td align=\"left\">".$row->sobrante."</td>
             </tr>
             ";
         }
@@ -3250,36 +3474,48 @@ function actualiza_mue(id, valor){
         return $tabla;
     }
     
+    function folios_sob_fal_esp_tabla()
+        {
+        
+        $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis_especial f
+        left join catalogo.sucursal s on f.suc=s.suc
+        where fechas>='2013-07-01' and validar=1;";
+        $query = $this->db->query($sql);
+        
+        $tabla= "
+        <table style=\"font-size: medium; \">
+        <thead>
+        <tr>
+        <th>Folio</th>
+        <th>Sucursal</th>
+        <th>Fecha</th>
+        <th>Faltate</th>
+        <th>Sobrante</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+     
+        foreach($query->result() as $row)
+        {
+            $tabla.="
+            <tr>
+            <td align=\"right\">".$row->id."</td>
+            <td align=\"left\">".$row->suc." - ".$row->nombre."</td>
+            <td align=\"left\">".$row->fechas."</td>
+            <td align=\"left\">".$row->faltante."</td>
+            <td align=\"left\">".$row->sobrante."</td>
+            </tr>
+            ";
+        }
+        
+        $tabla.="
+        </tbody>
+        </table>";
+        
+        return $tabla;
+    }
     
-    function actualiza_fal_model($id, $faltante)
-    {
-     $data = array(
-           
-           'faltante' => $faltante,
-        );
- 	 $this->db->where('id', $id);
-     $this->db->update('catalogo.folio_pedidos_cedis', $data);
-     return $this->db->affected_rows(); 	 
-     }
-
-
-    function actualiza_sob_model($id, $sobrante)
-    {
-     $data = array(
-           
-           'sobrante' => $sobrante,
-        );
- 	 $this->db->where('id', $id);
-     $this->db->update('catalogo.folio_pedidos_cedis', $data);
-     return $this->db->affected_rows(); 	 
-     }
-
-
-
-
-
-
-
 
 
 

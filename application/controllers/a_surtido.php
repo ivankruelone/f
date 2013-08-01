@@ -114,7 +114,7 @@ class A_surtido extends CI_Controller
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   public function captura_sob_fal()
     {   $data['mensaje']= '';
-        $data['titulo']= 'CAPTURA DE SOBRANTES Y/O FALTANTES';
+        $data['titulo']= 'CAPTURA DE SOBRANTES Y/O FALTANTES FORMULADOS';
         $data['titulo1']= '';
         $this->load->model('a_surtido_model');
         $data['tabla'] = $this->a_surtido_model->folios_sob_fal();
@@ -128,60 +128,103 @@ class A_surtido extends CI_Controller
         $this->load->view('extrafooter');
     }
     
-    public function captura_faltante($id)
+  public function actualiza_faltante()
     {
-        $data['mensaje']= '';
-        $data['titulo']= 'INGRESA FALTANTE';
-        $data['titulo1']= '';
-        $this->load->model('a_surtido_model');  
-
-		$data['contenido'] = "a_folio_fal";
-        $data['selector'] = "a_surtido";
-        $data['sidebar'] = "sidebar_a_surtido";
-        $data['id'] = $id;
-              
-        $this->load->view('header');
-        $this->load->view('main', $data);
-        $this->load->view('extrafooter');
-        
+        $data = array('faltante' => $this->input->post('valor'));
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('catalogo.folio_pedidos_cedis', $data); 
+     
     }
-    
-    
-    public function captura_sobrante($id)
+    public function actualiza_sobrante()
     {
-        $data['mensaje']= '';
-        $data['titulo']= 'INGRESA SOBRANTE';
+        $data = array('sobrante' => $this->input->post('valor'));
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('catalogo.folio_pedidos_cedis', $data); 
+     
+    }   
+    
+    public function validar_falsob($id)
+    {
+        $this->load->model('a_surtido_model');
+        $this->a_surtido_model->validar_falsob_model($id);
+        redirect('a_surtido/captura_sob_fal');
+        
+        
+     }   
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     
+    
+    public function captura_sob_fal_esp()
+    {   $data['mensaje']= '';
+        $data['titulo']= 'CAPTURA DE SOBRANTES Y/O FALTANTES ESPECIALES';
         $data['titulo1']= '';
-        $this->load->model('a_surtido_model');  
+        $this->load->model('a_surtido_model');
+        $data['tabla'] = $this->a_surtido_model->folios_sob_fal_esp();
 
-		$data['contenido'] = "a_folio_sob";
+		$data['contenido'] = "a_folio_sob_fal_esp";
         $data['selector'] = "a_surtido";
         $data['sidebar'] = "sidebar_a_surtido";
-        $data['id'] = $id;
               
         $this->load->view('header');
         $this->load->view('main', $data);
         $this->load->view('extrafooter');
+        }  
+    
+        public function actualiza_faltante_esp()
+        {
+        $data = array('faltante' => $this->input->post('valor'));
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('catalogo.folio_pedidos_cedis_especial', $data); 
+        }       
+    
+        public function actualiza_sobrante_esp()
+        {
+        $data = array('sobrante' => $this->input->post('valor'));
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('catalogo.folio_pedidos_cedis_especial', $data); 
         }
         
         
-    public function actualiza_fal()
-    {
-     $id=$this->input->post('id');
-     $faltante=$this->input->post('faltante');
-     $this->load->model('a_surtido_model');
-     $this->a_surtido_model->actualiza_fal_model($id, $faltante);
-     redirect('a_surtido/captura_sob_fal');
-    }       
+        public function validar_falsob_esp($id)
+        {
+        $this->load->model('a_surtido_model');
+        $this->a_surtido_model->validar_falsob_model_esp($id);
+        redirect('a_surtido/captura_sob_fal_esp');
     
-    public function actualiza_sob()
-    {
-     $id=$this->input->post('id');
-     $faltante=$this->input->post('sobrante');
-     $this->load->model('a_surtido_model');
-     $this->a_surtido_model->actualiza_sob_model($id, $sobrante);
-     redirect('a_surtido/captura_sob_fal');
-    }       
+        }    
+ //////////////////////////////////////////////////////////////////////////////////////////            
+    
+    public function tabla_sob_fal()
+    {   $data['mensaje']= '';
+        $data['titulo']= 'SOBRANTES Y/O FALTANTES FORMULADOS';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');
+        $data['tabla'] = $this->a_surtido_model->folios_sob_fal_tabla();
+
+		$data['contenido'] = "a_folio_sob_fal";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+    
+    public function tabla_sob_fal_esp()
+    {   $data['mensaje']= '';
+        $data['titulo']= 'SOBRANTES Y/O FALTANTES ESPECIALES';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');
+        $data['tabla'] = $this->a_surtido_model->folios_sob_fal_esp_tabla();
+
+		$data['contenido'] = "a_folio_sob_fal_esp";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }  
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

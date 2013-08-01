@@ -67,7 +67,7 @@ $tabla= "
 }
 ///////////////////////////////////////
 ///////////////////////////////////////
-   function __arreglo_pedido_formulado_una($suc,$por1,$por2,$por3,$por4)
+   function __arreglo_pedido_formulado_una($suc,$por1,$por2,$por3,$por4,$por5)
     {
 $dianombre=date('D');
 //$dianombre='Wed';
@@ -253,7 +253,7 @@ as piezas,
 0,'0000-00-00','N',costo,iva,venta,lin,inv_cedis
 FROM pedido_formulado a
 left join catalogo.folio_pedidos_cedis b on b.suc=a.suc and b.fechas=a.fecg and b.id_user=a.mue
-where ped>0 and fecg='$fec' and id_user=6  and a.suc=$suc and tid='A' order by a.suc)";
+where ped>0 and fecg='$fec' and id_user=6 and a.mue=6  and a.suc=$suc and tid='A' order by a.suc)";
 $this->db->query($sx10);
 $sx11="insert into pedidos
 (suc, fecha, sec, can, fechas, tipo, mue, susa, ped, fol, bloque, tsuc, sur, id_usercap, fechasur, inv, costo, iva, vta, lin, invcedis)
@@ -268,7 +268,7 @@ as piezas,
 0,'0000-00-00','N',costo,iva,venta,lin,inv_cedis
 FROM pedido_formulado a
 left join catalogo.folio_pedidos_cedis b on b.suc=a.suc and b.fechas=a.fecg and b.id_user=0
-where ped>0 and fecg='$fec' and id_user=0  and a.suc=$suc and tid='A' order by a.suc)
+where ped>0 and fecg='$fec' and id_user=0  and a.mue<>6 and a.suc=$suc and tid='A' order by a.suc)
 on duplicate key update sec=values(sec)";
 $this->db->query($sx11);
 
@@ -284,10 +284,10 @@ $sx14="delete FROM pedido_formulado";
 $this->db->query($sx14);
 
     
- echo "<pre>";
-  print_r($a);
-  echo "</pre>";
-  die();
+ //echo "<pre>";
+ // print_r($a);
+ // echo "</pre>";
+ // die();
 		
         
     }
@@ -502,7 +502,7 @@ as piezas,
 0,'0000-00-00','N',costo,iva,venta,lin,inv_cedis
 FROM pedido_formulado a
 left join catalogo.folio_pedidos_cedis b on b.suc=a.suc and b.fechas=a.fecg and b.id_user=a.mue
-where ped>0 and fecg='$fec' and id_user=6 order by a.suc)";
+where ped>0 and fecg='$fec' and id_user=6 and a.mue=6 order by a.suc)";
 $this->db->query($sx10);
 $sx11="insert into pedidos
 (suc, fecha, sec, can, fechas, tipo, mue, susa, ped, fol, bloque, tsuc, sur, id_usercap, fechasur, inv, costo, iva, vta, lin, invcedis)
@@ -517,7 +517,7 @@ as piezas,
 0,'0000-00-00','N',costo,iva,venta,lin,inv_cedis
 FROM pedido_formulado a
 left join catalogo.folio_pedidos_cedis b on b.suc=a.suc and b.fechas=a.fecg and b.id_user=0
-where ped>0 and fecg='$fec' and id_user=0 order by a.suc)
+where ped>0 and fecg='$fec' and id_user=0  and a.mue<>6 order by a.suc)
 on duplicate key update sec=values(sec)";
 $this->db->query($sx11);
 

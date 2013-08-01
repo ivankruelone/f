@@ -1117,7 +1117,7 @@ if($fal1>2.99){
  $sqlz2 = "SELECT ifnull(b.fal,'NO')as parametro,b.turno,b.fal, b.fecha,a.* 
  FROM catalogo.cat_empleado a
 left join fal_c b on a.nomina=b.nomina and b.clave=520 and b.fecha='$rowz1->fechacorte' and b.turno=1
-where  a.nomina=$rowz1->turno1_cajera and a.id_user=$id_user";
+where  a.nomina=$rowz1->turno1_cajera";
 
  $queryz2 = $this->db->query($sqlz2);
  if($queryz2->num_rows()> 0){
@@ -1128,6 +1128,7 @@ where  a.nomina=$rowz1->turno1_cajera and a.id_user=$id_user";
  $id_plaza=$rowz2->id_plaza;
  }else{$plazanom=0;$cianom=0;$id_plaza=0;}
  if($rowz2->parametro=='NO'){   
+
 $dataz= array(
             'fecha'   =>$rowz1->fechacorte,  
             'corte'   =>$id_cc,  
@@ -1151,7 +1152,7 @@ if($fal2>2.99){
  $sqlz2 = "SELECT ifnull(b.fal,'NO')as parametro,b.turno,b.fal, b.fecha,a.* 
  FROM catalogo.cat_empleado a
 left join fal_c b on a.nomina=b.nomina and b.clave=520 and b.fecha='$rowz1->fechacorte' and b.turno=2
-where  a.nomina=$rowz1->turno2_cajera and a.id_user=$id_user";
+where  a.nomina=$rowz1->turno2_cajera";
  $queryz2 = $this->db->query($sqlz2);
  if($queryz2->num_rows()> 0){
  $rowz2= $queryz2->row();
@@ -1182,7 +1183,7 @@ if($fal3>2.99){
  $sqlz2 = "SELECT ifnull(b.fal,'NO')as parametro,b.turno,b.fal, b.fecha,a.* 
  FROM catalogo.cat_empleado a
 left join fal_c b on a.nomina=b.nomina and b.clave=520 and b.fecha='$rowz1->fechacorte' and b.turno=3
-where  a.nomina=$rowz1->turno3_cajera and a.id_user=$id_user";
+where  a.nomina=$rowz1->turno3_cajera";
  $queryz2 = $this->db->query($sqlz2);
  if($queryz2->num_rows()> 0){
  $rowz2= $queryz2->row();
@@ -1200,7 +1201,7 @@ $dataz= array(
             'id_cor'  =>$rowz1->id_cor,
             'id_user' =>$rowz1->id_user,
             'suc'    =>$rowz1->suc,
-            'plaza'  =>$rowz1->plaza,
+            'plaza'  =>$id_plaza,
             'cia' =>$rowz1->cia,
             'plazanom'  =>$plazanom,
             'clave'  =>520,
@@ -1213,7 +1214,7 @@ if($fal4>2.99){
  $sqlz2 = "SELECT ifnull(b.fal,'NO')as parametro,b.turno,b.fal, b.fecha,a.* 
  FROM catalogo.cat_empleado a
 left join fal_c b on a.nomina=b.nomina and b.clave=520 and b.fecha='$rowz1->fechacorte' and b.turno=4
-where  a.nomina=$rowz1->turno4_cajera and a.id_user=$id_user";
+where  a.nomina=$rowz1->turno4_cajera";
  $queryz2 = $this->db->query($sqlz2);
  if($queryz2->num_rows()> 0){
  $rowz2= $queryz2->row();
@@ -1231,7 +1232,7 @@ $dataz= array(
             'id_cor'  =>$rowz1->id_cor,
             'id_user' =>$rowz1->id_user,
             'suc'    =>$rowz1->suc,
-            'plaza'  =>$rowz1->plaza,
+            'plaza'  =>$id_plaza,
             'cia' =>$rowz1->cia,
             'plazanom'  =>$plazanom,
             'id_plaza'=>$id_plazaa,

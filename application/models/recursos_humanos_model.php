@@ -782,6 +782,7 @@ $tabla.="
      $id_user= $this->session->userdata('id');
      $nivel= $this->session->userdata('nivel'); 
      $tipo= $this->session->userdata('tipo');
+     
 	 $id_plaza= $this->session->userdata('id_plaza'); 
      if($tipo==1){
      $sql = "SELECT a.*,b.nombre,b.dire,c.nivel as nivelx,c.nombre as captura, c.puesto
@@ -791,7 +792,15 @@ $tabla.="
       where a.tipo=1 and b.id_plaza=$id_plaza
       or a.motivo='CAMBIOS' and a.tipo=1
       ";
-     }else{  
+     }elseif($tipo==4){  
+     $sql = "SELECT a.*,b.nombre,b.dire,c.nivel as nivelx,b.id_plaza,c.nombre as captura, c.puesto
+      FROM catalogo.cat_alta_empleado a
+      left join catalogo.sucursal b on b.suc=a.suc
+      left join usuarios c on c.id=a.id_user
+      where a.id_user=$id_user and a.tipo=1
+	  or a.motivo='altas' and b.id_plaza=$id_plaza and a.tipo=1
+      ";
+      }else{  
      $sql = "SELECT a.*,b.nombre,b.dire,c.nivel as nivelx,b.id_plaza,c.nombre as captura, c.puesto
       FROM catalogo.cat_alta_empleado a
       left join catalogo.sucursal b on b.suc=a.suc

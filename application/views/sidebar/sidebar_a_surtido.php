@@ -34,8 +34,13 @@ if($nivel==12){
 echo "<br/><strong>REPORTE DE SURTIDO X CLAVE</strong><br/><br/>";
 echo anchor('a_surtido/reporte_diario_xclave', 'REPORTE SURTIDO X CLAVE', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo "<br/><strong>CAPTURA</strong><br/><br/>";
-echo anchor('a_surtido/captura_sob_fal', 'SOBRANTE/FALTANTE', 'class="button-link yellow" style="position:relative; width:190px; height:20px;"');
-
+echo anchor('a_surtido/captura_sob_fal', 'SOBRANTE/FALTANTE FORMULADO', 'class="button-link yellow" style="position:relative; width:190px; height:20px;"');
+echo "<br/><br/>";
+echo anchor('a_surtido/tabla_sob_fal', 'FORMULADOS', 'class="button-link yellow" style="position:relative; width:190px; height:20px;"');
+echo "<br/><br/><br/><br/>";
+echo anchor('a_surtido/captura_sob_fal_esp', 'SOBRANTE/FALTANTE ESPECIALES', 'class="button-link yellow" style="position:relative; width:190px; height:20px;"');
+echo "<br/><br/>";
+echo anchor('a_surtido/tabla_sob_fal_esp', 'ESPECIALES', 'class="button-link yellow" style="position:relative; width:190px; height:20px;"');
 }
 ?>
 <?php

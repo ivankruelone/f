@@ -45,4 +45,17 @@
                     <?php echo form_close(); ?>
                     
                 </div>
+                
+                <div class="span6">
+                    <h3>Generar quincenas</h3>
+    
+                    <?php echo form_open('checador/calcula_tiempo_dias', array('id' => 'sanciones'))?>
+                    <fieldset>
+                       
+                        <input type="submit" name="submit" value="GENERAR" class="btn" />
+                        
+                    </fieldset>
+                    <?php echo form_close(); ?>
+                    
+                </div>
             </div>

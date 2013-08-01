@@ -105,7 +105,7 @@ where suc = ? and mov = 7 order by sec;";
     function detalle_suc_03($suc)
     {
         $sql = "SELECT i.*, descripcion FROM inv i
-left join facturacion.concepto s on i.codigo = s.ean
+left join desarrollo.catbackoffice s on i.codigo = s.ean
 where suc = ? and mov = 3 order by i.codigo;";
         return $this->db->query($sql, array($suc));
     }

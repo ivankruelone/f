@@ -192,6 +192,12 @@ $s14="insert into inv_cosvta (cia, suc, sem, aaaa, mes, lin, plaza, succ, import
 (select a.cia, a.suc, sem, aaaa, mes, a.lin,a.plaza, a.succ, sum(cos*cantidad) from inv_r a  where  sem=$sem group by sem,suc,lin)";
 $q14 = $this->db->query($s14);
 
+$s15="insert into inv_cosvta (cia, suc, sem, aaaa, mes, lin, plaza, succ, importe)
+(SELECT b.cia,a.suc,sem,aaa,mes,lin,plaza,suc_contable,sum(can*cos) FROM inv_almacenes a
+left join catalogo.sucursal b on b.suc=a.suc
+where  aaa=$aaa and sem=$sem group by aaa,sem,suc,lin)on duplicate key update aaaa=values(aaaa),
+mes=values(mes),importe=values(importe)";
+$q15 = $this->db->query($s15);
 
 $sqlx="select *from inv_cosvta where importe>0 and sem=$sem";
 $queryx = $this->db->query($sqlx);
@@ -3023,7 +3029,7 @@ set a.tipo=b.tipo2
 where a.suc=b.suc and a.tipo=' '";
 $this->db->query($sz1);
 $sz2="update vtadc.producto_mes_suc a, catalogo.almacen b
-set a.sec=b.sec
+set a.sec=b.sec,a.costo=b.costo
 where a.codigo=b.codigo and a.sec=0 and b.sec>0 and b.sec<=2000";
 $this->db->query($sz2);
 $sz2="insert into vtadc.producto_mes(
@@ -3106,9 +3112,9 @@ venta11=values(venta11),importe11=values(importe11),
 venta12=values(venta12),importe12=values(importe12)
 ";
 $this->db->query($lidia);
-$lidia1="update vtadc.producto_mes_suc_gen a, almacen.max_sucursal b
-set a.m2013=b.m2013,a.m2012=b.m2012,a.m2011=b.m2011,a.final=b.final
-where a.sec=b.sec and a.suc=b.suc";
+$lidia1="update vtadc.producto_mes_suc_gen a, catalogo.almacen b
+set a.costo=b.costo
+where a.sec=b.sec and b.sec>0 and b.sec<=2000 and tsec<>'M'";
 $this->db->query($lidia1);
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////grabar CONCENTRADOS EN DESPLAZAMIENTOS ESPECIFICOS DE DIRECCION
@@ -3802,7 +3808,7 @@ on duplicate key update inv=values(inv)"; $this->db->query($sc9);
 //AÑO ANTERIOR Y ACTUAC DEL FILTRO DE LAS 75 FARMACIAS SOLAMENTE.
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-$sc10="update vtadc.n_prox a,vtadc.n_prox_det_aaa_lab_cod b set
+$sc10="update vtadc.n_prox a,vtadc.n_prox_det_aaa_lab_cod1 b set
 a.venta_act_1=b.venta_act_1,
 a.venta_act_2=b.venta_act_2,
 a.venta_act_3=b.venta_act_3,

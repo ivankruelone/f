@@ -3159,6 +3159,22 @@ tipo=1 and puestox like 'JEFE MOSTRADOR%' and rfc like '$clave%'";
         return $aaa;  
     }
 /////////////////////////////////////////////////////
+    function busca_farmacia()
+    {
+        
+        $sql = "SELECT *from catalogo.cat_farmacia ";
+        $query = $this->db->query($sql);
+        
+        $var = array();
+        $var[0] = "Seleccion de farmacia";
+        
+        foreach($query->result() as $row){
+            $var[$row->tipo] = $row->nombre;
+        }
+        
+        return $var;  
+    }
+/////////////////////////////////////////////////////
     function busca_ord_dias()
     {
         

@@ -1205,7 +1205,7 @@ $dataz= array(
             'cia' =>$rowz1->cia,
             'plazanom'  =>$plazanom,
             'clave'  =>520,
-            'id_plza'=>$id_plazaa,
+            'id_plaza'=>$id_plazaa,
             'cianom' =>$cianom
             );
 $insert = $this->db->insert('desarrollo.fal_c', $dataz);

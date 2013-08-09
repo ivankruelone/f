@@ -180,7 +180,7 @@ class Contacto extends CI_Controller
         }else{
             
             $a = "
-            <p class=\"message-box error\">Error: $file - Este archivo ya existe.<br /> Si necesitas volver a subirlo comunicate al 91400700 ext. 112 &oacute; 170 &oacute; 677 con Laura Garcia &oacute; Fernando Hernandez.</p>
+            <p class=\"message-box error\">Error: $file - Este archivo ya existe.<br /> Si necesitas volver a subirlo comunicate al 91400700 ext. 166 con Laura Garcia.</p>
             ";
             
             echo $a;  

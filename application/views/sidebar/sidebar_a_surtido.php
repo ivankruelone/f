@@ -31,6 +31,7 @@ echo "<br/><br/><br/><br/>";
 echo anchor('a_surtido/captura_sob_fal_esp', 'SOBRANTE/FALTANTE ESPECIALES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo "<br/><br/>";
 echo anchor('a_surtido/tabla_sob_fal_esp', 'ESPECIALES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+
 }
 
 }

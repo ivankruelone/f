@@ -29,7 +29,7 @@
                         <td><?php echo $row->fec1; ?></td>
                         <td><?php echo $row->fec2; ?></td>
                         <td><?php echo $row->asunto; ?></td>
-                        <td><?php echo $l; ?></td>
+                        //<td><?php echo $l; ?></td>
                         <td><?php echo $l1; ?></td>
                     </tr>
                     

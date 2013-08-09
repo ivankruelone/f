@@ -1402,7 +1402,7 @@ $tot2=$tot2+($row->plantilla);
      $nivel= $this->session->userdata('nivel');
      $id= $this->session->userdata('id');
      $sql = "SELECT a.*,nombre,b.email,b.puesto
-from catalogo.sucursal_ger_sup a
+from catalogo.sucursal_ger_sup1 a
 left join usuarios b on b.plaza=a.superv and nivel=14
 	 where 
         regional=$gerente and b.activo=1 and nivel=14 
@@ -1556,14 +1556,17 @@ left join usuarios b on b.plaza=a.superv and nivel=14
 
     function ger_suc_par($plaza)
     {
+     
      $nivel= $this->session->userdata('nivel');
      $id= $this->session->userdata('id');
      $sql = "SELECT a.superv,a.regional,sum(a.plantilla)as plantilla,sum(numsuc)as numsuc,
      b.nombre,b.email,b.puesto,b.id as id_sup
-	 from catalogo.sucursal_ger_sup a
+	 from catalogo.sucursal_ger_sup1 a
 	 left join usuarios b on b.plaza=a.regional
 	 where  b.activo=1 and nivel=21 and a.regional=$plaza
     	 group by regional";
+  
+     
 	 $query = $this->db->query($sql);
         $tabla= "
         <table>

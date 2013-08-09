@@ -30,7 +30,7 @@ $sql="SELECT e.motivo as salarioo,aa.tipo as movv,a.*,b.nombre as sucx, d.nombre
 	  	$query = $this->db->query($sql);
     	
 }elseif($motivo==3){
-$sql="SELECT a.*,b.nombre as sucx, d.nombre as id_userx,d.puesto as contador,c.ciax, aa.nom,aa.pat,aa.mat,bb.nombre as motivox 
+$sql="SELECT a.*,b.nombre as sucx,aa.tipo as movv, d.nombre as id_userx,d.puesto as contador,c.ciax, aa.nom,aa.pat,aa.mat,bb.nombre as motivox 
       FROM mov_supervisor a
       left join catalogo.cat_empleado aa on aa.cia=a.cia and aa.nomina=a.nomina
       left join catalogo.cat_mov_super bb on bb.id=a.motivo
@@ -61,7 +61,7 @@ $tabla= "
         $num=0;
         foreach($query->result() as $row)
         {
-        if($row->salarioo=='RETENCION'){$color='orange';$movx='RETENCION';}
+        if($motivo==2  and $row->salarioo=='RETENCION' || $motivo==8 and $row->salarioo=='RETENCION'){$color='orange';$movx='RETENCION';}
         if($row->movv==2){$color='red';$movx='BAJA';}else{$movx='';$color='black';}
         
         

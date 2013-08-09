@@ -657,14 +657,14 @@ $data = array('paso'=>2);
      $sql = "SELECT a.*,c.mes as mesx,
 sum(
 case
-when a.auxi=7004  and pago='MN' then imp*iva
+when a.auxi=7004  and pago='MN' then (imp*iva)+imp
 when a.auxi=7003  and pago='MN' then imp+(imp*iva)-(imp*(isr/100))-(imp*(iva_isr/100))-(imp*(imp_cedular/100))+redondeo
 end
 )
 as total,
 sum(
 case
-when a.auxi=7004  and pago='USD' then imp*iva
+when a.auxi=7004  and pago='USD' then (imp*iva)+imp
 when a.auxi=7003  and pago='USD' then imp+(imp*iva)-(imp*(isr/100))-(imp*(iva_isr/100))-(imp*(imp_cedular/100))+redondeo
 end
 )

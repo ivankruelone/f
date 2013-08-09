@@ -45,12 +45,15 @@ $hoy=$aa.str_pad($mm,2,0,STR_PAD_LEFT).str_pad($dd,2,0,STR_PAD_LEFT);
 $this->load->helper('file');
 $id_user= $this->session->userdata('id');
 $sqlx="select a.*,sum(a.fal)as importe,b.puesto
-from faltante a 
+from faltante a
 left join usuarios b on b.id=a.id_user
 where
 
-a.fecpre='$fec1' and a.tipo=2  and a.nomina<99999990
-group by a.id_user,a.cianom, a.nomina,a.clave";
+a.fecpre='$fec1' and a.tipo=2  and a.nomina<99999990 and clave<>644
+or
+a.fecpre='$fec1' and a.tipo=2  and a.nomina<99999990 and a.clave=644 and a.id_plaza<>999
+group by a.id_user,a.cianom, a.nomina,a.clave
+order by clave";
 $queryx = $this->db->query($sqlx);
 if($queryx->num_rows() > 0){
     $File = "./txt/nomina.txt";

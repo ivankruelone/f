@@ -341,7 +341,7 @@ function agrega_c_usuario_supervisor()
     redirect('catalogo_ger/usuario_supervisor/'.$plaza);
     }else{
     $this->catalogo_model_ger->agrega_member_usuario_suc($plaza,$sup);
-    redirect('catalogo_ger/usuario_sucur/'.$id);
+    redirect('catalogo_ger/usuario_sucur/'.$plaza);
         
     }
     }

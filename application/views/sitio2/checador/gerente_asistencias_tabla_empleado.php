@@ -33,7 +33,7 @@
                         $a = array('0' => 'NO', '1' => 'SI');
                         
                         foreach($query->result() as $row){
-                        $tope=substr($etiqueta,0,5).str_pad((date('m')-1),2,'0',STR_PAD_LEFT).'-'.date('d');
+                        $tope=substr($etiqueta,0,5).str_pad((date('m')-7),2,'0',STR_PAD_LEFT).'-'.date('d');
                         $ini=substr($etiqueta,0,10);
                         ?>
                         <tr>

@@ -194,23 +194,8 @@ class A_surtido extends CI_Controller
         }    
  //////////////////////////////////////////////////////////////////////////////////////////            
     
-    public function tabla_sob_fal()
-    {   $data['mensaje']= '';
-        $data['titulo']= 'SOBRANTES Y/O FALTANTES FORMULADOS';
-        $data['titulo1']= '';
-        $this->load->model('a_surtido_model');
-        $data['tabla'] = $this->a_surtido_model->folios_sob_fal_tabla();
-
-		$data['contenido'] = "a_folio_sob_fal";
-        $data['selector'] = "a_surtido";
-        $data['sidebar'] = "sidebar_a_surtido";
-              
-        $this->load->view('header');
-        $this->load->view('main', $data);
-        $this->load->view('extrafooter');
-    }
     
-    public function tabla_sob_fal_esp()
+    public function tabla_sob_fal_espe()
     {   $data['mensaje']= '';
         $data['titulo']= 'SOBRANTES Y/O FALTANTES ESPECIALES';
         $data['titulo1']= '';
@@ -225,6 +210,72 @@ class A_surtido extends CI_Controller
         $this->load->view('main', $data);
         $this->load->view('extrafooter');
     }  
+    
+    public function tabla_sob_fal()
+    {   $data['mensaje']= '';
+        $data['titulo']= 'SOBRANTES Y/O FALTANTES FORMULADOS';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');
+       
+
+		$data['contenido'] = "reporte_folios";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }  
+    
+    function reporte_folios_submit()
+    {
+        ini_set('memory_limit','2000M');
+        set_time_limit(0);
+        $fecha1 = $this->input->post('fec1');
+        $fecha2 = $this->input->post('fec2');
+        
+        
+        $this->load->model('a_surtido_model');
+
+        $data['cabeza'] = $this->a_surtido_model->reporte_folio_encabezado($fecha1, $fecha2);
+        $data['detalle'] = $this->a_surtido_model->reporte_folio($fecha1, $fecha2);
+       
+        
+        $this->load->view('impresiones/reporte_folio', $data);
+    }
+    
+    public function tabla_sob_fal_esp()
+    {   $data['mensaje']= '';
+        $data['titulo']= 'SOBRANTES Y/O FALTANTES ESPECIAL';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');
+       
+
+		$data['contenido'] = "reporte_folios_esp";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }  
+    
+    function reporte_folios_esp_submit()
+    {
+        ini_set('memory_limit','2000M');
+        set_time_limit(0);
+        $fecha1 = $this->input->post('fec1');
+        $fecha2 = $this->input->post('fec2');
+        
+        
+        $this->load->model('a_surtido_model');
+
+        $data['cabeza'] = $this->a_surtido_model->reporte_folio_esp_encabezado($fecha1, $fecha2);
+        $data['detalle'] = $this->a_surtido_model->reporte_folio_esp($fecha1, $fecha2);
+       
+        
+        $this->load->view('impresiones/reporte_folio', $data);
+    }    
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1384,7 +1435,7 @@ public function tiket_captura($id)
         $data['tabla'] = '';
         
         
-        $data['titulo'] = "CAMBIAR MUEBLE DE HUBICACION";
+        $data['titulo'] = "CAMBIAR MUEBLE DE UBICACION";
         $data['titulo1'] = "";
         $data['contenido'] = "a_surtido_form_mue";
         $data['selector'] = "a_surtido_mue";

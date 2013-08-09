@@ -1775,6 +1775,8 @@ order by nombre, e.completo, fecha;";
 
     function reporte_vacas($id, $succ)
     {
+        $nivel = $this->session->userdata('nivel');
+        
         $s = "SELECT r.id, r.nomina, r.ciclo, DATE_FORMAT(r.fec1, '%d/%m/%Y') as fec1, DATE_FORMAT(r.fec3, '%d/%m/%Y') as fec3, DATE_FORMAT(r.fec_elab, '%d/%m/%Y %T') as fec_elab, r.dias, b.id_empleado, m.mes, c.succ, a.nombre as sucursal, c.completo as empleado 
         FROM reg_vacaciones r
         left join catalogo.cat_empleado c on r.nomina=c.nomina
@@ -1785,7 +1787,7 @@ order by nombre, e.completo, fecha;";
         ";
        
        $q = $this->db->query($s);
-       
+
        $s1 = "SELECT b.completo FROM catalogo.jefes_depto a
                 left join catalogo.cat_empleado b on b.id=a.id_empleado
                 where a.suc=$succ

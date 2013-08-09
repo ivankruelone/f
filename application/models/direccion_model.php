@@ -980,8 +980,162 @@ order by a.fechacorte
 
     }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function ver_ventas($aaa,$mes,$far,$tit)
+{
+ if($far=='FAR'){$condicion="a.suc>=1600 and a.suc<=1603  and a.tipo2<>'F'";
+ $archivo='producto_mes_suc';}
+ elseif($far=='GEN'){$condicion="a.suc>100 and a.suc<=1600  
+and a.suc<>171
+and a.suc<>172
+and a.suc<>173
+and a.suc<>174
+and a.suc<>175
+and a.suc<>176
+and a.suc<>177
+and a.suc<>178
+and a.suc<>179
+and a.suc<>180
+and a.suc<>181
+and a.suc<>187 and a.tipo2<>'F'";
+$archivo='producto_mes_suc';}
+ $var='venta'.$mes;
+ 
+        $id_user= $this->session->userdata('id');
+        $nivel= $this->session->userdata('nivel');
+ $fec=$aaa.'-'.str_pad($mes,2,'0',STR_PAD_LEFT);     
+       $s = "select date_format(fechacorte,'%Y-%m'),a.suc,a.nombre as sucx, fechacorte, sum(bb.siniva)as contado,
+
+(select sum(corregido) from cortes_c ac left join cortes_d cc on ac.id=cc.id_cc and clave1=20
+where ac.suc=a.suc and date_format(ac.fechacorte,'%Y-%m%')=date_format(aa.fechacorte,'%Y-%m%'))as recargas,
+
+(select sum(siniva) from cortes_c ac left join cortes_d cc on ac.id=cc.id_cc and clave1 in(30,40)
+where ac.suc=a.suc and date_format(ac.fechacorte,'%Y-%m%')=date_format(aa.fechacorte,'%Y-%m%'))as credito,
+
+(select sum(neto+com)  from nomina af where aaa=$aaa and mes=$mes and af.suc=a.suc group by af.suc)as nomina,
+
+(SELECT sum($var*costo) FROM vtadc.$archivo  where suc=a.suc group by suc)as costo,
+(select sum(case
+when ad.auxi=7004  and pago='MN' then (imp*iva)+imp
+when ad.auxi=7003  and pago='MN' then imp+(imp*iva)-(imp*(isr/100))-(imp*(iva_isr/100))-(imp*(imp_cedular/100))+redondeo
+when ad.auxi=7004  and pago='USD' then ((imp*iva)+imp)*tipo_cambio
+when ad.auxi=7003  and pago='USD' then (imp+(imp*iva)-(imp*(isr/100))-(imp*(iva_isr/100))-(imp*(imp_cedular/100))+redondeo)*tipo_cambio
+end)from  rentas ad where aaa=$aaa and mes=$mes  and ad.suc=a.suc group by ad.suc)as rentas
+
+from catalogo.sucursal a
+left join  cortes_c aa on  aa.suc=a.suc
+left join cortes_d bb on bb.id_cc=aa.id and bb.clave1>0 and bb.clave1<30 and bb.clave1<>20
+
+where tlid=1 and $condicion  and  date_format(fechacorte,'%Y-%m')='$fec'  
+group by a.suc
+";
 
 
+        $q = $this->db->query($s); 
+    
+       $tabla= "
+       
+        <table cellpadding=\"2\" border=\"0\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\">
+        <caption>$tit</caption>
+        <thead>
+        <tr>
+        <th colspan=\"1\">#</th>
+        <th colspan=\"1\">NID</th>
+        <th colspan=\"1\">SUCURSAL</th>
+        <th colspan=\"1\">RENTAS</th>
+        <th colspan=\"1\">NOMINA</th>
+        <th colspan=\"1\">IMPUESTOS <br />DE NOMINA</th>
+        <th colspan=\"1\">VARIOS<br />GASTOS</th>
+        <th colspan=\"1\">TOTAL<br />GASTOS</th>
+        <th colspan=\"1\">COSTO<br />DE PRODUCTOS</th>
+        <th colspan=\"1\">VENTA DE<br />CONTADO</th>
+        <th colspan=\"1\">CREDITO</th>
+        <th colspan=\"1\">UTILIDAD</th>
+        <th colspan=\"1\">UTILIDAD<br />RECARGA</th>
+        <th colspan=\"1\">PAGO</th>
+        
+        
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        $color='black';
+        $num=0;$tot1=0;$tot2=0;$tot3=0;$tot4=0;$tot5=0;$tot6=0;$tot7=0;$tot8=0;$tot9=0;$tot10=0;$tot11=0;
+         foreach($q->result() as $r)
+        {
+        $gastos=round(($r->rentas)+($r->nomina)+(($r->nomina)*.3)+(($r->contado)*.1),2);
+        $utilidad=round($r->credito+$r->contado-(($r->rentas)+($r->nomina)+(($r->nomina)*.27)+(($r->contado)*.1)+($r->costo)),2);
+        $ren=($r->rentas/$r->contado)*100;
+        $nom=($r->nomina/$r->contado)*100;
+        $nomi=(($r->nomina*.27)/$r->contado)*100;
+        $vari=1;
+        $gas=($gastos/($r->contado))*100;
+        $cos=($r->costo/$r->contado)*100;
+        $uti=($utilidad/($r->contado))*100;
+        $utir=($r->recargas*.06)/$r->contado;
+        
+        $num=$num+1; 
+        $pago=($r->contado+$r->recargas*.07)-$gastos;
+            
+            $tabla.="
+            <tr>
+            <td align=\"right\"><font size=\"1\" color=\"$color\">".$num."</font></td>
+            <td align=\"left\"><font size=\"1\" color=\"$color\">".$r->suc."</font></font></td>
+            <td align=\"left\"><font size=\"1\" color=\"$color\">".$r->sucx."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"orange\">% ".number_format($ren,2)."</font><br /><font size=\"1\" color=\"$color\">".number_format($r->rentas,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"orange\">% ".number_format($nom,2)."</font><br /><font size=\"1\" color=\"$color\">".number_format($r->nomina,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"orange\">% ".number_format($nomi,2)."</font><br /><font size=\"1\" color=\"$color\">".number_format(($r->nomina)*.3,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"orange\">% ".number_format($vari,2)."</font><br /><font size=\"1\" color=\"$color\">".number_format(($r->contado)*.1,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"orange\">% ".number_format($gas,2)."</font><br /><font size=\"1\" color=\"$color\">".number_format($gastos,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"orange\">% ".number_format($cos,2)."</font><br /><font size=\"1\" color=\"$color\">".number_format($r->costo,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"orange\"><br /><font size=\"1\" color=\"green\">".number_format($r->contado,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"orange\"><br /><font size=\"1\" color=\"green\">".number_format($r->credito,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"orange\">% ".number_format($uti,2)."</font><br /><font size=\"1\" color=\"blue\">".number_format($utilidad,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"orange\">% ".number_format($utir,2)."</font><br /><font size=\"1\" color=\"blue\">".number_format(($r->recargas*.057),2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"orange\"><br /><font size=\"1\" color=\"black\"><strong>".number_format($pago,2)."</strong></font></font></td>
+            </tr>
+            ";
+         $tot1=$tot1+$r->rentas;
+         $tot2=$tot2+$r->nomina;
+         $tot3=$tot3+($r->nomina)*.27;
+         $tot4=$tot4+($r->contado)*.1;
+         $tot5=$tot5+$gastos;
+         $tot6=$tot6+($r->costo);
+         $tot7=$tot7+$r->contado;  
+         $tot8=$tot8+$r->credito;   
+         $tot9=$tot9+$utilidad; 
+         $tot10=$tot10+($r->recargas*.06);
+         $tot11=$tot11+$pago;   
+         }
+         $tabla.="
+        </tbody>
+        <tfoot>
+            <tr>
+            <td align=\"right\" colspan=\"3\"><font size=\"1\" color=\"$color\"><strong>TOTAL</strong></font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color\"><strong>".number_format($tot1,2)."</strong></font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color\"><strong>".number_format($tot2,2)."</strong></font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color\"><strong>".number_format($tot3,2)."</strong></font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color\"><strong>".number_format($tot4,2)."</strong></font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color\"><strong>".number_format($tot5,2)."</strong></font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color\"><strong>".number_format($tot6,2)."</strong></font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color\"><strong>".number_format($tot7,2)."</strong></font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color\"><strong>".number_format($tot8,2)."</strong></font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color\"><strong>".number_format($tot9,2)."</strong></font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color\"><strong>".number_format($tot10,2)."</strong></font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color\"><strong>".number_format($tot11,2)."</strong></font></font></td>
+             </tr>
+        </tfoot>
+        </table>";
+        return $tabla;    
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 

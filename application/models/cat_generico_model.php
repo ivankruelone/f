@@ -226,6 +226,12 @@ $data = array(
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function catalogo_cat_compras(){
+$ss="load data infile 'c:/wamp/www/subir10/catprvw.txt' replace into table catalogo.cat_nuevo_general_prv FIELDS TERMINATED BY '||' LINES TERMINATED BY '\r\n'
+(tipo,codigo, prv,prvxx, costo, farmacia, publico, preferencia, clagob, sec, motivo)";
+$this->db->query($ss);
+$ss1="load data infile 'c:/wamp/www/subir10/catralw.txt' replace into table catalogo.cat_nuevo_general FIELDS TERMINATED BY '||' LINES TERMINATED BY '\r\n'
+(tipo,codigo, clagob, sec_cedis, susa, gramaje, contenido, presenta,lin, iva, marca_comercial, registro,fechareg, lab, ramo, motivo)";
+$this->db->query($ss1);
 $s1="load data infile 'c:/wamp/www/subir10/gen.gen' replace into table catalogo.almacen FIELDS TERMINATED BY '||' LINES TERMINATED BY '\r\n'
 (tsec,sec, susa1, susa2, prv, prvx, lin, sublin, costo, publico, farmacia, vtagen, vtaddr, codigo, clabo, maxbo, vtabo, mue,sim,metro)";
 $this->db->query($s1);

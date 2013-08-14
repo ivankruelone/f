@@ -20,7 +20,8 @@
     <option value="0" <?php if($var=="''") echo "Selected"?> >Seleccione una clasificacion</option>
     <option value="1" <?php if($var=="'a','b'") echo "Selected"?> >A y B</option>
     <option value="2" <?php if($var=="'a','b','c'") echo "Selected"?> >A,B y C </option>
-    <option value="3" <?php if($var=="'a','b','c'.'d'") echo "Selected"?> >A,B,C y D </option>
+    <option value="3" <?php if($var=="'a','b','c','d'") echo "Selected"?> >A,B,C y D </option>
+    <option value="4" <?php if($var=="'a','b','c','d','e'") echo "Selected"?> >A,B,C,D Y E </option>
     
     </select>
     </td>

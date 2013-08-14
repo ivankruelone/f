@@ -49,6 +49,7 @@ class Nacional extends CI_Controller
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $data['mensaje']= '';
         $this->load->model('catalogo_model');
         $tit= 'Maximo generado por producto '.$varx;
@@ -67,6 +68,7 @@ class Nacional extends CI_Controller
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $this->load->model('catalogo_model');
         $susa= $this->catalogo_model->busca_almacen_clasi_sec($sec);
         $tit= 'Maximo generado por producto '.$varx.'<br />'.$susa;
@@ -83,6 +85,7 @@ class Nacional extends CI_Controller
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $data['mensaje']= '';
         $this->load->model('catalogo_model');
         $numero=$this->catalogo_model->busca_almacen_clasi($var0);
@@ -101,6 +104,7 @@ class Nacional extends CI_Controller
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $this->load->model('catalogo_model');
         $sucx=$this->catalogo_model->busca_sucursal_una($suc);
         $data['mensaje']= '';
@@ -121,6 +125,7 @@ class Nacional extends CI_Controller
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $data['mensaje']= '';
         $this->load->model('catalogo_model');
         $numero=$this->catalogo_model->busca_almacen_clasi($var0);
@@ -147,6 +152,7 @@ class Nacional extends CI_Controller
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $data['mensaje']= '';
         $this->load->model('catalogo_model');
         $numero=$this->catalogo_model->busca_almacen_clasi($var0);
@@ -165,6 +171,7 @@ class Nacional extends CI_Controller
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $data['mensaje']= '';
         $this->load->model('catalogo_model');
         $numero=$this->catalogo_model->busca_almacen_clasi($var0);
@@ -873,6 +880,7 @@ class Nacional extends CI_Controller
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $data['mensaje']= '';
         $data['titulo']= 'Maximo generado por producto '.$varx;
         $this->load->model('nacional_model');
@@ -891,6 +899,7 @@ class Nacional extends CI_Controller
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $this->load->model('catalogo_model');
         $gerente = $this->catalogo_model->busca_gerente_reg($reg);
         $data['mensaje']= '';
@@ -912,6 +921,7 @@ class Nacional extends CI_Controller
 		if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $this->load->model('catalogo_model');
         if($nivel==21 || $nivel==9){
 		$gerente = $this->catalogo_model->busca_gerente_reg($reg);
@@ -955,6 +965,7 @@ class Nacional extends CI_Controller
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $data['mensaje']= '';
         $data['titulo']= 'Maximo generado por producto '.$varx;
         $this->load->model('nacional_model');
@@ -973,6 +984,7 @@ class Nacional extends CI_Controller
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $this->load->model('catalogo_model');
         $gerente = $this->catalogo_model->busca_gerente_reg($reg);
         
@@ -995,6 +1007,7 @@ class Nacional extends CI_Controller
 		if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $this->load->model('catalogo_model');
         if($nivel==21 || $nivel==9){
 		$gerente = $this->catalogo_model->busca_gerente_reg($reg);
@@ -1021,6 +1034,7 @@ class Nacional extends CI_Controller
 		if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $this->load->model('catalogo_model');
         if($nivel==21 || $nivel==9){
 		$gerente = $this->catalogo_model->busca_gerente_reg($reg);

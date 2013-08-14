@@ -413,7 +413,7 @@ $tabla.="
         $labo[0] = "Selecciona un Laboratorio";
         
         foreach($query->result() as $row){
-            $labo[$row->num] = $row->labor;
+            $labo[$row->num] = $row->labor.' - '.$row->num;
         }
         
         

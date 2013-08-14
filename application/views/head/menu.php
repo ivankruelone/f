@@ -161,7 +161,7 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
 <li<?php if(isset($selector) && $selector == "nacional_ven") echo " class=\"selected\"";?>><?php echo anchor('nacional/ventas', 'VENTAS');?></li>
 <li<?php if(isset($selector) && $selector == "nacional_mov") echo " class=\"selected\"";?>><?php echo anchor('nacional/indexm', 'MOVIMIENTOS');?></li>
 <li<?php if(isset($selector) && $selector == "calendario") echo " class=\"selected\"";?>><?php echo anchor('calendario/index', 'Calendario');?></li>          
-<li<?php if(isset($selector) && $selector == "campa") echo " class=\"selected\"";?>><?php echo anchor('direccion/index_compra', 'CAMPA&Ntilde;A');?></li>
+<li<?php if(isset($selector) && $selector == "campa") echo " class=\"selected\"";?>><?php echo anchor('direccion/tabla_ventas', 'RESULTADOS');?></li>
 <li<?php if(isset($selector) && $selector == "bitacora") echo " class=\"selected\"";?>><?php echo anchor('bitacora/index', 'Bitacora');?></li>
           
  </ul>

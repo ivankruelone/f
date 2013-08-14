@@ -544,6 +544,7 @@ public function corte_detalle($id_cc,$fec,$suc)
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         
 		$gerente = $this->session->userdata('nombre');
         $data['mensaje']= '';
@@ -584,6 +585,7 @@ public function corte_detalle($id_cc,$fec,$suc)
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $this->load->model('catalogo_model');
         $gerente = $this->session->userdata('nombre');
         

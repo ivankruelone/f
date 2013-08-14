@@ -167,6 +167,7 @@ class Contacto extends CI_Controller
                 copy('./archivos/'.$file, $movido_a.'inv/'.$file);
             }elseif(strtolower($verifica2) == 'rv'){
                 copy('./archivos/'.$file, $movido_a.'rv/'.$file);
+                
             }else{
                 copy('./archivos/'.$file, $movido_a.'otros/'.$file);
             }

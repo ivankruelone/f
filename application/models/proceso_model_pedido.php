@@ -173,6 +173,7 @@ $promeact=$row2->final;
 if($tip=='a'){$por=$por1;}elseif($tip=='b'){$por=$por2;}elseif($tip=='c'){$por=$por3;}elseif($tip=='d'){$por=$por4;}elseif($tip=='e'){$por=$por5;}else{$por=0;}
 if($promeact==0){$maxi=round($promeant*$por);}else{$maxi=round($promeact*$por);}
 if($maxi > $inv){$ped=$maxi-$inv;$exc=0;}else{$ped=0;$exc=$inv-$maxi;}
+
 if($paq > 0 and $ped>0){$ped=round(($ped/$paq),0)*$paq;}
 if($inv==0 & $ped==0 & $exc=0 & $paq>0){$ped=$paq;} 
 
@@ -303,6 +304,7 @@ $dianombre=date('D');
 $a='';
 $b='';
 $pag=0;
+
 //$dianombre='Wed';
 ini_set('memory_limit','15000M');
     set_time_limit(0);
@@ -386,11 +388,14 @@ $tip=0;
 }
 $promeant=0;
 $promeact=$row2->final;
-if($tip=='a'){$por=$por1;}elseif($tip=='b'){$por=$por2;}elseif($tip=='c'){$por=$por3;}elseif($tip=='d'){$por=$por4;}else{$por=0;}
+
+if($tip=='a'){$por=$por1;}elseif($tip=='b'){$por=$por2;}elseif($tip=='c'){$por=$por3;}elseif($tip=='d'){$por=$por4;}elseif($tip=='E'){$por=$por5;}else{$por=0;}
 if($promeact==0){$maxi=round($promeant*$por);}else{$maxi=round($promeact*$por);}
+$maxi=$promeact;
 if($maxi > $inv){$ped=$maxi-$inv;$exc=0;}else{$ped=0;$exc=$inv-$maxi;}
+
 if($paq > 0 and $ped>0){$ped=round(($ped/$paq),0)*$paq;}
-if($inv==0 & $ped==0 & $exc=0 & $pag>0){$ped=$paq;}
+if($inv==0 & $ped==0 & $exc=0 & $paq>0){$ped=$paq;}
 
 if($row->tipo2=='D'){$vta=$row2->vtaddr;}else{$vta=$row2->vtagen;}
        
@@ -456,6 +461,7 @@ $this->db->query($l0);
  foreach($q1->result() as $r1)
         {
         $suc=$r1->suc;
+        
         $a = $this->__arreglo_pedido_formulado($por1,$por2,$por3,$por4,$por5,$suc);
         $fec=date('Y-m-d');
         $b = "insert ignore into desarrollo.pedido_formulado (promant, fecg, tsuc, suc, sec, porce, descri, promact, 
@@ -464,9 +470,10 @@ $this->db->query($l0);
         foreach($a as $ped)
         {
             //id, cia, nomina, aaa1, aaa2, dias, aaa, dias_ley
-            
-            foreach($ped as $fin)
+              foreach($ped as $fin)
             {
+                
+        
                 $b .= "(".$fin['promeant'].",date(now()),'".$fin['tsuc']."',".$fin['suc'].",".$fin['sec'].",".$fin['por'].",
                 '".$fin['susa1']."',".$fin['promeact'].",".round($fin['promeact']*$fin['por'],2).",".$fin['inv'].",
                 ".$fin['ped'].",".$fin['exc'].",".$fin['costo'].",".$fin['venta'].",".$fin['venta']*$fin['ped'].",
@@ -641,7 +648,6 @@ foreach($aa1->result() as $bb)
 $cc="update pedido_formulado 
 set 
 producto=$num, 
-
 maxi =
 case when $num < 150
 then vta*$uno
@@ -805,7 +811,7 @@ $s1="insert into desarrollo.borra_ped_f(suc,si)
 from catalogo.sucursal a
 left join desarrollo.inv b on b.suc=a.suc and SUBDATE(date(now()),INTERVAL 2 DAY)<=fechai
 where a.suc<>170 and a.suc<>171 and a.suc<>173 and a.suc<>174 and a.suc<>175 and a.suc<>176 and a.suc<>177 and a.suc<>178
-and a.suc<>179 and a.suc<>180 and a.suc<>181 and a.suc<>1600 and a.suc<>1601 and a.suc<>1602 and a.suc<>1603
+and a.suc<>179 and a.suc<>180 and a.suc<>181 and a.suc<>187 and a.suc<>1600 and a.suc<>1601 and a.suc<>1602 and a.suc<>1603
 and dia='$ddd' and b.suc is null
 group by a.suc)
 on duplicate key update suc=values(suc)";

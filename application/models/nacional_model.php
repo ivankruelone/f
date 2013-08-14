@@ -18,6 +18,7 @@ var $is_logged_in;
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
 $uno=date('m')-3;
 $dos=date('m')-2;
 $tres=date('m')-1;
@@ -161,7 +162,7 @@ if($q2->num_rows()>0 ){$r2= $q2->row();
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
-        
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
 $base2='vtadc.producto_mes_suc'.(date('y')-1);  
 $uno=date('m')-3;
 $dos=date('m')-2;
@@ -378,6 +379,7 @@ $texi=$texi+($exi);
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
 $uno=date('m')-3;
 $dos=date('m')-2;
 $tres=date('m')-1;
@@ -629,6 +631,7 @@ $por=$por+($fin);
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
 $uno=date('m')-3;
 $dos=date('m')-2;
 $tres=date('m')-1;
@@ -825,6 +828,7 @@ $prome=round(($ceros*100)/$num,2);
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
 $uno=date('m')-3;
 $dos=date('m')-2;
 $tres=date('m')-1;
@@ -925,6 +929,7 @@ $etiqueta.="'".$rr->etiqueta."<br />".$rr->fecha."',";
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
 $uno=date('m')-3;
 $dos=date('m')-2;
 $tres=date('m')-1;
@@ -1171,6 +1176,7 @@ $por=$por+($fin);
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
 $uno=date('m')-3;
 $dos=date('m')-2;
 $tres=date('m')-1;
@@ -1804,6 +1810,7 @@ $num=0;
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $id_user= $this->session->userdata('id');
         $plaza= $this->session->userdata('plaza');
         $s="select d.nombre_e, b.regional,
@@ -1899,6 +1906,7 @@ $num=0;
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
 $uno=date('m')-3;
 $dos=date('m')-2;
 $tres=date('m')-1;
@@ -2082,6 +2090,8 @@ $t12=$t12+($r->venta12);
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
+        
 $uno=date('m')-3;
 $dos=date('m')-2;
 $tres=date('m')-1;
@@ -2258,6 +2268,7 @@ $t12=$t12+($r->venta12);
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $id_user= $this->session->userdata('id');
         $plaza= $this->session->userdata('plaza');
         $s="select d.nombre_e, b.regional,
@@ -2353,7 +2364,9 @@ $num=0;
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
 $uno=date('m')-3;
+
 $dos=date('m')-2;
 $tres=date('m')-1;
 $fec=date('Y-m-d');
@@ -2534,6 +2547,7 @@ $t12=$t12+($r->venta12);
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
 $uno=date('m')-3;
 $dos=date('m')-2;
 $tres=date('m')-1;
@@ -2572,7 +2586,7 @@ $num=0;
         </tr>
         <tr>
         <th colspan=\"4\"></th>
-        <th colspan=\"5\">Nuevo maximo aun no aplicado hasta autorizacion de Gerencia comercial</th>
+        <th colspan=\"5\">TODOS LOS MAXIMOS SON A 30 DIAS</th>
         </tr>
         <tr>
         <th>#</th>
@@ -2619,8 +2633,8 @@ $num=0;
          }else{$inv=0; $fechai='';}
          
          
-           if($r->tipo=='a'){$maxi=$r->final*1.5; $finalm=$r->final*1.5;}////45
-       	elseif($r->tipo=='b'){$maxi=$r->final*1.333333; $finalm=$r->final*1.333333;}////40
+           if($r->tipo=='a'){$maxi=$r->final*1; $finalm=$r->final*1;}////45
+       	elseif($r->tipo=='b'){$maxi=$r->final*1; $finalm=$r->final*1;}////40
        	elseif($r->tipo=='c'){$maxi=$r->final*1; $finalm=$r->final*1;}/////30
        	elseif($r->tipo=='d'){$maxi=$r->final*1; $finalm=$r->final*1;}/////30  
 		$num=$num+1;
@@ -2635,7 +2649,7 @@ $num=0;
             <td align=\"right\"><font color=\"red\">".number_format($r->m2012,0)."</font></td>
             <td align=\"right\"><font color=\"red\">".number_format($r->m2013,0)."</font></td>
             <td align=\"right\"><font color=\"red\">".number_format($r->final,0)."</font></td>
-            <td align=\"right\"><font color=\"red\">".number_format($finalm,0)."</font></td>
+            <td align=\"right\"><font color=\"green\">".number_format($finalm,0)."</font></td>
             <td align=\"right\">".number_format($r->venta1,0)."</td>
             <td align=\"right\">".number_format($r->venta2,0)."</td>
             <td align=\"right\">".number_format($r->venta3,0)."</td>
@@ -2697,6 +2711,7 @@ $t12=$t12+($r->venta12);
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
         $s0="select * from catalogo.sec_generica where sec=$sec"; 
         $q0=$this->db->query($s0);
         if($q0->num_rows()>0){
@@ -2762,6 +2777,7 @@ function control_desplaza_ab_ger_suc_nid_ped($var,$reg,$suc,$tit,$sucx)
         if($var==1){$varx='A y B';$var0="'a','b'";}
         if($var==2){$varx='A,B y C';$var0="'a','b','c'";}
         if($var==3){$varx='A,B,C y D';$var0="'a','b','c','d'";}
+        if($var==4){$varx='A,B,C,D y E';$var0="'a','b','c','d','e'";}
 $uno=date('m')-3;
 $dos=date('m')-2;
 $tres=date('m')-1;

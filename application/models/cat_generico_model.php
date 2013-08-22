@@ -75,6 +75,383 @@ where a.id = ? and a.sec= ?
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+ function especialidad($tit)
+    {
+     $sql = "select *from catalogo.cat_nuevo_general where esp='E' and clagob<>' ' group by clagob
+     order by clagob ";
+     $query = $this->db->query($sql);
+         $tabla= "
+        <table cellpadding=\"2\" border=\"1\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\" >
+        <caption>$tit</caption>
+        <thead>
+        <tr>
+        <th>#</th>
+        <th>Clave</th>
+        <th colspan=\"1\">Sustancia Activa</th>
+        <th>Codigo</th>
+        <th>Prv</th>
+        <th>Provedor</th>
+        <th>Costo</th>
+        <th>Preferencia</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        $color='blue';
+        $num=1;
+        foreach($query->result() as $row)
+        {
+         $tabla.="
+            <tr>
+            <td align=\"left\"><font color=\"$color\">".$num."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->clagob."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->susa." ".$row->gramaje." ".$row->contenido." ".$row->presenta."</font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            </tr>
+            ";
+            //die();
+        $s="select *from catalogo.cat_nuevo_general_prv where tipo='A' and clagob='$row->clagob'";
+        $q = $this->db->query($s);    
+        foreach($q->result() as $r)
+        {
+        $tabla.="    
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\">".$r->codigo."</font></td>
+            <td align=\"left\"><font color=\"green\">".$r->prv."</font></td>
+            <td align=\"left\"><font color=\"green\">".$r->prvxx."</font></td>
+            <td align=\"left\"><font color=\"green\">".number_format($r->costo,2)."</font></td>
+            <td align=\"left\"><font color=\"green\">".$r->preferencia."</font></td>
+            
+          </tr>
+            ";
+         }
+         $num=$num+1;
+        }
+        
+        $tabla.="
+        </tbody>
+          </table>";
+        
+        return $tabla;
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+ function general_sec($tit)
+    {
+     $sql = "select a.*,b.corto as prvx from catalogo.cat_nuevo_general_sec a left join catalogo.provedor b on b.prov=a.prv where  a.tipo='A'
+     order by sec ";
+     $query = $this->db->query($sql);
+         $tabla= "
+        <table cellpadding=\"2\" border=\"1\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\" >
+        <caption>$tit</caption>
+        <thead>
+        <tr>
+        <th>#</th>
+        <th>Sec</th>
+        
+        <th colspan=\"1\">Sustancia Activa</th>
+        <th>Prv</th>
+        <th>Provedor</th>
+        <th>Costo G</th>
+        <th>VTA GEN</th>
+        <th>VTA ddr</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        $color='blue';
+        $num=1;
+        foreach($query->result() as $row)
+        {
+        
+         $tabla.="
+            <tr>
+            <td align=\"left\"><font color=\"orange\">".$num."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->sec."</font></td>
+            <td align=\"left\"><font color=\"$color\">".trim($row->susa)." </font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->prv."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->prvx."</font></td>
+            <td align=\"left\"><font color=\"$color\">".number_format($row->cos,2)."</font></td>
+            <td align=\"left\"><font color=\"$color\">".number_format($row->gen,2)."</font></td>
+            <td align=\"left\"><font color=\"$color\">".number_format($row->ddr,2)."</font></td>
+            </tr>
+            ";
+         $num=$num+1;
+        }
+        
+        $tabla.="
+        </tbody>
+          </table>";
+        
+        return $tabla;
+    }
+////////////////////////////////////////////////////////////////////////////////////////////
+ function general_cla($tit)
+    {
+     $sql = "select a.*,b.corto as prvx from catalogo.cat_nuevo_general_cla a 
+     left join catalogo.provedor b on b.prov=a.prv where  a.tipo='A'
+     order by clagob ";
+     $query = $this->db->query($sql);
+         $tabla= "
+        <table cellpadding=\"2\" border=\"1\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\" >
+        <caption>$tit</caption>
+        <thead>
+        <tr>
+        <th>#</th>
+        <th>Sec</th>
+        
+        <th colspan=\"1\">Sustancia Activa</th>
+        <th>Prv</th>
+        <th>Provedor</th>
+        <th>Costo</th>
+        <th>Max.Che</th>
+        <th>Max.Agu</th>
+        <th>Max.Zac</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        $color='blue';
+        $num=1;
+        foreach($query->result() as $row)
+        {
+        
+         $tabla.="
+            <tr>
+            <td align=\"left\"><font color=\"orange\">".$num."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->clagob."</font></td>
+            <td align=\"left\"><font color=\"$color\">".trim($row->susa)." </font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->prv."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->prvx."</font></td>
+            <td align=\"left\"><font color=\"$color\">".number_format($row->cos,2)."</font></td>
+            <td align=\"left\"><font color=\"$color\">".number_format($row->max1,0)."</font></td>
+            <td align=\"left\"><font color=\"$color\">".number_format($row->max2,0)."</font></td>
+            <td align=\"left\"><font color=\"$color\">".number_format($row->max3,0)."</font></td>
+            </tr>
+            ";
+         $num=$num+1;
+        }
+        
+        $tabla.="
+        </tbody>
+          </table>";
+        
+        return $tabla;
+    }
+////////////////////////////////////////////////////////////////////////////////////////////
+ function general_registro($tit)
+    {
+     $sql = "select *from catalogo.cat_nuevo_general where  tipo='A'
+     order by susa,gramaje,contenido,presenta limit 10 ";
+     $query = $this->db->query($sql);
+         $tabla= "
+        <table cellpadding=\"2\" border=\"1\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\" >
+        <caption>$tit</caption>
+        <thead>
+        <tr>
+        <th>#</th>
+        <th>Codigo</th>
+        <th>Sec</th>
+        <th>Clave</th>
+        <th colspan=\"1\">Sustancia Activa</th>
+        <th>Laboratorio</th>
+        <th>Registro</th>
+        <th>Producto</th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        $color='blue';
+        $num=1;
+        foreach($query->result() as $row)
+        {
+        
+         $tabla.="
+            <tr>
+            <td align=\"left\"><font color=\"$color\">".$num."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->codigo."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->sec_cedis."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->clagob."</font></td>
+            <td align=\"left\"><font color=\"$color\">".trim($row->susa)." ".trim($row->gramaje)." ".trim($row->contenido)." ".trim($row->presenta)."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->lab."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->registro."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->ramo."</font></td>
+            <td><button id='upload_button_$row->id'>Registro</button></td>
+            </tr>
+            ";
+         $num=$num+1;
+        }
+        
+        $tabla.="
+        </tbody>
+
+         
+        ////////////////////////////////////////////////////
+<script src=\"<?php echo base_url();?>jquery-ui/minified/jquery.ui.position.min.js\"></script>
+<script src=\"<?php echo base_url();?>jquery-ui/minified/jquery.ui.button.min.js\"></script>
+<script src=\"<?php echo base_url();?>jquery-ui/minified/jquery.ui.dialog.min.js\"></script>
+<script src=\"<?php echo base_url();?>fenix2/js/AjaxUpload.2.0.min.js\"></script>
+   <script language=\"javascript\" type=\"text/javascript\">
+    $(document).on('ready\', inicio);
+	function inicio(){
+	   
+       
+	}
+    
+    $('button[id^=\"upload_button_\"]').on(\"click\", comprobante);
+    
+    function comprobante(datos)
+    {
+        var $boton = datos.currentTarget.attributes.id.value;
+        var $variables = $boton.split('_');
+        $id = $variables[2];
+        sube($boton, $id);
+    }
+    
+    function sube($boton, $id){
+       	var button = $('#' + $boton), interval;
+    	new AjaxUpload('#' + $boton, {
+            action: '<?php echo site_url();?>/checador/upload_registro/' + $id,
+    		onSubmit : function(file , ext){
+    		if (! (ext && /^(png|jpg|gif)$/.test(ext))){
+    			alert('Error: Solo se permiten .jpg, .png, .gif');
+    			return false;
+    		} else {
+    			button.text('Subiendo el  archivo. Espere un momento por favor...');
+    			this.disable();
+    		  }
+    		},
+    		onComplete: function(file, response){
+    			button.text('Comprobante');
+    			this.enable();
+    		}	
+    
+    	});
+    }
+</script>
+   </table>";     
+        return $tabla;
+    
+    
+    
+    
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+function nombre_comprobante($id)
+    {
+        $this->load->helper('string');
+        $sql = "SELECT max(SUBSTRING_INDEX(imagen, '.', 1)) as imagen_alt FROM compras.comprobantes_registros c where c_id = ?;";
+        $query = $this->db->query($sql, $id);
+        
+        if($query->num_rows() > 0)
+        {
+            $row = $query->row();
+            if($row->imagen_alt == null){
+                return $id;
+            }else{
+                return increment_string($row->imagen_alt);
+            }
+        }else{
+            return $id;
+        }
+        
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ function general($tit)
+    {
+     $sql = "select *from catalogo.cat_nuevo_general where  tipo='A'
+     order by susa,gramaje,contenido,presenta ";
+     $query = $this->db->query($sql);
+         $tabla= "
+        <table cellpadding=\"2\" border=\"1\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\" >
+        <caption>$tit</caption>
+        <thead>
+        <tr>
+        <th>#</th>
+        <th>Sec</th>
+        <th>Clave</th>
+        <th colspan=\"1\">Sustancia Activa</th>
+         <th>Codigo</th>
+        <th>Laboratorio</th>
+        <th>Registro</th>
+        <th>Producto</th>
+        <th>Prv</th>
+        <th>Provedor</th>
+        <th>Costo</th>
+        <th>Preferencia</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        $color='blue';
+        $num=1;
+        foreach($query->result() as $row)
+        {
+        
+         $tabla.="
+            <tr>
+            <td align=\"left\"><font color=\"$color\">".$num."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->sec_cedis."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->clagob."</font></td>
+            <td align=\"left\"><font color=\"$color\">".trim($row->susa)." ".trim($row->gramaje)." ".trim($row->contenido)." ".trim($row->presenta)."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->codigo."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->lab."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->registro."</font></td>
+            
+            <td align=\"left\"><font color=\"$color\">".$row->ramo."</font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            </tr>
+            ";
+            //die();
+        $s="select *from catalogo.cat_nuevo_general_prv where tipo='A' and codigo='$row->codigo'";
+        $q = $this->db->query($s);    
+        foreach($q->result() as $r)
+        {
+        $tabla.="    
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\">".$r->prv."</font></td>
+            <td align=\"left\"><font color=\"green\">".$r->prvxx."</font></td>
+            <td align=\"left\"><font color=\"green\">".$r->costo."</font></td>
+            <td align=\"left\"><font color=\"green\">".$r->preferencia."</font></td>
+            
+          </tr>
+            ";
+         }
+         $num=$num+1;
+        }
+        
+        $tabla.="
+        </tbody>
+          </table>";
+        
+        return $tabla;
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
  function sec_generico()
     {
      $sql = "select *from catalogo.compras_sec";
@@ -230,7 +607,7 @@ $ss="load data infile 'c:/wamp/www/subir10/catprvw.txt' replace into table catal
 (tipo,codigo, prv,prvxx, costo, farmacia, publico, preferencia, clagob, sec, motivo)";
 $this->db->query($ss);
 $ss1="load data infile 'c:/wamp/www/subir10/catralw.txt' replace into table catalogo.cat_nuevo_general FIELDS TERMINATED BY '||' LINES TERMINATED BY '\r\n'
-(tipo,codigo, clagob, sec_cedis, susa, gramaje, contenido, presenta,lin, iva, marca_comercial, registro,fechareg, lab, ramo, motivo)";
+(tipo,codigo, clagob, sec_cedis, susa, gramaje, contenido, presenta,lin, iva, marca_comercial, registro,fechareg, lab, ramo, motivo,esp)";
 $this->db->query($ss1);
 $s1="load data infile 'c:/wamp/www/subir10/gen.gen' replace into table catalogo.almacen FIELDS TERMINATED BY '||' LINES TERMINATED BY '\r\n'
 (tsec,sec, susa1, susa2, prv, prvx, lin, sublin, costo, publico, farmacia, vtagen, vtaddr, codigo, clabo, maxbo, vtabo, mue,sim,metro)";
@@ -374,7 +751,68 @@ if($q2->num_rows() > 0){$antibio='S';}else{$antibio='N';}
 fclose($Handle);
 }
  
-//////////////////////////////////////////////////////////////////////////catalogo de farmabodega
+///////////////////////////////////////////////////////////////////////////tracli2
+///////////////////////////////////////////////////////////////////////////tracli2
+///////////////////////////////////////////////////////////////////////////tracli2
+$aaa=date('Y');  
+$this->load->helper('file');
+$id_user= $this->session->userdata('id');
+$linea=null;
+$tipo0='CTP';
+$ss="update  vtadc.tarjetas
+set vigencia=date_add(venta,interval 1 year)
+where tipo=1 and date_format(venta,'%Y')=$aaa";
+$s="select *from catalogo.cat_tarjetas";
+$q = $this->db->query($s);
+foreach($q->result() as $r)
+{
+$linea.=
+     str_pad($tipo0,3)
+    .str_pad($r->num,13,"0",STR_PAD_LEFT)
+    .str_pad($r->nombre,30)
+    .str_pad($r->descuento,6,"0",STR_PAD_LEFT)
+    .str_pad($r->dias,5,"0",STR_PAD_LEFT)
+    .str_pad($r->costo,12,"0",STR_PAD_LEFT)
+    .str_pad($r->renova,12,"0",STR_PAD_LEFT)
+    .str_pad($r->desren,6,"0",STR_PAD_LEFT)
+    .str_pad($r->aviso,5,"0",STR_PAD_LEFT)
+    .str_pad($r->folpre,1,"0",STR_PAD_LEFT)
+    ."\n";    
+}
+$tipo='NTP';
+$sqlx="select *from vtadc.tarjetas where tipo=1 ORDER BY SUC";
+$queryx = $this->db->query($sqlx);
+foreach($queryx->result() as $rowx)
+{
+$aaa=substr($rowx->vigencia,0,4);
+$mes=substr($rowx->vigencia,5,2);
+$dia=substr($rowx->vigencia,8,2);
+$vigencia=$aaa.str_pad($mes,2,"0",STR_PAD_LEFT).str_pad($dia,2,"0",STR_PAD_LEFT);
+$linea.=
+     str_pad($tipo,3)
+    .str_pad($rowx->suc,8,"0",STR_PAD_LEFT)
+    .str_pad($rowx->tipo,13,"0",STR_PAD_LEFT)
+    .str_pad($rowx->codigo,13,"0",STR_PAD_LEFT)
+    .str_pad($vigencia,8,"0",STR_PAD_LEFT)
+    ."\n";
+}
+if ( ! write_file('./txt/TRACLI2.txt', $linea))
+{
+    $mensaje=2;
+}
+
+///////////////////////////////////////////////////////////////////////////tracli2
+///////////////////////////////////////////////////////////////////////////tracli2
+///////////////////////////////////////////////////////////////////////////tracli2
+//////////////////////////////////////////////////////////////////////////
+$zip = new ZipArchive;
+if ($zip->open('E:\pdvsube\pasucursales\arcenv.zip') === TRUE) {
+$zip->addFile('./txt/TRACLI2.txt', 'TRACLI2.txt');
+$zip->close();
+echo 'ok';
+} else {
+echo 'failed';
+}
 $zip = new ZipArchive;
 if ($zip->open('E:\pdvsube\pasucursales\arcenv.zip') === TRUE) {
 $zip->addFile('./txt/catbod.txt', 'catbod.txt');

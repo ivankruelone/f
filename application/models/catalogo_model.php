@@ -2523,6 +2523,24 @@ $detalle.="
         return $suc;  
     }
 /////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+    function busca_sucursal_toda()
+    {
+        
+        $sql = "SELECT suc,nombre FROM  catalogo.sucursal where  tlid=1 or suc>=90006 order by nombre"; 
+        $query = $this->db->query($sql,array($this->session->userdata('id')));
+        
+        $suc = array();
+        $suc[0] = "Selecciona una Sucursal";
+        
+        foreach($query->result() as $row){
+            $suc[$row->suc] = $row->nombre;
+        }
+        
+        
+        return $suc;  
+    }
 /////////////////////////////////////////////////////  
     function busca_sucursal_supervisor($plaza)
     {

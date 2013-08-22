@@ -12,6 +12,8 @@ echo anchor('cat_generico/tabla_catalogo_segpop', 'SEGPOP', 'class="button-link 
 echo ('<br /><br />');
 echo anchor('catalogo_ger/tabla_farmabodega', 'CATALOGO DE FARMABODEGA', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo ('<br /><br />');
+echo anchor('cat_generico/tabla_catalogo_espe', 'CATALOGO DE ESPECIALIDAD', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo ('<br /><br />');
 }
 
 	$this->load->view('sidebar/login');

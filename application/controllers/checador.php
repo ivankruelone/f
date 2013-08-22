@@ -536,6 +536,31 @@ class Checador extends CI_Controller
         $this->load->view('site2', $data);
     }
     
+    public function admin_incidencias_elige_quincena()
+    {
+        $data['vista'] = 'sitio2/checador/admin_incidencias_elige_gerente';
+        $data['menu'] = 'reportes';
+        $data['quincenas'] = $this->checador_model->get_quincenas();
+        $this->load->view('site2', $data);
+    }
+
+    public function reporte_incidencias_gerente()
+    {
+        $quincena = $this->input->post('quincena');
+        $periodo = $this->checador_model->get_quincena($quincena);
+        $data['vista'] = 'sitio2/checador/admin_incidencias_reporte';
+        $data['menu'] = 'reportes';
+
+        $row_periodo = $periodo->row();
+        $data['perini'] = $row_periodo->inicio;
+        $data['perfin'] = $row_periodo->fin;
+        $data['quincena'] = $quincena;
+        $data['query'] = $this->checador_model->reporte_incidencias_faltas($row_periodo->inicio, $row_periodo->fin);
+        $data['query2'] = $this->checador_model->reporte_incidencias_retardos($row_periodo->inicio, $row_periodo->fin);
+        $data['etiqueta'] = "Reporte de incidencias del periodo del $row_periodo->inicio al $row_periodo->fin.";
+        $this->load->view('site2', $data);
+    }
+
     public function reporte_justificaciones_gerente()
     {
         $quincena = $this->input->post('quincena');

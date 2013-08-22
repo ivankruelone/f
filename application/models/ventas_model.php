@@ -1657,7 +1657,7 @@ $lp = anchor('supervisor/venta_producto_naturistas_premio/'.$fec,'PREMIOS</a>', 
   foreach($qm->result() as $rm)
         {
       
-       if($rm->comision>=300){
+       if($rm->imp_menos_iva_menos_cancela>=3000){
        
 $f="insert into desarrollo.comision_ctl(suc, fecha, importe, tipo, motivo, ger, sup, comision,base,medico)values
 ($rm->suc,'$fec','$rm->imp_menos_iva_menos_cancela','A','comision',$rm->regional,$rm->superv,'$rm->comision',0,'S')
@@ -2271,7 +2271,7 @@ group by a.suc
     {
         
         $s="select a.* from comision_det a where suc=$suc and fecha='$fec' and motivo='comision' order by puestox";
-        echo    "select a.* from comision_det a where suc=$suc and fecha='$fec' and motivo='comision' order by puestox";
+       // echo    "select a.* from comision_det a where suc=$suc and fecha='$fec' and motivo='comision' order by puestox";
  		$q = $this->db->query($s);
         
         $num=0;

@@ -31,7 +31,7 @@
                         $retardos = 0;
                         $justificadas = 0;
                         $a = array('0' => 'NO', '1' => 'SI');
-                        $tope=substr($etiqueta,0,5).str_pad((date('m')-7),2,'0',STR_PAD_LEFT).'-'.date('d');
+                        $tope=substr($etiqueta,0,5).str_pad((date('m')-1),2,'0',STR_PAD_LEFT).'-'.date('d');
                         $ini=substr($etiqueta,0,8);
                         
                         foreach($query->result() as $row){
@@ -49,9 +49,10 @@
                             <td style="text-align: center;" id="in_justificada_<?php echo $row->id_registro; ?>"><?php echo $a[$row->justificada]; ?></td>
                             <td id="in_motivo_<?php echo $row->id_registro; ?>"><?php echo $row->motivo; ?></td>
                             <td id="in_link_<?php echo $row->id_registro; ?>">
-                            
+                        
                             <?php 
-                            if($tope<$ini & $this->session->userdata('tipo')== 0 ){
+                            $tope=0;
+                            if($tope<$ini & $this->session->userdata('tipo')== 0 and $tope>0){
                             if($row->falta == 1 || $row->retardo == 1 ){
                                 
                                 if($row->justificada == 0 ){

@@ -599,6 +599,7 @@ where ? between fec1 and fec2 and validado = 1;";
     function gerente_justificar_guarda()
     {
         $this->db->where('id', $this->input->post('id'));
+        $this->db->set('fecha_justifica', 'now()', false);
         $a = array('motivo' => $this->input->post('motivo'), 'justificada' => 1, 'id_justifica' => $this->session->userdata('id'));
         $this->db->update('checador_asistencia', $a);
         
@@ -608,7 +609,8 @@ where ? between fec1 and fec2 and validado = 1;";
     function gerente_justificar_quita($id)
     {
         $this->db->where('id', $id);
-        $a = array('motivo' => '', 'justificada' => 0);
+        $a = array('motivo' => '', 'justificada' => 0, 'id_justifica' => $this->session->userdata('id'));
+        $this->db->set('fecha_justifica', 'now()', false);
         $this->db->update('checador_asistencia', $a);
         
         return $this->db->affected_rows();
@@ -3057,6 +3059,38 @@ order by s.nombre;";
         }
         
     }
+    
+    function reporte_incidencias_faltas($perini, $perfin)
+    {
+        $sql = "SELECT e.cia, razon, succ, nombre, e.nomina, e.completo, count(*) as faltas
+FROM checador_asistencia c
+left join catalogo.cat_empleado e on c.empleado_id = e.id
+left join catalogo.sucursal s on e.succ = s.suc
+left join catalogo.compa o on e.cia = o.cia
+where c.fecha between ? and ? and e.tipo = 1 and e.checa = 1 and justificada = 0 and falta = 1
+group by e.nomina
+order by cia, succ, completo;";
 
+        $query = $this->db->query($sql, array($perini, $perfin));
+        
+        return $query;
+    }
+
+    function reporte_incidencias_retardos($perini, $perfin)
+    {
+        $sql = "SELECT e.cia, razon, succ, nombre, e.nomina, e.completo, floor(sum(retardo)/3) as retardos
+FROM checador_asistencia c
+left join catalogo.cat_empleado e on c.empleado_id = e.id
+left join catalogo.sucursal s on e.succ = s.suc
+left join catalogo.compa o on e.cia = o.cia
+where c.fecha between ? and ? and e.tipo = 1 and e.checa = 1 and justificada = 0 and retardo = 1
+group by empleado_id
+having retardos >= 1
+order by succ, completo;";
+
+        $query = $this->db->query($sql, array($perini, $perfin));
+        
+        return $query;
+    }
 
 }

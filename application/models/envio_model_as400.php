@@ -16,8 +16,46 @@ $as="update  pedidos a, catalogo.almacen b set a.lin=b.lin where a.sec=b.sec and
 $this->db->query($as);
 
 $sqlx="SELECT b.cia,34 as pol,date_format(fechasur,'%Y')as aaa,date_format(fechasur,'%m')as mes,a.costo,sum(sur*costo)as bb,
-date_format(fechasur,'%d')as dia, b.plaza,b.suc_contable,a.lin,a.iva,
-a.suc
+date_format(fechasur,'%d')as dia, b.plaza,b.suc_contable,a.lin,b.iva,
+a.suc,
+
+case when b.cia=13
+then sum(sur*costo)
+else
+sum(sur*costo)*1.15
+end as sub,
+
+case when a.lin=5 or a.lin=2
+then (
+(case when b.cia=13
+then sum(sur*costo)
+else
+sum(sur*costo)*1.15
+end)
+*b.iva)
+else
+0
+end as ivaimp,
+
+
+
+(case when b.cia=13
+then sum(sur*costo)
+else
+sum(sur*costo)*1.15
+end)+(case when a.lin=5 or a.lin=2
+then (
+(case when b.cia=13
+then sum(sur*costo)
+else
+sum(sur*costo)*1.15
+end)
+*b.iva)
+else
+0
+end)
+as total
+
 FROM  PEDIDOS a
 left join catalogo.sucursal b on b.suc=a.suc
 WHERE a.SUC>100  AND DATE_FORMAT(FECHASUR,'%Y-%m')='$fecha' and sur>0 
@@ -33,12 +71,15 @@ if($queryx->num_rows() > 0){//cia, suc, sem, aaaa, mes, lin, plaza, succ, import
 $cero=0;
 foreach($queryx->result() as $rowx)  
 {
-if($rowx->cia==13){$sub=$rowx->bb;}else{$sub=$rowx->bb*1.15;}
-if($rowx->lin==2 || $rowx->lin==5){$iva=$sub*$rowx->iva;}else{$iva=0;}
-$subx=round($sub*100);
-$ivax=round($iva*100);
-$tot=round($sub*100)+round($iva*100);
-echo $subx.'suc-'.$ivax.'-'.'<br />';   
+    
+
+$subx=round($rowx->sub*100);
+$ivax=round($rowx->ivaimp*100);
+$tot=round($rowx->total*100);
+
+
+
+echo $subx.' suc-'.$ivax.'-'.$rowx->suc.'<br />';   
 $Data=
          str_pad($rowx->cia,2,"0",STR_PAD_LEFT)
         .str_pad($rowx->pol,7,"0",STR_PAD_LEFT)
@@ -57,13 +98,15 @@ $Data=
         .str_pad($rowx->suc,8,"0",STR_PAD_LEFT)
         ."\r\n";
     //echo $linea;
+    
     fwrite($Handle, $Data);
 }
+
 fclose($Handle); 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+//die();
 $servidor_ftp    = "10.10.0.5";
 $ftp_nombre_usuario = "lidia";
 $ftp_contrasenya = "puepue19";
@@ -88,7 +131,6 @@ fclose($da);
 }
   
     return $mensaje; 
-    
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +139,45 @@ public function poliza_almacen_exel($fecha)
 
 
 $sqlx="SELECT b.cia,34 as pol,date_format(fechasur,'%Y')as aaa,date_format(fechasur,'%m')as mes,
-a.costo,sum(sur*costo)as bb, b.plaza,b.suc_contable,a.lin,a.iva,
+a.costo,
+
+case when b.cia=13
+then sum(sur*costo)
+else
+sum(sur*costo)*1.15
+end as sub,
+
+case when a.lin=5 or a.lin=2
+then (
+(case when b.cia=13
+then sum(sur*costo)
+else
+sum(sur*costo)*1.15
+end)
+*b.iva)
+else
+0
+end as ivaimp,
+
+
+
+(case when b.cia=13
+then sum(sur*costo)
+else
+sum(sur*costo)*1.15
+end)+(case when a.lin=5 or a.lin=2
+then (
+(case when b.cia=13
+then sum(sur*costo)
+else
+sum(sur*costo)*1.15
+end)
+*b.iva)
+else
+0
+end)
+as total,
+sum(sur*costo)as bb, b.plaza,b.suc_contable,a.lin,a.iva,
 a.suc,a.sec,a.vta,a.susa,b.nombre,sum(sur)as sur
 FROM  PEDIDOS a
 left join catalogo.sucursal b on b.suc=a.suc
@@ -185,11 +265,11 @@ $Data=
         .str_pad($corte,1," ",STR_PAD_LEFT)
         .str_pad($rowx->sur,7,"0",STR_PAD_LEFT)
         .str_pad($corte,1," ",STR_PAD_LEFT)
-        .str_pad($subx,15,"0",STR_PAD_LEFT)
+        .str_pad($rowx->sub,15,"0",STR_PAD_LEFT)
         .str_pad($corte,1," ",STR_PAD_LEFT)
-        .str_pad($ivax,15,"0",STR_PAD_LEFT)
+        .str_pad($rowx->ivaimp,15,"0",STR_PAD_LEFT)
         .str_pad($corte,1," ",STR_PAD_LEFT)
-        .str_pad($tot,15,"0",STR_PAD_LEFT)
+        .str_pad($rowx->total,15,"0",STR_PAD_LEFT)
         .str_pad($corte,1," ",STR_PAD_LEFT)
         .str_pad($sub_vtax,15,"0",STR_PAD_LEFT)
         .str_pad($corte,1," ",STR_PAD_LEFT)

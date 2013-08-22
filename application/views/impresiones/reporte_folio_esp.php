@@ -76,27 +76,7 @@ $tbl = <<<EOD
 $detalle
 EOD;
 $pdf->writeHTML($tbl, true, false, false, false, '');
-$tbl = <<<EOD
-$detalle1
-EOD;
-$pdf->AddPage();
-$pdf->writeHTML($tbl, true, false, false, false, '');
-$tbl = <<<EOD
-$detalle2
-EOD;
-$pdf->AddPage();
-$pdf->writeHTML($tbl, true, false, false, false, '');
-$tbl = <<<EOD
-$detalle3
-EOD;
-$pdf->AddPage();
-$pdf->writeHTML($tbl, true, false, false, false, '');
 
-$tbl = <<<EOD
-$detalle4   
-EOD;
-$pdf->AddPage();
-$pdf->writeHTML($tbl, true, false, false, false, '');
 
 //Close and output PDF document
 $pdf->Output('pedido.pdf', 'I');

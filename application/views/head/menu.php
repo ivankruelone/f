@@ -628,12 +628,22 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
       </div>      
       
 <?php
+    }elseif($nivel == 57){
+?>
+
+    <div id="menubar">
+        <ul id="menu">
+        <li<?php if(isset($selector) && $selector == "catalogo") echo " class=\"selected\"";?>><?php echo anchor('compras/index_lote', 'MEDICAMENTO POR LOTE');?></li>
+        
+      </div>      
+      
+<?php
     }elseif($nivel == 98){
 ?>
 
     <div id="menubar">
         <ul id="menu">
-          <li<?php if(isset($selector) && $selector == "cortes") echo " class=\"selected\"";?>><?php echo anchor('cor_cortes', 'Cortes');?></li>
+          <li<?php if(isset($selector) && $selector == "reportes") echo " class=\"selected\"";?>><?php echo anchor('sistemas', 'REPORTES');?></li>
     </ul>
       </div>
 

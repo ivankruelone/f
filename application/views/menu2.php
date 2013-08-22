@@ -64,6 +64,7 @@ $id = $this->session->userdata('id');
                                     <li><?php echo anchor('checador/imprime_entrega_usuarios', 'Entrega usuarios', array('target' => '_blank'));?></li>
                                     <li><?php echo anchor('checador/admin_justificaciones_elige_quincena_concentrado', 'Justificaciones concentrado');?></li>
                                     <li><?php echo anchor('checador/admin_justificaciones_elige_quincena', 'Justificaciones detalle');?></li>
+                                    <li><?php echo anchor('checador/admin_incidencias_elige_quincena', 'Incidencias por quincena');?></li>
                                 </ul>
                             </li>
                             <li <?php if($menu == 'Vacaciones'){?>class="dropdown active" <?php }else{?> class="dropdown"<?php }?>>

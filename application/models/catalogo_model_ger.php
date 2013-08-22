@@ -1251,13 +1251,13 @@ $totpla=$totpla+($row->plantilla);
     $s = "SELECT a.*, b.farmacia 
 	from catalogo.cat_empleado a
 	left join catalogo.cat_puesto b on b.puesto=a.puestox 
-	where a.succ= ? and a.tipo=1 and b.farmacia='S'  
+	where a.succ= ? and a.tipo=1 and b.farmacia='S' 
 	order by puestox,nomina";
     $q = $this->db->query($s,array($row->suc));
    
     foreach($q->result() as $r)
         {
-        $ss="select *from catalogo.cat_alta_empleado where empleado=$r->nomina and motivo='RETENCION'";
+        $ss="select *from catalogo.cat_alta_empleado where empleado=$r->nomina and motivo='RETENCION' and id_causa<>7 ";
         $qq = $this->db->query($ss);
         if( $qq->num_rows()>0){$color='red';$ret='RETENCION';}else{$color='black';$ret='';}      
          

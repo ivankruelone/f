@@ -18,8 +18,12 @@ $nuevafecha = strtotime ( '-15 day' , strtotime ( $fecha ) ) ;
 $nuevafecha = date ( 'Y-m-d' , $nuevafecha );
 
    	$sql = "SELECT count(*) as cuenta from almacen.compraped  
-        where folprv= ? and tipo='alm' and tipo3='C' and fece>='$nuevafecha'";
-        $query = $this->db->query($sql,array($orden));
+        where folprv= ? and tipo='alm' and tipo3='C' and fece>='$nuevafecha'
+        or 
+        folprv= ? and tipo='ban' and tipo3='C'
+        or 
+        folprv= ? and tipo='met' and tipo3='C'";
+        $query = $this->db->query($sql,array($orden,$orden,$orden));
         $row = $query->row();
       
         return $row->cuenta;
@@ -34,8 +38,12 @@ $nuevafecha = date ( 'Y-m-d' , $nuevafecha );
 		folprv= ? and tipo='alm' and tipo3='C' and cans >= aplica
 		or
 		folprv= ? and tipo='alm' and tipo3='C' and metrom >= aplica
+        or
+        folprv= ? and tipo='ban' and tipo3='C' and cans >= aplica
+		or
+		folprv= ? and tipo='ban' and tipo3='C' and metrom >= aplica
 		";
-        $query = $this->db->query($sql,array($orden,$orden));
+        $query = $this->db->query($sql,array($orden,$orden,$orden,$orden));
         //echo $this->db->last_query();
         return $query;
     }
@@ -208,7 +216,11 @@ $nuevafecha = date ( 'Y-m-d' , $nuevafecha );
          $re= $qe->row();   
          $sec=$re->sec;
             
-        $s = "SELECT * FROM almacen.compraped where folprv=$orden and sec=$sec and  cans>0 and tipo='alm' ";
+        $s = "SELECT * FROM almacen.compraped where 
+        folprv=$orden and sec=$sec and  cans>0 and tipo='alm' 
+        or
+        folprv=$orden and sec=$sec and  cans>0 and tipo='ban'
+        ";
         $q = $this->db->query($s);  
         if($q->num_rows() >0){ 
             $r= $q->row();
@@ -263,7 +275,7 @@ $nuevafecha = date ( 'Y-m-d' , $nuevafecha );
      }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    function cerrar_member_compra($id_cc)
+    function cerrar_member_compra($id_cc,$prv)
     {
         $id_user= $this->session->userdata('id');
         $s = "SELECT *from desarrollo.compra_c where id=$id_cc and tipo='A' ";
@@ -291,22 +303,23 @@ if($query->num_rows() >0){
         $this->db->update('desarrollo.compra_d', $data);
         
         
-        $sm = "SELECT *from almacen.compraped where tipo='alm' and folprv=$orden and cans>0 and sec=$sec";
+        $sm = "SELECT *from almacen.compraped where 
+        tipo='alm' and folprv=$orden and cans>0 and sec=$sec
+        or
+        tipo='ban' and folprv=$orden and cans>0 and sec=$sec
+        or
+        tipo='met' and folprv=$orden and cans>0 and sec=$sec"
+        ;
         $qm = $this->db->query($sm);
         if($qm->num_rows() >0){ 
             $rm= $qm->row();
             $tiene=$rm->aplica;
             $prv=$rm->prv;
-        $datax = array(
-        'aplica'     => $tiene+$row->can
-        );
-        $this->db->where('tipo', 'alm');
-        $this->db->where('folprv', $orden);
-        $this->db->where('sec', $sec);
-        $this->db->where('cans', 0);
-        $this->db->update('almacen.compraped', $datax);
+        $sg="update  almacen.compraped SET aplica=$tiene+$row->can where folprv=$orden and sec=$sec";
+        $this->db->query($sg);
         }
         }
+
         
   }
   

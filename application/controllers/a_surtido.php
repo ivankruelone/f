@@ -195,22 +195,7 @@ class A_surtido extends CI_Controller
  //////////////////////////////////////////////////////////////////////////////////////////            
     
     
-    public function tabla_sob_fal_espe()
-    {   $data['mensaje']= '';
-        $data['titulo']= 'SOBRANTES Y/O FALTANTES ESPECIALES';
-        $data['titulo1']= '';
-        $this->load->model('a_surtido_model');
-        $data['tabla'] = $this->a_surtido_model->folios_sob_fal_esp_tabla();
 
-		$data['contenido'] = "a_folio_sob_fal_esp";
-        $data['selector'] = "a_surtido";
-        $data['sidebar'] = "sidebar_a_surtido";
-              
-        $this->load->view('header');
-        $this->load->view('main', $data);
-        $this->load->view('extrafooter');
-    }  
-    
     public function tabla_sob_fal()
     {   $data['mensaje']= '';
         $data['titulo']= 'SOBRANTES Y/O FALTANTES FORMULADOS';
@@ -236,10 +221,20 @@ class A_surtido extends CI_Controller
         
         
         $this->load->model('a_surtido_model');
+        
+        $faltante = $this->a_surtido_model->reporte_folio_faltante($fecha1, $fecha2);
+        $falysob  = $this->a_surtido_model->reporte_folio($fecha1, $fecha2);
+        $sobrante = $this->a_surtido_model->reporte_folio_sobrante($fecha1, $fecha2);
+        $sinincidencias = $this->a_surtido_model->reporte_folio_sin_incidencias($fecha1, $fecha2);
 
         $data['cabeza'] = $this->a_surtido_model->reporte_folio_encabezado($fecha1, $fecha2);
-        $data['detalle'] = $this->a_surtido_model->reporte_folio($fecha1, $fecha2);
+        $data['detalle'] = $faltante['tabla'];
+        $data['detalle1'] = $falysob ['tabla'];
+        $data['detalle2'] = $sobrante ['tabla'];
+        $data['detalle3'] = $sinincidencias ['tabla'];
        
+       $data['detalle4'] = $this->a_surtido_model->reporte_porcentajes($faltante['folios'],
+       $falysob['folios'], $sobrante['folios'], $sinincidencias['folios'],$fecha1,$fecha2);
         
         $this->load->view('impresiones/reporte_folio', $data);
     }
@@ -274,7 +269,7 @@ class A_surtido extends CI_Controller
         $data['detalle'] = $this->a_surtido_model->reporte_folio_esp($fecha1, $fecha2);
        
         
-        $this->load->view('impresiones/reporte_folio', $data);
+        $this->load->view('impresiones/reporte_folio_esp', $data);
     }    
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

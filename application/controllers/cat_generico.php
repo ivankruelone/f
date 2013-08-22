@@ -24,7 +24,7 @@ class Cat_generico extends CI_Controller
     public function index()
     {
         $data['titulo']= 'CATALOGO';
-        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL';
+        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL<br /><br /><br /><br /><br /><br /><br /><br /><br />';
         $data['contenido'] = "catalogo_1";
         $data['selector'] = "catalogo";
         $data['sidebar'] = "sidebar_catalogo_generico";
@@ -45,6 +45,87 @@ class Cat_generico extends CI_Controller
         
     }
 //////////////////////////////////////////////
+//////////////////////////////////////////////
+   public function tabla_catalogo_espe()
+    {
+        $this->load->model('cat_generico_model');
+        $tit ="Catalogo de Especialidad"; 
+        $data['tabla'] = $this->cat_generico_model->especialidad($tit);
+        $this->load->view('contenidos/viu_8', $data);   
+     }
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+   public function tabla_catalogo_general_sec()
+    {
+        $this->load->model('cat_generico_model');
+        $tit ="Catalogo de Genericos por Secuencias";
+         
+        $data['tabla'] = $this->cat_generico_model->general_sec($tit);
+        $this->load->view('contenidos/viu_8', $data);   
+        
+        
+    }
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+   public function tabla_catalogo_general_cla()
+    {
+        $this->load->model('cat_generico_model');
+        $tit ="Catalogo de Genericos por Claves Gobierno";
+         
+        $data['tabla'] = $this->cat_generico_model->general_cla($tit);
+        $this->load->view('contenidos/viu_9', $data);   
+        
+        
+    }
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+   public function tabla_catalogo_general_registro()
+    {
+        $this->load->model('cat_generico_model');
+        $tit ="Catalogo de general para captura de registro";
+         
+        $data['tabla'] = $this->cat_generico_model->general_registro($tit);
+        $this->load->view('contenidos/viu_9', $data);   
+        
+        
+    }
+//////////////////////////////////////////////
+    function upload_comprobante($id)
+    {
+        $nombre = $this->cat_generico_model->nombre_comprobante($id);
+
+        $uploaddir = './img/registros/';
+        $file = basename($_FILES['userfile']['name']);
+        $ext = explode('.', $file);
+        $cuenta = count($ext);
+        if($cuenta > 0){
+            $extension = $ext[$cuenta - 1];
+        }else{
+            $extension = null;
+        }
+        $file = $nombre.'.'.$extension;
+        $uploadfile = $uploaddir . $file;
+
+        $config['image_library'] = 'gd2';
+        $config['source_image'] = $uploadfile;
+        $config['create_thumb'] = false;
+        $config['maintain_ratio'] = true;
+        $config['width'] = 600;
+        $config['height'] = 600;
+        $config['master_dim'] = 'auto';
+
+        if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
+
+            $this->load->library('image_lib', $config);
+            $this->image_lib->resize();
+            
+            echo $this->checador_model->insert_comprobante($file, $id);
+        } else {
+            echo "error";
+        }
+
+    }
+
 //////////////////////////////////////////////
    public function tabla_catalogo_gen_sec()
     {
@@ -255,7 +336,6 @@ function actualiza_catalogo()
     $this->load->model('cat_generico_model');
     $this->cat_generico_model->catalogo_cat_compras();
     redirect('cat_generico/tabla_catalogo_gen_sec');
-    
     }
 //////////////////////////////////////////////
 //////////////////////////////////////////////

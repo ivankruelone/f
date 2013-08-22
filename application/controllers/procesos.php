@@ -254,6 +254,7 @@ class Procesos extends CI_Controller
  ///////////***********************************************///////////// 
   function tabla_pedidos_formulados()
     {
+       
         ini_set('memory_limit','5000M');
         set_time_limit(0);
         $this->load->model('catalogo_model');
@@ -276,6 +277,7 @@ class Procesos extends CI_Controller
   ///////////***********************************************/////////////   
    public function sumit_pedidos_formulados()
   {
+    
      ini_set('memory_limit','5000M');
      set_time_limit(0);
      $this->load->model('proceso_model_pedido');
@@ -295,6 +297,7 @@ class Procesos extends CI_Controller
 ///////////***********************************************///////////// 
   function tabla_pedidos_formulados_una()
     {
+         
         $this->load->model('catalogo_model');
 		$data['por1'] = $this->catalogo_model->busca_ord_dias();
         $data['por2'] = $this->catalogo_model->busca_ord_dias();

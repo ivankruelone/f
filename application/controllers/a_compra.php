@@ -61,7 +61,6 @@ function busca_orden()
 	{
 	$this->load->model('a_compra_model');
     $validacion1 = $this->a_compra_model->busca_orden_compra($this->input->post('orden'));
-    
     $query = $this->a_compra_model->busca_orden_claves($this->input->post('orden'));
     
     if($validacion1 > 0)
@@ -162,6 +161,7 @@ function busca_orden()
     {
      $id_cc= $this->input->post('id_cc');
       $this->load->model('a_compra_model');
+      
      $this->a_compra_model->cerrar_member_compra($id_cc);
      redirect('a_compra/tabla_control');
     }

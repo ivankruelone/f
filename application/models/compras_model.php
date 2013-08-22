@@ -688,7 +688,7 @@ $num=0;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 function previo_orden_cedis($aaa1,$mes1,$dia1,$di1,$di2,$di3,$di4,$di5)
     {
-
+$mesnum='m'.$mes1;
 $fectran=$aaa1.str_pad($mes1,2,"0",STR_PAD_LEFT).str_pad($dia1,2,"0",STR_PAD_LEFT);
 $s1="insert into almacen.compra_for_cedis (fecha, sec, desplaza, transito, inv_cedis, pedido, prv, prvx, costo,fectran,por,mesdes)
 (select date(now()),sec,0,0,0,0,0,'',0,$fectran,0,0 from catalogo.sec_generica WHERE SEC>0 and sec<=2000)";
@@ -722,14 +722,14 @@ $s4="update almacen.compra_for_cedis a, catalogo.almacen_borrar b
 set a.descon='S'
 where a.sec=b.sec";
 $this->db->query($s4);    
-$s5="update almacen.compra_for_cedis a, almacen.max_sucursal_sec b
-set a.desplaza=final
+$s5="update almacen.compra_for_cedis a, almacen.max_cedis b
+set a.desplaza=$mesnum
 where a.sec=b.sec";
 $this->db->query($s5);    
-$s6="update almacen.compra_for_cedis a, almacen.max_sucursal_sec b
-set a.desplaza=final
-where a.sec=b.sec";
-$this->db->query($s6);    
+//$s6="update almacen.compra_for_cedis a, almacen.max_sucursal_sec b
+//set a.desplaza=final
+//where a.sec=b.sec";
+//$this->db->query($s6);    
 $s7="update almacen.compraped a, desarrollo.compra_d_orden_sec b
 set a.aplica=b.can
 where a.folprv=b.orden and a.sec=b.sec and a.sec>0 and a.tipo='alm'";
@@ -1642,8 +1642,6 @@ $num=0;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
     function inv_cedis()
@@ -1651,9 +1649,29 @@ $num=0;
         
         $id_user= $this->session->userdata('id');
         $plaza= $this->session->userdata('plaza');
-        $s="select a.*,b.inv1 from catalogo.almacen a 
+        $s="select c.*,a.susa1,m7,m8,m9,m10,m11,m12,
+        case when b.inv1<0
+        then 0
+        else
+        b.inv1
+        end as inv, 
+        case when c.tipo is null
+        then a.susa1
+        else 
+        c.susa
+        end as sustancia,
+        case when c.tipo is null
+        then 'DESCONTINUADO'
+        else 
+        ' '
+        end as des
+        from catalogo.sec_generica a 
         left join inv_cedis_sec1 b on a.sec=b.sec
-        where a.sec>=1 and a.sec<=2000 and a.tsec='G' group by a.sec";   
+        left join catalogo.cat_almacen_clasifica c on c.sec=a.sec
+        left join almacen.max_cedis d on d.sec=a.sec
+        where a.sec>=1 and a.sec<=2000  and inv1>0 
+        or a.sec>=1 and a.sec<=2000  and c.tipo is not null
+        group by a.sec order by c.tipo,inv";   
         $q = $this->db->query($s);
         
 $num=0;
@@ -1667,7 +1685,79 @@ $num=0;
         <th>SEC</th>
         <th>PRODUCTO</th>
         <th>EXISTENCIA</th>
+        <th>AGO</th>
+        <th>SEP</th>
+        <th>OCT</th>
+        <th>NOV</th>
+        <th>DIC</th>
+        <th>OBSERVACION</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        ";
+        $pedtot=0;
+         foreach($q->result() as $r)
+        {
+            
+		$num=$num+1;
+         if($r->inv>0){$color='blue';}else{$color='red';}   
+            $tabla.="
+            <tr>
+            <td align=\"left\"><font color=\"orange\">".$num."</font></td>
+            <td align=\"left\"><font color=\"orange\">".$r->tipo."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->sec."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->sustancia."</font></td>
+            <td align=\"right\"><font color=\"$color\">".number_format($r->inv,0)."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->m8."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->m9."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->m10."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->m11."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->m12."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->des."</font></td>
+            </tr>
+            ";
+          $pedtot=$pedtot+$r->inv;  
+        }
+         $tabla.="
+        </tbody>
+        <tr>
+            <td align=\"right\" colspan=\"5\"><font color=\"blue\">".number_format($pedtot,0)."</font></td>
+             </tr>
+        </table>";
         
+        return $tabla;
+    
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function inv_cedis_lote($titulo)
+    {
+        
+        $id_user= $this->session->userdata('id');
+        $plaza= $this->session->userdata('plaza');
+        $s="select a.*,b.lote,b.cadu,b.inv1, ifnull(inv1,0)as inv1 from catalogo.cat_almacen_clasifica a 
+        left join inv_cedis b on a.sec=b.sec and inv1>0
+       
+        order by a.tipo,inv1";   
+        $q = $this->db->query($s);
+        
+$num=0;
+        $tabla= "
+        <table cellpadding=\"2\" border=\"0\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\">
+        <caption>$titulo</caption>
+        <thead>
+        
+        <tr>
+        <th>#</th>
+        <th>Clas.</th>
+        <th>Sec</th>
+        <th>Sustancia Activa</th>
+        <th>Lote</th>
+        <th>Caducidad</th>
+        <th>Inventario</th>
         </tr>
 
         </thead>
@@ -1682,9 +1772,11 @@ $num=0;
             $tabla.="
             <tr>
             <td align=\"left\"><font color=\"orange\">".$num."</font></td>
-            <td align=\"left\"><font color=\"$color\">".$r->tsec."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->tipo."</font></td>
             <td align=\"left\"><font color=\"$color\">".$r->sec."</font></td>
-            <td align=\"left\"><font color=\"$color\">".$r->susa1."<br /> ".$r->susa2."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->susa."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->lote."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->cadu."</font></td>
             <td align=\"right\"><font color=\"$color\">".number_format($r->inv1,0)."</font></td>
             
             </tr>
@@ -1693,9 +1785,11 @@ $num=0;
         }
          $tabla.="
         </tbody>
+        <tfoot>
         <tr>
-            <td align=\"right\" colspan=\"5\"><font color=\"blue\">".number_format($pedtot,0)."</font></td>
+            <td align=\"right\" colspan=\"7\"><font color=\"blue\">".number_format($pedtot,0)."</font></td>
              </tr>
+        </tfoot>
         </table>";
         
         return $tabla;
@@ -3816,6 +3910,177 @@ function compraped_entregaxx($tipo,$fec1,$fec2,$tit)
         
         return $tabla;
     }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function orden_lote_detal($orden,$titulo)
+    {
+        $totcan=0;
+        $id_user= $this->session->userdata('id');
+        $plaza= $this->session->userdata('plaza');
+        $s="SELECT b.tipo as clasifica,a.* FROM almacen.compraped a
+left join catalogo.cat_almacen_clasifica b on b.sec=a.sec
+where a.tipo='alm' and a.tipo3='C' and folprv=$orden and cans>0";   
+        $q = $this->db->query($s);
+        
+$num=0;
+        $tabla= "
+        <table cellpadding=\"2\" border=\"1\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\">
+        <caption>$titulo</caption>
+        <thead>
+        
+        <tr>
+        <th>#</th>
+        <th>Clasifica</th>
+        <th>Sec</th>
+        <th>Sustancia Activa</th>
+        <th>Prv</th>
+        <th>PZAS.PED</th>
+        <th>Fecha<br />Ingreso</th>
+        <th>Lote</th>
+        <th>Caducidad</th>
+        <th>Entregan</th>
+        <th>Inv. Cedis</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        ";
+        $color='black';
+         foreach($q->result() as $r)
+        {
+         $ss="select a.*,
+         (select sum(inv1) from inv_cedis where sec=$r->sec and lote=a.lote group by sec,lote)as cedis
+         from compra_d a where orden=$orden and sec=$r->sec";
+         $qq=$this->db->query($ss);
+            
+		$num=$num+1;
+         
+            $tabla.="
+            <tr>
+            <td align=\"left\"><font color=\"$color\">".$num."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->clasifica."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->sec."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->susa."<br /> ".$r->descri."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->prv."<br /> ".$r->prvx."</font></td>
+            <td align=\"right\"><font color=\"$color\">".number_format($r->cans,0)."</font></td>
+            </tr>
+            ";
+           
+            foreach($qq->result() as $rr)
+        {
+            $l1 = anchor('compras/orden_lote_suc/'.$rr->sec.'/'.$rr->lote.'/'.$rr->fechai,$rr->lote.'</a>', array('title' => 'Haz Click aqui para ver el detalle!', 'class' => 'encabezado'));
+        $tabla.="
+            <tr>
+            <td align=\"left\"><font color=\"$color\"></font></td>
+            <td align=\"left\"><font color=\"$color\"></font></td>
+            <td align=\"left\"><font color=\"$color\"></font></td>
+            <td align=\"left\"><font color=\"$color\"></font></td>
+            <td align=\"left\"><font color=\"$color\"></font></td>
+            <td align=\"left\"><font color=\"$color\"></font></td>
+            <td align=\"left\"><font color=\"blue\">".$rr->fechai."</font></td>
+            <td align=\"left\"><font color=\"blue\">".$l1."</font></td>
+            <td align=\"left\"><font color=\"blue\">".$rr->cadu."</font></td>
+            <td align=\"right\"><font color=\"blue\">".number_format($rr->can,0)."</font></td>
+            <td align=\"right\"><font color=\"blue\">".number_format($rr->cedis,0)."</font></td>
+            </tr>
+            ";   
+        $totcan=$totcan+$rr->can;
+        }
+        $tabla.="
+        <tr>
+            
+            <td align=\"right\" colspan=\"10\"><font color=\"blue\">".number_format($totcan,0)."</font></td>
+            </tr>
+            ";
+         $totcan=0;
+        }
+         $tabla.="
+         </tbody>
+         <tfoot>
+        </tfoot>
+        </table>";
+        
+        return $tabla;
+    
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function orden_lote_detal_suc($sec,$lote,$fecha,$titulo)
+    {
+        $totcan=0;
+        $id_user= $this->session->userdata('id');
+        $plaza= $this->session->userdata('plaza');
+        $s="select c.dia,b.fechasur,b.suc,c.nombre as sucx, a.*,(can) as can,
+        (select cantidad from inv where suc=b.suc and sec=a.sec and mov=7)as inv
+        from surtido a
+        left join catalogo.folio_pedidos_cedis b on b.id=a.fol
+        left join catalogo.sucursal c on c.suc=b.suc 
+        where a.lote='$lote' and a.fecha>='$fecha' and a.sec=$sec
+        order by suc
+        ";   
+        $q = $this->db->query($s);
+        
+$num=0;
+        $tabla= "
+        <table cellpadding=\"2\" border=\"1\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\">
+        <caption>$titulo</caption>
+        <thead>
+        
+        <tr>
+        <th>#</th>
+        <th>Nid</th>
+        <th>Sucursal</th>
+        <th>Fecha Sur.</th>
+        <th>Surtido</th>
+        <th>Inventario </th>
+        </tr>
+
+        </thead>
+        <tbody>
+        ";
+        $color='black';
+         foreach($q->result() as $r)
+        {
+        
+            
+		$num=$num+1;
+         
+            $tabla.="
+            <tr>
+            <td align=\"left\"><font color=\"$color\">".$num."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->suc."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->sucx."<br />".$r->dia."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->fecha."</font></td>
+            <td align=\"right\"><font color=\"$color\">".number_format($r->can,0)."</font></td>
+            <td align=\"right\"><font color=\"$color\">".number_format($r->inv,0)."</font></td>
+            </tr>
+            ";
+           
+              
+        $totcan=$totcan+$r->can;
+        }
+        $tabla.="
+         </tbody>
+         <tfoot>
+        <tr>
+            
+            <td align=\"right\" colspan=\"5\"><font color=\"blue\">".number_format($totcan,0)."</font></td>
+            <td align=\"left\"><font color=\"$color\"></font></td>
+            </tr>
+        </tfoot>
+        </table>";
+        
+        return $tabla;
+    
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 

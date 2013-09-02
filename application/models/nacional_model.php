@@ -63,10 +63,9 @@ elseif($tres=='10'){$tres='venta10';}
 elseif($tres=='11'){$tres='venta11';}
 elseif($tres=='12'){$tres='venta12';}
          
-         $s="select a.*,b.inv1
-         
+         $s="a.*,case when inv1<0 then 0 else inv1 end as inv1
          from catalogo.cat_almacen_clasifica a
-left join inv_cedis_sec b on b.sec=a.sec
+left join inv_cedis_sec1 b on b.sec=a.sec
 where a.tipo in ($var0)
 ";
 $q = $this->db->query($s);

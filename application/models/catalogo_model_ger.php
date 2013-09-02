@@ -463,15 +463,23 @@ order by sec";
 /////////////////////////////////////////////////////
     function pro_generico()
     {
-     $sql = "SELECT *FROM catalogo.almacen where sec<=2000  group by sec  order by sec ";
+     $sql = "SELECT a.*,
+     case when b.sec is not null
+     then 'Activo'
+     else
+     'Descontinuado'
+     end as obser
+     FROM catalogo.almacen a 
+     left join catalogo.cat_almacen_clasifica b on b.sec=a.sec where a.sec<=2000  
+     group by sec  order by obser,sec ";
         $query = $this->db->query($sql);
        
         $tabla= "
         <table>
         <thead>
         <tr>
+        <th>Status</th>
         <th>Sec</th>
-        
         <th>Sus. Activa</th>
         <th>Descripcion</th>
         <th>$ Generico</th>
@@ -487,8 +495,8 @@ order by sec";
             $color='black';
             $tabla.="
             <tr>
+            <td align=\"right\"><font color=\"$color\">".$row->obser."</font></td>
             <td align=\"right\"><font color=\"$color\">".$row->sec."</font></td>
-            
             <td align=\"left\"><font color=\"$color\">".$row->susa1."</font></td>
             <td align=\"left\"><font color=\"$color\">".$row->susa2."</font></td>
             <td align=\"right\"><font color=\"$color\">".number_format($row->vtagen,2)."</font></td>
@@ -1481,7 +1489,7 @@ left join usuarios b on b.plaza=a.superv and nivel=14
      $id= $this->session->userdata('id');
      $sql = "SELECT a.superv,a.regional,sum(a.plantilla)as plantilla,sum(numsuc)as numsuc,
      b.nombre,b.email,b.puesto,b.id as id_sup
-	 from catalogo.sucursal_ger_sup a
+	 from catalogo.sucursal_ger_sup1 a
 	 left join usuarios b on b.plaza=a.regional
 	 where  b.activo=1 and nivel=21 
     	 group by regional";

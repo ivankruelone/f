@@ -31,7 +31,6 @@ echo "<br/><br/><br/><br/>";
 echo anchor('a_surtido/captura_sob_fal_esp', 'SOBRANTE/FALTANTE ESPECIALES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo "<br/><br/>";
 echo anchor('a_surtido/tabla_sob_fal_esp', 'ESPECIALES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
-
 }
 
 }
@@ -45,6 +44,11 @@ if($nivel==12){
 echo "<br/><strong>REPORTE DE SURTIDO X CLAVE</strong><br/><br/>";
 echo anchor('a_surtido/reporte_diario_xclave', 'REPORTE SURTIDO X CLAVE', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 
+if($nivel== 12){
+echo "<br/><br/>";    
+echo anchor('a_surtido/tabla_sob_fal', 'FOLIOS FORMULADOS', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo "<br/><br/><br/><br/>";
+}
 }
 ?>
 <?php

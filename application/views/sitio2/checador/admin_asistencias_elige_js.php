@@ -39,7 +39,7 @@ function inicio ()
             series: [{
                 type: 'pie',
                 name: 'Horas',
-                data: <?php echo $grafica4; ?>
+                data: <?php if(isset($grafica4)) echo $grafica4; ?>
             }]
         });
         
@@ -76,7 +76,7 @@ function inicio ()
             series: [{
                 type: 'pie',
                 name: 'Horas',
-                data: <?php echo $grafica5; ?>
+                data: <?php if(isset($grafica5)) echo $grafica5; ?>
             }]
         });        
 
@@ -113,7 +113,7 @@ function inicio ()
             series: [{
                 type: 'pie',
                 name: 'Horas',
-                data: <?php echo $grafica6; ?>
+                data: <?php if(isset($grafica6)) echo $grafica6; ?>
             }]
         });
 

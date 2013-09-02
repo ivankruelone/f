@@ -315,7 +315,7 @@ class Juridico extends CI_Controller
     public function index_r()
     {
         $data['titulo']= 'CATALOGO DE ARRENDADORES';
-        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL';
+        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />';
         $data['contenido'] = "juridico";
         $data['selector'] = "juridico_r";
         $data['sidebar'] = "sidebar_juridico_renta";
@@ -478,7 +478,121 @@ class Juridico extends CI_Controller
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 //////////////////////////////////////////////
+//////////////////////////////////////////////gerente juridico
+    public function index_ger()
+    {
+        $data['titulo']= 'DEPARTAMENTO DE JURIDICO';
+        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />';
+        $data['contenido'] = "juridico";
+        $data['selector'] = "juridico_r";
+        $data['sidebar'] = "sidebar_juridico_renta";
+                
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+        
+
+   public function tabla_rentas_mensuales()
+    {
+        $this->load->model('juridico_model');
+        $data['titulo'] = "RENTAS";
+        
+        $data['tabla'] = $this->juridico_model->rentas_generadas_mes_ger();
+        $data['contenido'] = "juridico";
+        $data['selector'] = "juridico_r";
+        $data['sidebar'] = "sidebar_juridico_renta";
+        
+        
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////
+//////////////////////////////////////////////
+  public function tabla_rentas_mensual_mes_ger($aaa,$mes)
+    {
+        $suc= $this->input->post('suc');
+        $arr= $this->input->post('arr');
+        $this->load->model('juridico_model');
+        $data['titulo'] = "RENTAS";
+        
+        $data['tabla'] = $this->juridico_model->rentas_generadas_mes($aaa,$mes);
+        $data['contenido'] = "juridico";
+        $data['selector'] = "juridico";
+        $data['sidebar'] = "sidebar_juridico_renta";
+}
+/////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+  public function tabla_retencion()
+    {
+        $this->load->model('juridico_model');
+        $tit = "RETENCION DE SALARIO";
+        $data['tabla'] = $this->juridico_model->rh_retencion_actual($tit);
+        $this->load->view('contenidos/viu_7_retencion', $data);   
+}
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+  public function digita_causa($id)
+    {
+        $this->load->model('juridico_model');
+        $tit = "ESTATUS DE RETENCION";
+        $data['causa'] = '';
+        $data['id'] = $id;
+        $data['causaj'] = $this->juridico_model->busca_retencion_causa($id);
+        $data['tabla'] = $this->juridico_model->rh_retencion_actual_id($tit,$id);
+        $data['contenido'] = "juridico_form_retencion_causa";
+        $data['selector'] = "juridico";
+        $data['sidebar'] = "sidebar_juridico_renta";
+                
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
+   public function actualiza_causaj()
+    {
+        $data = array('causaj' => $this->input->post('causa'));
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('catalogo.cat_alta_empleado', $data); 
+        redirect('juridico/tabla_retencion');
+}
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+   public function reportes_deptos_ret()
+    {
+      	$fec1=$this->input->post('fec1');
+        $fec2=$this->input->post('fec2');
+        $this->load->model('sistemas_model');
+        $checan=$this->sistemas_model->personal_oficinas($fec1,$fec2);
+       
+      $data['cabeza']= "
+      <table>
+           
+    <tr>
+    <td colspan=\"5\" align=\"center\"><font size=\"+2\"><strong>RECURSOS HUMANOS<BR /></strong></font></td>
+    </tr>
+    
+   </table> 
+            ";
+      echo $data['cabeza'];
+            $data['retencion']=$this->sistemas_model->rh_retencion();
+            $data['detalle']='';
+            $data['faltas']=''; 
+            $this->load->view('impresiones/sistemas_reportes_horizontal', $data);
+    }
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 
 
 

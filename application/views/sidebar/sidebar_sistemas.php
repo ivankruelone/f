@@ -2,7 +2,9 @@
 
 <?php
 $nivel = $this->session->userdata('nivel');
-echo anchor('sistemas/tabla_control_reportes', 'reportes', 'class="button-link blue"');
+echo anchor('sistemas/reportes_his', 'reportes', 'class="button-link blue"');
+echo('<br /> <br />'); 
+echo anchor('sistemas/reportes_depto', 'Programas', 'class="button-link blue"');
 	$this->load->view('sidebar/login');
 ?>
       </div>

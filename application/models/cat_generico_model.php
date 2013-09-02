@@ -156,8 +156,9 @@ where a.id = ? and a.sec= ?
         <thead>
         <tr>
         <th>#</th>
+        <th>Clasf.</th>
+        <th>Naturista</th>
         <th>Sec</th>
-        
         <th colspan=\"1\">Sustancia Activa</th>
         <th>Prv</th>
         <th>Provedor</th>
@@ -176,6 +177,8 @@ where a.id = ? and a.sec= ?
          $tabla.="
             <tr>
             <td align=\"left\"><font color=\"orange\">".$num."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->clasi."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$row->natur."</font></td>
             <td align=\"left\"><font color=\"$color\">".$row->sec."</font></td>
             <td align=\"left\"><font color=\"$color\">".trim($row->susa)." </font></td>
             <td align=\"left\"><font color=\"$color\">".$row->prv."</font></td>
@@ -186,6 +189,28 @@ where a.id = ? and a.sec= ?
             </tr>
             ";
          $num=$num+1;
+         $s="select *from catalogo.cat_nuevo_general_prv where tipo='A' and sec=$row->sec order by costo, preferencia desc";
+        $q = $this->db->query($s);    
+        foreach($q->result() as $r)
+        {
+        if($r->costo > $row->cos && $row->cos>0){$por='% '.round((($r->costo)-($row->cos))/($r->costo)*100,2);}else{$por='';}
+        
+        $tabla.="    
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"left\"><font color=\"green\"></font></td>
+            <td align=\"right\"><font color=\"green\">".$r->codigo."</font></td>
+            <td align=\"left\"><font color=\"green\">".$r->prv."</font></td>
+            <td align=\"left\"><font color=\"green\">".$r->prvxx."</font></td>
+            <td align=\"left\"><font color=\"green\">".number_format($r->costo,2)."</font></td>
+            <td align=\"left\"><font color=\"green\">".$por."</font></td>
+            <td align=\"left\"><font color=\"green\">".$r->preferencia."</font></td>
+            
+            
+          </tr>
+            ";
+         }
         }
         
         $tabla.="
@@ -251,7 +276,7 @@ where a.id = ? and a.sec= ?
  function general_registro($tit)
     {
      $sql = "select *from catalogo.cat_nuevo_general where  tipo='A'
-     order by susa,gramaje,contenido,presenta limit 10 ";
+     order by susa,gramaje,contenido,presenta";
      $query = $this->db->query($sql);
          $tabla= "
         <table cellpadding=\"2\" border=\"1\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\" >
@@ -263,9 +288,11 @@ where a.id = ? and a.sec= ?
         <th>Sec</th>
         <th>Clave</th>
         <th colspan=\"1\">Sustancia Activa</th>
+        <th colspan=\"1\">Marca Comercial</th>
         <th>Laboratorio</th>
         <th>Registro</th>
         <th>Producto</th>
+        <th>Archivo</th>
         <th></th>
         </tr>
         </thead>
@@ -275,7 +302,6 @@ where a.id = ? and a.sec= ?
         $num=1;
         foreach($query->result() as $row)
         {
-        
          $tabla.="
             <tr>
             <td align=\"left\"><font color=\"$color\">".$num."</font></td>
@@ -283,10 +309,12 @@ where a.id = ? and a.sec= ?
             <td align=\"left\"><font color=\"$color\">".$row->sec_cedis."</font></td>
             <td align=\"left\"><font color=\"$color\">".$row->clagob."</font></td>
             <td align=\"left\"><font color=\"$color\">".trim($row->susa)." ".trim($row->gramaje)." ".trim($row->contenido)." ".trim($row->presenta)."</font></td>
+            <td align=\"left\"><font color=\"$color\">".trim($row->marca_comercial)." ".trim($row->gramaje)." ".trim($row->contenido)." ".trim($row->presenta)."</font></td>
             <td align=\"left\"><font color=\"$color\">".$row->lab."</font></td>
             <td align=\"left\"><font color=\"$color\">".$row->registro."</font></td>
             <td align=\"left\"><font color=\"$color\">".$row->ramo."</font></td>
-            <td><button id='upload_button_$row->id'>Registro</button></td>
+            <td align=\"left\"><font color=\"$color\">".$row->e_registro."</font></td>
+            <td align='right'><button id=\"upload_button_".$row->id."_".trim($row->clagob)."_".trim($row->lab)."\">Registro</button></td>
             </tr>
             ";
          $num=$num+1;
@@ -294,35 +322,38 @@ where a.id = ? and a.sec= ?
         
         $tabla.="
         </tbody>
-
-         
-        ////////////////////////////////////////////////////
-<script src=\"<?php echo base_url();?>jquery-ui/minified/jquery.ui.position.min.js\"></script>
-<script src=\"<?php echo base_url();?>jquery-ui/minified/jquery.ui.button.min.js\"></script>
-<script src=\"<?php echo base_url();?>jquery-ui/minified/jquery.ui.dialog.min.js\"></script>
-<script src=\"<?php echo base_url();?>fenix2/js/AjaxUpload.2.0.min.js\"></script>
-   <script language=\"javascript\" type=\"text/javascript\">
-    $(document).on('ready\', inicio);
+        </table>
+<script type='text/javascript' language=\"javascript\">
+    $(document).on(\"ready\", inicio);
 	function inicio(){
 	   
        
 	}
-    
     $('button[id^=\"upload_button_\"]').on(\"click\", comprobante);
-    
+   
+  
     function comprobante(datos)
     {
-        var $boton = datos.currentTarget.attributes.id.value;
-        var $variables = $boton.split('_');
-        $id = $variables[2];
-        sube($boton, $id);
+        var boton = datos.currentTarget.attributes.id.value;
+        var variables = boton.split('_');
+       
+      
+        id = variables[2];
+        clave = variables[3];
+        lab = variables[4];
+        sube(boton, id, clave,lab);
+      
     }
     
-    function sube($boton, $id){
-       	var button = $('#' + $boton), interval;
-    	new AjaxUpload('#' + $boton, {
-            action: '<?php echo site_url();?>/checador/upload_registro/' + $id,
+    function sube(boton, id, clave, lab){
+        
+       	var button = $('#' + boton), interval;
+        
+    	new AjaxUpload('#' + boton, {
+    	    action: '".site_url()."/cat_generico/upload_registro/' + id + '/' + clave + '/' + lab,
+            
     		onSubmit : function(file , ext){
+    		
     		if (! (ext && /^(png|jpg|gif)$/.test(ext))){
     			alert('Error: Solo se permiten .jpg, .png, .gif');
     			return false;
@@ -332,14 +363,14 @@ where a.id = ? and a.sec= ?
     		  }
     		},
     		onComplete: function(file, response){
-    			button.text('Comprobante');
+    			button.text('comprobante');
     			this.enable();
     		}	
     
     	});
     }
 </script>
-   </table>";     
+";     
         return $tabla;
     
     
@@ -366,6 +397,22 @@ function nombre_comprobante($id)
             return $id;
         }
         
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+function insert_registro($imagen, $id , $clave, $lab)
+    {
+        $update = array(
+                'c_id'  => $id,
+                'clave'  => $clave,
+                'imagen' => $imagen.'_'.$clave,
+                'lab' => $lab
+        );
+        
+        $this->db->insert('compras.comprobantes_registros', $update);
+ 
+        $datac = array('e_registro'=>1);
+		$this->db->where('id', $id);
+        $this->db->update('catalogo.cat_nuevo_general', $datac);
     }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -620,10 +667,10 @@ $s4="update catalogo.almacen a, catalogo.almacen_mue b set a.mue=b.mueble where 
 $this->db->query($s4);
 $s5="LOAD DATA INFILE 'c:/wamp/www/subir10/seg.seg' INTO TABLE subir10.p_cat_segpop LINES TERMINATED BY '\r\n';";
 $this->db->query($s5);
-$s7="update almacen.compraped a, desarrollo.compra_d_orden_sec b
-set a.aplica=b.can
-where a.folprv=b.orden and a.sec=b.sec and a.sec>0 and a.tipo='alm'";
-$this->db->query($s7);
+//$s7="update almacen.compraped a, desarrollo.compra_d_orden_sec b
+//set a.aplica=b.can
+//where a.folprv=b.orden and a.sec=b.sec and a.sec>0 and a.tipo='alm'";
+//$this->db->query($s7);
 
 $sqlx="select *from catalogo.almacen where 
 sec>=1 and sec<=2000  and codigo<>0 and vtagen>0 and tsec<>'M'

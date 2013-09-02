@@ -6,19 +6,6 @@
 
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>media/css/demo_table.css" title="style" />
 <link rel="stylesheet" href="<?php echo base_url();?>jquery-ui/css/redmond/jquery-ui-1.9.2.custom.min.css" />
-
-<script src="<?php echo base_url(); ?>scripts/jquery-1.7.2.min.js" type="text/javascript"></script>
-<script src="<?php echo base_url();?>jquery-ui/js/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="<?php echo base_url();?>jquery-ui/minified/jquery.ui.core.min.js"></script>
-<script src="<?php echo base_url();?>jquery-ui/minified/jquery.ui.widget.min.js"></script>
-<script src="<?php echo base_url();?>jquery-ui/minified/jquery.ui.position.min.js"></script>
-<script src="<?php echo base_url();?>jquery-ui/minified/jquery.ui.button.min.js"></script>
-<script src="<?php echo base_url();?>jquery-ui/minified/jquery.ui.dialog.min.js"></script>
-<script src="<?php echo base_url();?>fenix2/js/AjaxUpload.2.0.min.js"></script>
-
-<script src="<?php echo base_url(); ?>media/js/jquery.dataTables.min.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>fenix2/js/hc/highcharts.js"></script>
-<script src="<?php echo base_url(); ?>fenix2/js/hc/modules/exporting.js"></script>
 </head>
 <body>
 <article>
@@ -33,6 +20,14 @@ echo $tabla;
 
 </article>
 </body>
+<script src="<?php echo base_url(); ?>scripts/jquery-1.7.2.min.js" type="text/javascript"></script>
+<script src="<?php echo base_url();?>jquery-ui/js/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="<?php echo base_url();?>jquery-ui/minified/jquery.ui.core.min.js"></script>
+<script src="<?php echo base_url();?>jquery-ui/minified/jquery.ui.widget.min.js"></script>
+
+<script src="<?php echo base_url(); ?>media/js/jquery.dataTables.min.js" type="text/javascript"></script>
+<script src="<?php echo base_url(); ?>fenix2/js/hc/highcharts.js"></script>
+<script src="<?php echo base_url(); ?>fenix2/js/hc/modules/exporting.js"></script>
 
 <script type="text/javascript" charset="utf-8">
 
@@ -71,15 +66,26 @@ $(document).ready(function() {
     $('#tabla').dataTable({
             "aoColumns": [
                 { "sSortDataType": "dom-text", "sType": "num-html" },
-                { "sSortDataType": "dom-text" },
-                { "sSortDataType": "dom-text" },
                 { "sSortDataType": "dom-text", "sType": "num-html" },
                 { "sSortDataType": "dom-text" },
                 { "sSortDataType": "dom-text", "sType": "formatted-num" },
                 { "sSortDataType": "dom-text", "sType": "formatted-num" },
                 { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
+                { "sSortDataType": "dom-text", "sType": "formatted-num" },
                 { "sSortDataType": "dom-text", "sType": "formatted-num" }
-                
                 
                
             ],

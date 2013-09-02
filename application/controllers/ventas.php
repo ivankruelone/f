@@ -1393,7 +1393,26 @@ $data['aaa']=$aaa;
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////7    
 /////////////////////////////////////////////////////////////////////////////////////////////
-
+public function agrega_targ()
+    {
+        $this->load->model('catalogo_model');
+        $data['contenido'] = "targetas";
+        $data['selector'] = "ventas";
+        $data['sidebar'] = "sidebar_ventas";
+        $data['sucursal'] = $this->catalogo_model->busca_sucursal_tar();
+        
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+    
+    function submit_nueva_tarjeta()
+    {
+        
+        $this->load->model('catalogo_model');
+        $id = $this->catalogo_model->guardar_tarjeta();
+        redirect('ventas/index/'.$id);
+    }
     
     
       }

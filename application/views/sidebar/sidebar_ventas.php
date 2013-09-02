@@ -9,7 +9,7 @@ if($is_logged_in == FALSE){
 ?>
 
 <?php
-	}elseif($is_logged_in == TRUE && $nivel == 9 || $nivel == 10 || $nivel == 14){
+	}elseif($is_logged_in == TRUE && $nivel == 9 || $nivel == 14){
 ?>
 
 <?php
@@ -19,6 +19,20 @@ echo anchor('ventas/fecha', 'REPORTE DE VENTAS', 'class="button-link purple"');
 echo anchor('ventas/tabla_control_tar', 'TARJETAS DE CLIENTE PREFERENTE', 'class="button-link orange"');
 echo anchor('ventas/fecha_tar', 'VTA DE PRODUCTOS CON DESCUENTO', 'class="button-link orange1"');
 echo anchor('ventas/fecha_cli', 'VTA POR CLIENTE PREF.', 'class="button-link orange3"');
+?>
+
+<?php
+	}elseif($is_logged_in == TRUE && $nivel == 10){
+?>
+
+<?php
+    echo anchor('ventas/fecha', 'REPORTE DE VENTAS', 'class="button-link purple"');
+    echo anchor('ventas/tabla_control_tar', 'TARJETAS DE CLIENTE PREFERENTE', 'class="button-link orange"');
+    echo anchor('ventas/fecha_tar', 'VTA DE PRODUCTOS CON DESCUENTO', 'class="button-link orange1"');
+    echo anchor('ventas/fecha_cli', 'VTA POR CLIENTE PREF.', 'class="button-link orange3"');
+    echo "<br/><br/>";
+	echo anchor('ventas/agrega_targ', 'AGREGAR TARJETAS <br/>DE CLIENTE PREFERENTE', 'class="button-link orange"');
+   
 ?>
 
 <?php

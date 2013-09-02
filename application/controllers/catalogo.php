@@ -24,7 +24,8 @@ class Catalogo extends CI_Controller
     public function index()
     {
         $data['titulo']= 'CATALOGO';
-        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL';
+        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br />';
         $data['contenido'] = "catalogo_1";
         $data['selector'] = "catalogo";
         $data['sidebar'] = "sidebar_catalogo";

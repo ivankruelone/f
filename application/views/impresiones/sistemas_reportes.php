@@ -38,7 +38,7 @@ $this->writeHTML($tbl, true, false, false, false, '');
 } 
 
 // create new PDF document 
-$pdf = new MYPDF('P', PDF_UNIT, 'LETTER', true, 'UTF-8', false); 
+$pdf = new MYPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false); 
 
 // set document information 
 $pdf->SetCreator(PDF_CREATOR); 
@@ -58,9 +58,9 @@ $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 //set margins 
-$pdf->SetMargins(8, 30, PDF_MARGIN_RIGHT); 
-$pdf->SetHeaderMargin(15); 
-$pdf->SetFooterMargin(5); 
+$pdf->SetMargins(PDF_MARGIN_LEFT, 15, PDF_MARGIN_RIGHT); 
+$pdf->SetHeaderMargin(PDF_MARGIN_HEADER); 
+$pdf->SetFooterMargin(PDF_MARGIN_FOOTER); 
 
 //set auto page breaks 
 $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM); 
@@ -68,19 +68,32 @@ $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 //set image scale factor 
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);  
 
-$pdf->SetFont('helvetica', '', 7	);
+//set some language-dependent strings 
+$pdf->setLanguageArray($l);  
+
+// ---------------------------------------------------------
+// ---------------------------------------------------------
+
+// ---------------------------------------------------------
+// ---------------------------------------------------------  
+// set font
+$pdf->SetFont('helvetica', '', 9	);
 
 $pdf->AddPage();
-
 $tbl = <<<EOD
 $detalle
 EOD;
 $pdf->writeHTML($tbl, true, false, false, false, '');
 
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+
 
 
 //Close and output PDF document
-$pdf->Output('pedido.pdf', 'I');
+$pdf->Output('pedido_previo.pdf', 'I');
 
 //============================================================+
 // END OF FILE                                                 

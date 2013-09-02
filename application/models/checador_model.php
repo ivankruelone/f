@@ -237,6 +237,276 @@ order by s.nombre;";
         
         return $query;
     }
+    
+    function get_justificaciones_incidencias()
+    {
+        $query = $this->db->get('catalogo.cat_justificacion');
+        return $query;
+    }
+    
+    function get_registro($id)
+    {
+        $this->db->where('id', $id);
+        $query = $this->db->get('checador_asistencia');
+        return $query->row();
+    }
+    
+    function inserta_incidencia($asistencia, $justificacion, $observaciones)
+    {
+        $data = array(
+                'asistencia'    => $asistencia,
+                'justificacion' => $justificacion,
+                'observaciones' => $observaciones
+                );
+                
+        $this->db->insert('checador_incidencias', $data);
+        $id = $this->db->insert_id();
+        if ( $id > 0 ){
+            
+            $data2 = array('incidencia' => $id);
+            $this->db->where('id', $asistencia);
+            $this->db->update('checador_asistencia', $data2);
+            
+        }
+        
+        return $id;
+    }
+    
+    function get_incidencia_detalle($incidencia)
+    {
+        $sql = "SELECT concat(date_format(i.fecha_captura, '%Y%m%d'), '-', LPAD(i.incidencia, 6, '0')) as folio, DATE_FORMAT(i.fecha_captura, '%d/%m/%Y') as fecha_captura, i.incidencia, completo, e.nomina, puestox, DATE_FORMAT(a.fecha, '%d') as fechad, DATE_FORMAT(a.fecha, '%m') as fecham, DATE_FORMAT(a.fecha, '%Y') as fechay, falta, retardo, justifica, UPPER(justificantes) as justificantes, UPPER(observaciones) as observaciones, nombre as sucursal, e.succ
+FROM checador_incidencias i
+join checador_asistencia a on i.incidencia = a.incidencia
+join catalogo.cat_empleado e on a.empleado_id = e.id
+join catalogo.cat_justificacion j on j.id = i.justificacion
+left join catalogo.sucursal s on s.suc = e.succ
+where a.incidencia = ?;";
+
+        $query = $this->db->query($sql, $incidencia);
+        
+        $incidencia = $query->row();
+        
+        $sql_jefe = "SELECT concat(trim(titulo), '. ', trim(nom), ' ', trim(pat), ' ', trim(mat)) as jefe FROM catalogo.jefes_depto j
+left join catalogo.cat_empleado e on j.id_empleado = e.id
+where succ = ?;";
+
+        $query_jefe = $this->db->query($sql_jefe, $incidencia->succ);
+        $jefe = $query_jefe->row();
+        
+        $sql_rh = "SELECT concat(trim(titulo), '. ', trim(nom), ' ', trim(pat), ' ', trim(mat)) as jefe FROM catalogo.jefes_depto j
+left join catalogo.cat_empleado e on j.id_empleado = e.id
+where id_empleado = ?;";
+        
+        $query_rh = $this->db->query($sql_rh, GERENTE_RH_ID);
+        
+        $rh = $query_rh->row();
+        
+        if ( $incidencia->falta  == 1){ $falta ="FALTA"; }else{ $falta = "RETARDO";}
+        
+        
+        $tabla = "
+        <table style=\"width: 100%; font-size: 36px; \">
+
+<tr>
+    <td rowspan=\"2\" style=\"width: 20%;\"><img style=\"position:relative; width:150px;\" src=\"".base_url()."imagenes/logo1.png\" /></td>
+    <td rowspan=\"2\" style=\"width: 50%; text-align: center; font-size: 50px; \"><b>INCIDENCIAS DE PERSONAL</b></td>
+    <td style=\"width: 30%; text-align: center;\">No. Folio</td>
+</tr>
+<tr>
+    <td style=\"width: 30%; text-align: center;\"><b>$incidencia->folio</b></td>
+</tr>
+
+<tr>
+    <td colspan=\"3\"><hr /></td>
+</tr>
+
+<tr>
+    <td style=\"width: 70%;\">NOMBRE: </td>
+    <td style=\"width: 30%;\" colspan=\"2\">DEPARTAMENTO: </td>
+</tr>
+
+<tr>
+    <td style=\"width: 70%;\"><b>$incidencia->completo</b></td>
+    <td colspan=\"2\" style=\"width: 30%; font-size: 30px; \"><b>$incidencia->sucursal</b></td>
+</tr>
+
+<tr>
+    <td style=\"width: 25%;\">NO. NOMINA</td>
+    <td style=\"width: 50%;\">PUESTO</td>
+    <td style=\"width: 25%;\">FECHA</td>
+</tr>
+
+<tr>
+    <td style=\"width: 25%;\"><b>$incidencia->nomina</b></td>
+    <td style=\"width: 50%;\"><b>$incidencia->puestox</b></td>
+    <td style=\"width: 25%;\"><b>$incidencia->fecha_captura</b></td>
+</tr>
+
+<tr>
+    <td>&nbsp;</td>
+</tr>
+
+<tr>
+    <td colspan=\"3\">JUSTIFICACION: </td>
+</tr>
+
+<tr>
+    <td colspan=\"3\">MANIFIESTO EL MOTIVO POR EL CUAL REGISTRE INCIDENCIA POR <b>$falta</b> EL DIA <b>$incidencia->fechad DEL MES DE ".nombre_del_mes($incidencia->fecham)." DEL $incidencia->fechay</b>.</td>
+</tr>
+
+<tr>
+    <td colspan=\"3\"><b><i>$incidencia->justifica</i></b></td>
+</tr>
+
+<tr>
+    <td colspan=\"3\"><b><i>$incidencia->justificantes</i></b></td>
+</tr>
+
+<tr>
+    <td colspan=\"3\">OBSERVACIONES: </td>
+</tr>
+
+<tr>
+    <td colspan=\"3\" style=\"width: 100%; font-size: 30px; height: 80px; \"><b>$incidencia->observaciones</b></td>
+</tr>
+
+<tr>
+    <td style=\"width: 50%; text-align: center; font-size: 30px; \">SOLICITA $jefe->jefe</td>
+    <td colspan=\"2\" style=\"width: 50%; text-align: center; font-size: 30px; \">AUTORIZA $rh->jefe</td>
+</tr>
+
+<tr>
+    <td>&nbsp;</td>
+</tr>
+
+<tr>
+    <td style=\"width: 50%; text-align: center; font-size: 30px; \">________________________________________</td>
+    <td colspan=\"2\" style=\"width: 50%; text-align: center; font-size: 30px; \">________________________________________</td>
+</tr>
+
+<tr>
+    <td style=\"width: 50%; text-align: center; font-size: 20px; \">NOMBRE Y FIRMA</td>
+    <td colspan=\"2\" style=\"width: 50%; text-align: center; font-size: 20px; \">NOMBRE Y FIRMA</td>
+</tr>
+
+<tr>
+    <td>&nbsp;</td>
+</tr>
+
+<tr>
+    <td colspan=\"3\" style=\"font-size: 30px;\"><b>NOTA: TODAS LAS JUSTIFICACIONES DEBEN VENIR DOCUMENTADAS</b></td>
+</tr>
+
+<tr>
+    <td style=\"text-align: center;\" COLSPAN=\"3\">*** COPIA RECURSOS HUMANOS ***</td>
+</tr>
+
+</table>
+
+<br />
+<hr />
+
+        <table style=\"width: 100%; font-size: 36px; \">
+
+<tr>
+    <td rowspan=\"2\" style=\"width: 20%;\"><img style=\"position:relative; width:150px;\" src=\"".base_url()."imagenes/logo1.png\" /></td>
+    <td rowspan=\"2\" style=\"width: 50%; text-align: center; font-size: 50px; \"><b>INCIDENCIAS DE PERSONAL</b></td>
+    <td style=\"width: 30%; text-align: center;\">No. Folio</td>
+</tr>
+<tr>
+    <td style=\"width: 30%; text-align: center;\"><b>$incidencia->folio</b></td>
+</tr>
+
+<tr>
+    <td colspan=\"3\"><hr /></td>
+</tr>
+
+<tr>
+    <td style=\"width: 70%;\">NOMBRE: </td>
+    <td style=\"width: 30%;\" colspan=\"2\">DEPARTAMENTO: </td>
+</tr>
+
+<tr>
+    <td style=\"width: 70%;\"><b>$incidencia->completo</b></td>
+    <td colspan=\"2\" style=\"width: 30%; font-size: 30px; \"><b>$incidencia->sucursal</b></td>
+</tr>
+
+<tr>
+    <td style=\"width: 25%;\">NO. NOMINA</td>
+    <td style=\"width: 50%;\">PUESTO</td>
+    <td style=\"width: 25%;\">FECHA</td>
+</tr>
+
+<tr>
+    <td style=\"width: 25%;\"><b>$incidencia->nomina</b></td>
+    <td style=\"width: 50%;\"><b>$incidencia->puestox</b></td>
+    <td style=\"width: 25%;\"><b>$incidencia->fecha_captura</b></td>
+</tr>
+
+<tr>
+    <td>&nbsp;</td>
+</tr>
+
+<tr>
+    <td colspan=\"3\">JUSTIFICACION: </td>
+</tr>
+
+<tr>
+    <td colspan=\"3\">MANIFIESTO EL MOTIVO POR EL CUAL REGISTRE INCIDENCIA POR <b>$falta</b> EL DIA <b>$incidencia->fechad DEL MES DE ".nombre_del_mes($incidencia->fecham)." DEL $incidencia->fechay</b>.</td>
+</tr>
+
+<tr>
+    <td colspan=\"3\"><b><i>$incidencia->justifica</i></b></td>
+</tr>
+
+<tr>
+    <td colspan=\"3\"><b><i>$incidencia->justificantes</i></b></td>
+</tr>
+
+<tr>
+    <td colspan=\"3\">OBSERVACIONES: </td>
+</tr>
+
+<tr>
+    <td colspan=\"3\" style=\"width: 100%; font-size: 30px; height: 80px; \"><b>$incidencia->observaciones</b></td>
+</tr>
+
+<tr>
+    <td style=\"width: 50%; text-align: center; font-size: 30px; \">SOLICITA $jefe->jefe</td>
+    <td colspan=\"2\" style=\"width: 50%; text-align: center; font-size: 30px; \">AUTORIZA $rh->jefe</td>
+</tr>
+
+<tr>
+    <td>&nbsp;</td>
+</tr>
+
+<tr>
+    <td style=\"width: 50%; text-align: center; font-size: 30px; \">________________________________________</td>
+    <td colspan=\"2\" style=\"width: 50%; text-align: center; font-size: 30px; \">________________________________________</td>
+</tr>
+
+<tr>
+    <td style=\"width: 50%; text-align: center; font-size: 20px; \">NOMBRE Y FIRMA</td>
+    <td colspan=\"2\" style=\"width: 50%; text-align: center; font-size: 20px; \">NOMBRE Y FIRMA</td>
+</tr>
+
+<tr>
+    <td>&nbsp;</td>
+</tr>
+
+<tr>
+    <td colspan=\"3\" style=\"font-size: 30px;\"><b>NOTA: TODAS LAS JUSTIFICACIONES DEBEN VENIR DOCUMENTADAS</b></td>
+</tr>
+
+<tr>
+    <td style=\"text-align: center;\" COLSPAN=\"3\">*** COPIA EMPLEADO ***</td>
+</tr>
+
+</table>
+        ";
+        
+        return $tabla;
+    }
 
     function get_asistencias_periodo_gerente_empleado($empleado_id, $inicio, $fin)
     {
@@ -1973,7 +2243,88 @@ order by nombre, e.completo, fecha;";
         return $r->cuenta;
     }
     
+    function get_incidencias_no_validadas($limit, $offset = 0)
+    {
+        $this->db->select("concat(date_format(i.fecha_captura, '%Y%m%d'), '-', LPAD(i.incidencia, 6, '0')) as folio, DATE_FORMAT(i.fecha_captura, '%d/%m/%Y') as fecha_captura, i.incidencia, completo, e.nomina, puestox, DATE_FORMAT(a.fecha, '%d/%m/%Y') as fecha, falta, retardo, justifica, justificantes, s.nombre as sucursal, i.estatus, asistencia", false);
+        $this->db->from('checador_incidencias i');
+        $this->db->join('checador_asistencia a', 'i.incidencia = a.incidencia');
+        $this->db->join('catalogo.cat_empleado e', 'a.empleado_id = e.id');
+        $this->db->join('catalogo.cat_justificacion j', 'j.id = i.justificacion');
+        $this->db->join('catalogo.sucursal s', 'e.succ = s.suc', 'left');
+        $this->db->where('i.estatus', 0);
+        $this->db->limit($limit, $offset);
+        
+        $query = $this->db->get();
+        return $query;
+    }
     
+    function get_incidencias_validadas($limit, $offset = 0)
+    {
+        $this->db->select("concat(date_format(i.fecha_captura, '%Y%m%d'), '-', LPAD(i.incidencia, 6, '0')) as folio, DATE_FORMAT(i.fecha_captura, '%d/%m/%Y') as fecha_captura, i.incidencia, completo, e.nomina, puestox, DATE_FORMAT(a.fecha, '%d/%m/%Y') as fecha, falta, retardo, justifica, justificantes, s.nombre as sucursal, i.estatus, asistencia", false);
+        $this->db->from('checador_incidencias i');
+        $this->db->join('checador_asistencia a', 'i.incidencia = a.incidencia');
+        $this->db->join('catalogo.cat_empleado e', 'a.empleado_id = e.id');
+        $this->db->join('catalogo.cat_justificacion j', 'j.id = i.justificacion');
+        $this->db->join('catalogo.sucursal s', 'e.succ = s.suc', 'left');
+        $this->db->where('i.estatus in(1, 2)', null, false);
+        $this->db->limit($limit, $offset);
+        
+        $query = $this->db->get();
+        return $query;
+    }
+
+    function actualiza_incidencia($incidencia, $estatus)
+    {
+        $data = array(
+            'estatus' => $estatus,
+            'usuario_valida' => $this->session->userdata('id')
+        );
+        $this->db->set('fecha_valida', 'now()', false);
+        $this->db->where('incidencia', $incidencia);
+        $this->db->update('checador_incidencias', $data);
+        $afectadas = $this->db->affected_rows();
+        
+        if( $afectadas > 0 && $estatus == 1) {
+            $data2 = array(
+                'justificada'   => 1,
+                'motivo'        => $this->get_justificacion_incidencia($incidencia),
+                'id_justifica'  => $this->session->userdata('id')
+                );
+            $this->db->set('fecha_justifica', 'now()', false);
+            $this->db->update('checador_asistencia', $data2);
+        }
+        
+        return $afectadas;
+    }
+    
+    function get_justificacion_incidencia($incidencia)
+    {
+        $sql = "SELECT justifica FROM checador_incidencias c
+join catalogo.cat_justificacion j on j.id = c.justificacion
+where c.incidencia = ?;";
+        $query = $this->db->query($sql, $incidencia);
+        $row = $query->row();
+        return $row->justifica;
+    }
+    
+    function cuenta_incidencias_novalidadas()
+    {
+        $sql="SELECT count(*) as cuenta FROM checador_incidencias c where estatus = 0;";
+        
+        $query = $this->db->query($sql);
+        $r = $query->row();
+        return $r->cuenta;
+    }
+
+    function cuenta_incidencias_validadas()
+    {
+        $sql="SELECT count(*) as cuenta FROM checador_incidencias c where estatus in(1,2);";
+        
+        $query = $this->db->query($sql);
+        $r = $query->row();
+        return $r->cuenta;
+    }
+
     function get_dias_vacaciones($id)
     {
         $this->db->select('dias');
@@ -2626,7 +2977,7 @@ function selec_asunto1()
     {
         
         $sql = "SELECT a.*, b.completo, b.succ, c.nombre as sucursal FROM reg_memo a
-                left join catalogo.cat_empleado b on a.nomina=b.nomina
+                left join catalogo.cat_empleado b on a.nomina=b.nomina and tipo=1
                 left join catalogo.sucursal c on b.succ=c.suc
                 where a.nomina=?";
         $query = $this->db->query($sql, $this->session->userdata('nomina'));
@@ -2655,7 +3006,7 @@ function selec_asunto1()
         $s="
         SELECT a.*, b.completo, b.succ, c.nombre as sucursal, extract(year from fec_elab) as anio, extract(month from fec_elab) as mes, extract(day from fec_elab) as dia, extract(hour from fec_elab) as tiempo, extract(minute from fec_elab) as tiempo1, extract(second from fec_elab) as tiempo2
         FROM reg_memo a
-        left join catalogo.cat_empleado b on a.nomina=b.nomina
+        left join catalogo.cat_empleado b on a.nomina=b.nomina and tipo=1
         left join catalogo.sucursal c on b.succ=c.suc
         where a.id=$id";
         

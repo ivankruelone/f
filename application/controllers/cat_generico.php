@@ -61,7 +61,7 @@ class Cat_generico extends CI_Controller
         $tit ="Catalogo de Genericos por Secuencias";
          
         $data['tabla'] = $this->cat_generico_model->general_sec($tit);
-        $this->load->view('contenidos/viu_8', $data);   
+        $this->load->view('contenidos/viu_10', $data);   
         
         
     }
@@ -83,17 +83,14 @@ class Cat_generico extends CI_Controller
     {
         $this->load->model('cat_generico_model');
         $tit ="Catalogo de general para captura de registro";
-         
         $data['tabla'] = $this->cat_generico_model->general_registro($tit);
-        $this->load->view('contenidos/viu_9', $data);   
-        
-        
+         $this->load->view('contenidos/viu_11_catalogo', $data);   
     }
 //////////////////////////////////////////////
-    function upload_comprobante($id)
+    function upload_registro($id,$clave,$lab)
     {
-        $nombre = $this->cat_generico_model->nombre_comprobante($id);
-
+         $this->load->model('cat_generico_model');
+         $nombre = $this->cat_generico_model->nombre_comprobante($id);
         $uploaddir = './img/registros/';
         $file = basename($_FILES['userfile']['name']);
         $ext = explode('.', $file);
@@ -118,8 +115,8 @@ class Cat_generico extends CI_Controller
 
             $this->load->library('image_lib', $config);
             $this->image_lib->resize();
-            
-            echo $this->checador_model->insert_comprobante($file, $id);
+            $this->load->model('cat_generico_model');
+            echo $this->cat_generico_model->insert_registro($file, $id, $clave, $lab);
         } else {
             echo "error";
         }
@@ -333,6 +330,8 @@ function cambio_producto()
 //////////////////////////////////////////////
 function actualiza_catalogo()
 	{
+    ini_set('memory_limit','2000M');
+    set_time_limit(0);
     $this->load->model('cat_generico_model');
     $this->cat_generico_model->catalogo_cat_compras();
     redirect('cat_generico/tabla_catalogo_gen_sec');

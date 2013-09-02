@@ -75,6 +75,14 @@ $id = $this->session->userdata('id');
                                     <li><?php echo anchor('checador/formato_periodos', 'Periodos');?></li>
                                 </ul>
                             </li>
+                            <li <?php if($menu == 'incidencias'){?>class="dropdown active" <?php }else{?> class="dropdown"<?php }?>>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Incidencias <b class="caret"></b></a>                                
+                                <ul class="dropdown-menu">
+                                    <li><?php echo anchor('checador/formato_incidencias_validar', 'Pendientes por validar');?></li>
+                                    <li><?php echo anchor('checador/formato_incidencias_historico', 'Historico incidencias');?></li>
+                                </ul>
+                            </li>
+                            
                           <!--
                             </a><li <?php if($menu == 'memorandum'){?>class="dropdown active" <?php }else{?> class="dropdown"<?php }?>>
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Memorandum <b class="caret"></b></a>                                
@@ -86,6 +94,10 @@ $id = $this->session->userdata('id');
                             -->
                             <li><?php echo anchor('login/logout', 'Cerrar Sesi&oacute;n');?></li>
                         </ul>
+                        <form class="navbar-form pull-right">
+                            <input type="text" class="input-small search-query" />
+                            <button type="submit" class="btn">Buscar</button>
+                        </form>
                         <?php
                         }elseif($nivel == 51){
                         ?>

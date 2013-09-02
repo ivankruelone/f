@@ -17,13 +17,13 @@ echo ('<br /><br />');
 //echo ('<br /><br />');
 }
 if($tipo==5 || $tipo==3){
-echo anchor('recursos_humanos/tabla_empleados_pendientes_his', 'ALTAS Y BAJA DE EMPLEADOS<br />', 'class="button-link blue"');
+echo anchor('recursos_humanos/tabla_empleados_pendientes_his', 'ALTAS Y BAJA DE EMPL.<br />', 'class="button-link blue" style="position:relative; width:140px; height:20px;"');
 echo ('<br /><br />');
-echo anchor('recursos_humanos/movimiento_ab_his_cla', 'HIS.ALTAS DE EMPLEADOS<br />', 'class="button-link blue"');
+echo anchor('recursos_humanos/movimiento_ab_his_cla', 'HIS.ALTAS DE EMPLEADOS<br />', 'class="button-link blue" style="position:relative; width:140px; height:20px;"');
 echo ('<br /><br />');
 }
 if($tipo==6){
-echo anchor('recursos_humanos/movimiento_inca', 'CAPTURA_INCAPACIDADES<br />', 'class="button-link blue"');
+echo anchor('recursos_humanos/movimiento_inca', 'CAPTURA_INCAPACIDADES<br />', 'class="button-link blue" style="position:relative; width:140px; height:20px;"');
 echo ('<br /><br />');
 //echo anchor('recursos_humanos/tabla_empleados_pendientes_incapa', 'INCAPACIDADES<br />', 'class="button-link blue"');
 //echo ('<br /><br />');

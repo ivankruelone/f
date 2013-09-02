@@ -542,9 +542,9 @@ public function reporte_horas()
         $this->load->model('catalogo_model');
         $mesx = $this->catalogo_model->busca_mes_unico($this->input->post('mes'));
         $this->load->model('direccion_model');
-        $tit = "VENTAS Y UTILIDADES DEL MES DE $mesx SIN RECARGAS";
+        $tit = "VENTAS Y UTILIDADES DEL MES DE $mesx SIN IVA";
         $data['tabla'] = $this->direccion_model->ver_ventas($this->input->post('aaa'),$this->input->post('mes'),$this->input->post('far'),$tit);
-        $this->load->view('contenidos/viu_14', $data);
+        $this->load->view('contenidos/viu_21', $data);
     }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

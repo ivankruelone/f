@@ -1659,6 +1659,198 @@ $s = "SELECT a.*,b.nombre as sucx,b.dire,c.pat,c.mat,c.nom,d.ciax,e.nombre as mo
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function inserta_detalle($fec)
+{
+ $s="insert ignore into entrega_nomina_d(quincena, cia, nomina, completo, suc, suc_act,fecha,puestox)
+(select '$fec',cia,nomina,trim(completo),succ,succ,date(now()),puestox from catalogo.cat_empleado where tipo=1 and succ>0)";
+$this->db->query($s);   
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function quincena()
+    {
+     $id_user= $this->session->userdata('id');
+     $nivel= $this->session->userdata('nivel');   
+     $tipo= $this->session->userdata('tipo');   
+    
+       $s = "select *from entrega_nomina_d  group by  quincena";
+      $q = $this->db->query($s);
+        
+        $tabla1= "
+        <table border=\"1\">
+        <thead>
+        <tr>
+        <th align=\"center\">#</th>
+        <th align=\"center\">Quincenas</th>
+        
+        <th align=\"center\">empleados</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+    $num=0;
+        foreach($q->result() as $r)
+        {
+        $l1 = anchor('recursos_humanos/tabla_nomina/'.$r->quincena, 'DETALLE', array('title' => 'Haz Click aqui para ver formato!', 'class' => 'encabezado'));
+            
+           $num=$num+1;
+            $tabla1.="
+            <tr>
+            <td align=\"left\">".$num."</td>
+            <td align=\"left\">".$r->quincena."</td>
+            <td align=\"left\">".$l1."</td>
+            </tr>
+            ";
+            
+        
+        }
+        $tabla1.="
+        </tbody>
+        </table>";
+        
+        return $tabla1;
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function inserta_control_nom($fec,$suc,$id_emp)
+{
+    echo $id_emp;
+    //die();
+ $s="insert ignore into entrega_nomina_c(fecha, ger, sup, suc, id_entrega, entrega, id_recibe, recibe,tipo)
+(SELECT '$fec',b.regional,b.superv, a.suc,$id_emp,'0000-00-00',0,'0000-00-00',' ' FROM entrega_nomina_d a
+left join catalogo.sucursal b on b.suc=a.suc
+where a.suc=$suc and quincena='$fec'
+group by a.suc,fecha)";
+$this->db->query($s);   
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function nomina($fec)
+    {
+     $id_user= $this->session->userdata('id');
+     $nivel= $this->session->userdata('nivel');   
+     $tipo= $this->session->userdata('tipo');   
+    
+       $s = "select a.*,b.tipo1,b.nombre as sucx,c.nombre as supx,d.nombre as gerx,
+       e.completo as lleba, e.puestox as lleba_pue
+       from entrega_nomina_c a 
+       left join catalogo.sucursal b on b.suc=a.suc
+       left join catalogo.cat_empleado e on e.id=a.id_entrega
+       left join desarrollo.usuarios c on c.plaza=a.sup and c.nivel=14 and c.responsable='R' and c.activo=1
+       left join desarrollo.usuarios d on d.plaza=a.ger and d.nivel=21 and d.activo=1
+       where a.fecha='$fec' and a.tipo=' ' ";
+      $q = $this->db->query($s);
+        
+        $tabla1= "
+        <table border=\"1\">
+        <thead>
+        <tr>
+        <th align=\"center\">#</th>
+        <th align=\"center\">fecha</th>
+        <th align=\"center\">Gerente</th>
+        <th align=\"center\">Supervisor</th>
+        <th align=\"center\">Empleado</th>
+        <th align=\"center\">Nid</th>
+        <th align=\"center\">Sucursal</th>
+        
+        </tr>
+        </thead>
+        <tbody>
+        ";
+    $num=0;
+        foreach($q->result() as $r)
+        {
+        
+        $l1 = anchor('recursos_humanos/tabla_nomina_suc/'.$r->fecha.'/'.$r->suc, $r->sucx, array('title' => 'Haz Click aqui para ver formato!', 'class' => 'encabezado'));
+            
+           $num=$num+1;
+            $tabla1.="
+            <tr>
+            <td align=\"left\">".$num."</td>
+            <td align=\"left\">".$r->fecha."</td>
+            <td align=\"left\">".$r->gerx."</td>
+            <td align=\"left\">".$r->supx."</td>
+            <td align=\"left\">".$r->lleba."<br />".$r->lleba_pue."</td>
+            <td align=\"left\">".$r->suc."</td>
+            <td align=\"left\">".$l1."</td>
+            </tr>
+            ";
+            
+        
+        }
+        $tabla1.="
+        </tbody>
+        </table>";
+        
+        return $tabla1;
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function nomina_suc($fec, $suc)
+    {
+     $id_user= $this->session->userdata('id');
+     $nivel= $this->session->userdata('nivel');   
+     $tipo= $this->session->userdata('tipo');   
+     $dia=substr($fec,8,2);
+       $s = "select b.ciax,a.*,
+       (select motivo from catalogo.cat_alta_empleado where motivo='RETENCION' and activo=1 and id_causa<>7 and empleado=a.nomina)as motivo
+       from entrega_nomina_d a 
+       left join catalogo.cat_compa_nomina b on b.cia=a.cia where a.quincena='$fec' and a.suc_act=$suc";
+      $q = $this->db->query($s);
+        
+        $tabla1= "
+        <table border=\"1\">
+        <thead>
+        <tr>
+        <th align=\"center\">#</th>
+        <th align=\"center\">Empresa</th>
+        <th align=\"center\">Nomina</th>
+        <th align=\"center\">Empleado</th>
+        <th align=\"center\">Puesto</th>
+        
+        <th align=\"center\">Observacion</th>
+        <th align=\"center\"></th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+    $num=0;$vales=0;
+        foreach($q->result() as $r)
+        {
+        if($r->cia==1 and $dia>27){$vales=$vales+1;}
+        $l1 = anchor('recursos_humanos/nomina_suc_bor/'.$r->fecha.'/'.$r->suc.'/'.$r->id, '<img src="'.base_url().'img/error.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para ver formato!', 'class' => 'encabezado'));
+            
+           $num=$num+1;
+            $tabla1.="
+            <tr>
+            <td align=\"left\">".$num."</td>
+            <td align=\"left\">".$r->ciax."</td>
+            <td align=\"left\">".$r->nomina."</td>
+            <td align=\"left\">".$r->completo."</td>
+            <td align=\"left\">".$r->puestox."</td>
+            <td align=\"left\">".$r->motivo."</td>
+            <td align=\"left\">".$l1."</td>
+            </tr>
+            ";
+            
+        
+        }
+        $tabla1.="
+        </tbody>
+        <tfoot>
+        <tr>
+        <td colspan=\"6\">Total de empleado $num<br />Paquete de vales $vales</td>
+        </tr>
+        </tfoot>
+        </table>";
+        
+        return $tabla1;
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 

@@ -45,9 +45,15 @@ class Sistemas extends CI_Controller
         
         $tit= 'Reporte de sistemas';
         $this->load->model('sistemas_model');
+        $q=$this->sistemas_model->campos_reporte($id);
+        $r=$q->row();
+        $data['antes']=$r->antes;
+        $data['ahora']=$r->ahora;
+        $data['solucion']=$r->solucion;
         $data['tabla0'] = $this->sistemas_model->busca_reporte($id,$tit);
-        //$data['per'] = $this->sistemas_model->busca_sis();
+        $data['per'] = $this->sistemas_model->busca_sis();
         $data['titulo']= 'SOLUCION';
+        $data['id']= $id;
         $data['tabla']= $this->sistemas_model->tabla_reporte($tit);
         $data['contenido']= "sistemas_form_reporte2";
         $data['selector'] = "reporte";
@@ -73,7 +79,12 @@ function agrega_reporte()
      redirect('sistemas/index/');
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function reporte_val($id)
+	{
+	$this->load->model('sistemas_model');
+    echo $this->sistemas_model->val_member_reporte($id);
+     redirect('sistemas/index');
+    }///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function reporte_borrar($id)
@@ -87,14 +98,89 @@ function reporte_borrar($id)
 function reporte_act($id)
 	{
 	$this->load->model('sistemas_model');
-    echo $this->sistemas_model->update_member_reporte($this->input->post('id'),$this->input->post('solucion')
-    ,$this->input->post('antes'),$this->input->post('ahora'));
+    echo $this->sistemas_model->update_member_reporte(
+    $this->input->post('id'),
+    $this->input->post('solucion'),
+    $this->input->post('antes'),
+    $this->input->post('ahora'),$this->input->post('per'));
      redirect('sistemas/index');
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+   public function reportes_his()
+    {
+         $tit= 'Reporte de sistemas';
+        $data['titulo']= 'Reporte de sistemas';
+        $data['tabla']= '';
+        $data['contenido']= "sistemas_form_reporte_fecha";
+        $data['selector'] = "reporte";
+        $data['sidebar'] = "sidebar_sistemas";
+                
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+   public function reportes_his_imp()
+    {
+      	$this->load->model('sistemas_model');
+      $data['cabeza']= "
+      <table>
+           
+    <tr>
+    <td colspan=\"5\" align=\"center\"><font size=\"+5\"><strong>REPORTES<BR /></strong></font></td>
+    </tr>
+    
+   </table> 
+            ";
+            $data['detalle']=$this->sistemas_model->reporte_impresion();
+            $this->load->view('impresiones/sistemas_reportes', $data);
+    }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+   public function reportes_depto()
+    {
+         $tit= 'Reporte de sistemas';
+        $data['titulo']= 'Reporte de sistemas';
+        $data['tabla']= '';
+        $data['contenido']= "sistemas_form_reporte_deptos";
+        $data['selector'] = "reporte";
+        $data['sidebar'] = "sidebar_sistemas";
+                
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+   public function reportes_deptos_imp()
+    {
+      	$fec1=$this->input->post('fec1');
+        $fec2=$this->input->post('fec2');
+        $this->load->model('sistemas_model');
+        $checan=$this->sistemas_model->personal_oficinas($fec1,$fec2);
+       
+      $data['cabeza']= "
+      <table>
+           
+    <tr>
+    <td colspan=\"5\" align=\"center\"><font size=\"+2\"><strong>RECURSOS HUMANOS<BR /></strong></font></td>
+    </tr>
+    
+   </table> 
+            ";
+      echo $data['cabeza'];
+            $data['detalle']=$this->sistemas_model->rh_medicos();
+            $data['retencion']=$this->sistemas_model->rh_retencion();  
+            //$data['detalle']=$this->sistemas_model->personal_oficinas($fec1,$fec2);
+            $data['faltas']=$this->sistemas_model->personal_oficinas_faltas($fec1,$fec2);
+            $this->load->view('impresiones/sistemas_reportes_horizontal', $data);
+    }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

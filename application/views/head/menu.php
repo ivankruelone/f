@@ -433,8 +433,7 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
 ?>
     <div id="menubar">
         <ul id="menu">
-        <li<?php if(isset($selector) && $selector == "juridico") echo " class=\"selected\"";?>><?php echo anchor('juridico/tabla_rentas', 'CATALOGO');?></li>  
-        <li<?php if(isset($selector) && $selector == "juridico_r") echo " class=\"selected\"";?>><?php echo anchor('juridico/index_r', 'RENTAS');?></li>
+        <li<?php if(isset($selector) && $selector == "juridico_r") echo " class=\"selected\"";?>><?php echo anchor('juridico/index_ger', 'MOVIMIENTOS');?></li>
         </ul>
       </div>
 
@@ -464,9 +463,11 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
  if($tipo == 2){?>
         <li<?php if(isset($selector) && $selector == "recursos_humanos3") echo " class=\"selected\"";?>><?php echo anchor('recursos_humanos/indexab', 'BAJAS');?></li>
         <li<?php if(isset($selector) && $selector == "calendario") echo " class=\"selected\"";?>><?php echo anchor('calendario/index', 'Calendario');?></li>
+        
  <?php }
   if($tipo == 3 || $tipo == 5){?>
         <li<?php if(isset($selector) && $selector == "recursos_humanos") echo " class=\"selected\"";?>><?php echo anchor('recursos_humanos/indexc', 'MOVIMIENTOS');?></li>
+        <li<?php if(isset($selector) && $selector == "recursos_humanos5") echo " class=\"selected\"";?>><?php echo anchor('recursos_humanos/index_nom', 'NOMINA');?></li>
         <li<?php if(isset($selector) && $selector == "calendario") echo " class=\"selected\"";?>><?php echo anchor('calendario/index', 'Calendario');?></li>
  <?php }if($tipo == 6){?>
         <li<?php if(isset($selector) && $selector == "recursos_humanos") echo " class=\"selected\"";?>><?php echo anchor('recursos_humanos/indexc', 'INCAPACIDAD');?></li>

@@ -736,7 +736,7 @@ end
 FROM rentas a
 left join catalogo.sucursal b on b.suc=a.suc
 left join catalogo.mes c on c.num=a.mes
-where activo=1 and a.aaa=$aaa and a.mes=$mes and a.num>0
+where activo=1 and a.aaa=$aaa and a.mes=$mes and  paso=2
 order by a.num,a.suc
 ";
  
@@ -1209,10 +1209,208 @@ order by aaa desc, mes desc";
     }
 ////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+     function rentas_generadas_mes_ger()
+    {
+    $nivel= $this->session->userdata('nivel');   
+     $sql = "SELECT a.*,c.mes as mesx,
+sum(
+case
+when a.auxi=7004  and pago='MN' then (imp*iva)+imp
+when a.auxi=7003  and pago='MN' then imp+(imp*iva)-(imp*(isr/100))-(imp*(iva_isr/100))-(imp*(imp_cedular/100))+redondeo
+end
+)
+as total,
+sum(
+case
+when a.auxi=7004  and pago='USD' then (imp*iva)+imp
+when a.auxi=7003  and pago='USD' then imp+(imp*iva)-(imp*(isr/100))-(imp*(iva_isr/100))-(imp*(imp_cedular/100))+redondeo
+end
+)
+as totaldl
+FROM rentas a
+left join catalogo.mes c on c.num=a.mes
+where activo=1 and paso=2
+group by aaa,mes
+order by aaa desc, mes desc";
+      
+        $query = $this->db->query($sql);
+        $tabla= "
+        <table>
+        <thead>
+        <tr>
+        <th>A&Ntilde;O Y MES</th>
+        <th>IMPORTE EN MN</th>
+        <th>IMPORTE EN DOLAR</th>
+        <th>TIPO DE CAMBIO</th>
+        <th>IMPORTE T.C</th>
+        <th>TOTAL</th>
+        <th>Ver</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        
+        foreach($query->result() as $row)
+        {
+        
+        
+            $l1 = anchor('juridico/tabla_rentas_mensual_mes_ger/'.$row->aaa.'/'.$row->mes, '<img src="'.base_url().'img/reportes2.png" border="0" width="20px" /></a>', array('title' => 'Imprime concentrado de rentas!', 'class' => 'encabezado', 'target' => 'blanck' ));
+             $tabla.="
+            <tr>
+            <td align=\"left\">".$row->aaa." - ".$row->mesx."</td>
+            <td align=\"right\"> MN $ ".number_format($row->total,2)."</td>
+            <td align=\"right\"> USD ".number_format($row->totaldl,2)."</td>
+            <td align=\"right\">$  ".number_format($row->tipo_cambio,2)."</td>
+            <td align=\"right\">$  ".number_format($row->tipo_cambio*$row->totaldl,2)."</td>
+            <td align=\"right\">$  ".number_format($row->total+$row->totaldl,2)."</td>
+            <td align=\"right\">".$l1."</td>
+            
+            </tr>
+            ";
+        }
+        
+        $tabla.="
+        </tbody>
+        </table>";
+        
+        return $tabla;
+    }
+////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+function rh_retencion_actual($tit)
+{
+$s="select a.id, a.causaj,a.fecha_i,a.suc,b.nombre as sucx,empleado,concat(a.nom,' ',a.pat,' ',a.mat)as completo,a.causa,c.clave as causax
+from catalogo.cat_alta_empleado a
+left join catalogo.sucursal b on b.suc=a.suc
+left join catalogo.cat_claves_rh c on c.id=a.id_causa
+where a.motivo='RETENCION' AND a.id_causa<>7 and a.activo=1
+order by a.fecha_i ";
+
+$q=$this->db->query($s);
+$l0 = anchor('juridico/reportes_deptos_ret', '<img src="'.base_url().'img/reportes2.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para editar !', 'class' => 'encabezado'));;
+$tabla="<table cellpadding=\"2\" border=\"0\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\">
+        <caption>$tit</caption>
+        <thead>
+        <tr>
+        <th width=\"70\"><strong>FECHA</strong></th>
+        <th width=\"150\"><strong>SUCURSAL</strong></th>
+        <th width=\"260\"><strong>EMPLEADO</strong></th>
+        <th width=\"180\"><strong>CAUSA</strong></th>
+        <th width=\"120\"><strong>ESTATUS</strong></th>
+        <th width=\"100\"><strong>JURIDICO</strong></th>
+        <th width=\"100\"><strong>CAPTURA</strong></th>
+        </tr>
+        <tr><td colspan=\"7\">$l0</td></tr>
+        </thead>
+        <tbody>
+        ";
+$num=0;
+ foreach($q->result() as $r)
+        {
+ $l1 = anchor('juridico/digita_causa/'.$r->id, '<img src="'.base_url().'img/edit.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para editar !', 'class' => 'encabezado'));;
+   $num=$num+1;
+$tabla.="
+            <tr>
+            
+            <td align=\"left\" width=\"70\">".$r->fecha_i."</td>
+            <td align=\"left\" width=\"150\">".$r->sucx."</td>
+            <td align=\"left\" width=\"260\">".$r->empleado." ".$r->completo."</td>
+            <td align=\"left\" width=\"180\">".$r->causa."</td>
+            <td align=\"left\" width=\"120\">".$r->causax."</td>
+            <td align=\"left\" width=\"100\">".$r->causaj."</td>
+            <td align=\"left\" width=\"100\">".$l1."</td>
+            
+            </tr>
+            ";
+               
+
+            
+        }
+$tabla.="
+</tbody>
+<tfoot>
+<tr>
+<td  colspan=\"7\">Total de retenciones $num</td>
+</tr>
+</tfoot>
+</table>";
+
+ 
+
+return $tabla;    
+}
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
+function rh_retencion_actual_id($tit,$id)
+{
+$s="select a.id, a.causaj,a.fecha_i,a.suc,b.nombre as sucx,empleado,concat(a.nom,' ',a.pat,' ',a.mat)as completo,a.causa,c.clave as causax
+from catalogo.cat_alta_empleado a
+left join catalogo.sucursal b on b.suc=a.suc
+left join catalogo.cat_claves_rh c on c.id=a.id_causa
+where a.motivo='RETENCION' AND a.id_causa<>7 and a.activo=1 and a.id=$id
+order by a.fecha_i ";
+
+$q=$this->db->query($s);
+
+$tabla="<table cellpadding=\"2\" border=\"0\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\">
+        <caption>$tit</caption>
+        <thead>
+        <tr>
+        <th width=\"70\"><strong>FECHA</strong></th>
+        <th width=\"150\"><strong>SUCURSAL</strong></th>
+        <th width=\"260\"><strong>EMPLEADO</strong></th>
+        <th width=\"180\"><strong>CAUSA</strong></th>
+        <th width=\"120\"><strong>ESTATUS</strong></th>
+        </tr>
+        <tr><td colspan=\"7\"></td></tr>
+        </thead>
+        <tbody>
+        ";
+$num=0;
+ foreach($q->result() as $r)
+        {
+   $num=$num+1;
+$tabla.="
+            <tr>
+            
+            <td align=\"left\" width=\"70\">".$r->fecha_i."</td>
+            <td align=\"left\" width=\"150\">".$r->sucx."</td>
+            <td align=\"left\" width=\"260\">".$r->empleado." ".$r->completo."</td>
+            <td align=\"left\" width=\"180\">".$r->causa."</td>
+            <td align=\"left\" width=\"180\">".$r->causax."</td>
+            
+            </tr>
+            ";
+               
+
+            
+        }
+$tabla.="
+</tbody>
+<tfoot>
+<tr>
+<td  colspan=\"7\">Total de retenciones $num</td>
+</tr>
+</tfoot>
+</table>";
+
+ 
+
+return $tabla;    
+}
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
+function busca_retencion_causa($id)
+{
+$s="select  a.causaj
+from catalogo.cat_alta_empleado a
+where a.motivo='RETENCION' AND  a.id=$id";
+$q=$this->db->query($s);
+$r=$q->row();
+return $r->causaj;
+}
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
  /////////////////////////////////////////////////////

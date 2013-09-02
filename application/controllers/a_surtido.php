@@ -226,7 +226,10 @@ class A_surtido extends CI_Controller
         $falysob  = $this->a_surtido_model->reporte_folio($fecha1, $fecha2);
         $sobrante = $this->a_surtido_model->reporte_folio_sobrante($fecha1, $fecha2);
         $sinincidencias = $this->a_surtido_model->reporte_folio_sin_incidencias($fecha1, $fecha2);
-
+        //echo "<pre>";
+        //print_r($sobrante);
+        //echo "</pre>";
+        //die();
         $data['cabeza'] = $this->a_surtido_model->reporte_folio_encabezado($fecha1, $fecha2);
         $data['detalle'] = $faltante['tabla'];
         $data['detalle1'] = $falysob ['tabla'];
@@ -261,7 +264,6 @@ class A_surtido extends CI_Controller
         set_time_limit(0);
         $fecha1 = $this->input->post('fec1');
         $fecha2 = $this->input->post('fec2');
-        
         
         $this->load->model('a_surtido_model');
 

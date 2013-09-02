@@ -624,7 +624,7 @@ public function tabla_empleados_captura_ab_his()
         $data['mensaje']= '';
         $data['titulo']= 'MOVIMIENTOS ';
         $data['titulo1']= '';
-        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL';
+        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />';
         $data['contenido'] = "recursos_humanos";
         $data['selector'] = "recursos_humanos";
         $data['sidebar'] = "sidebar_recursos_humanos";
@@ -1085,7 +1085,7 @@ public function tabla_empleados_validar_incapacidad($id)
         $data['mensaje']= '';
         $data['titulo']= 'FALTAS';
         $data['titulo1']= '';
-        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL';
+        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />';
         $data['contenido'] = "recursos_humanos";
         $data['selector'] = "recursos_humanos";
         $data['sidebar'] = "sidebar_recursos_humanos_faltas";
@@ -1246,13 +1246,92 @@ public function tabla_empleados_validar_falta($id)
     }
 //////////////////////////////////////////////
 //////////////////////////////////////////////
-
+ /////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+    public function index_nom()
+    {
+        $data['mensaje']= '';
+        $data['titulo']= 'ENTREGA DE NOMINAS';
+        $data['titulo1']= '';
+        $this->load->model('recursos_humanos_model');
+        $data['tabla']= $this->recursos_humanos_model->quincena();
+        $data['contenido'] = "rh_form_nomina_fecha";
+        $data['selector'] = "recursos_humanos";
+        $data['sidebar'] = "sidebar_recursos_humanos_nomina";
+                
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+public function inserta_detalle_nomina()
+    {
+    
+     $this->load->model('recursos_humanos_model');
+     $this->recursos_humanos_model->inserta_detalle($this->input->post('quincena'));
+     redirect('recursos_humanos/index_nom');
+    }
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+   public function tabla_nomina($fec)
+    {
+        
+        $data['mensaje']= '';
+        $data['titulo']= 'ENTREGA DE NOMINAS '.$fec;
+        $data['fec']= $fec;
+        $this->load->model('catalogo_model');
+		$data['sucx'] = $this->catalogo_model->busca_sucursal_general_nom();
+        
+        $this->load->model('recursos_humanos_model');
+        $data['tabla']= $this->recursos_humanos_model->nomina($fec);
+        $data['contenido'] = "rh_form_nomina_suc";
+        $data['selector'] = "recursos_humanos";
+        $data['sidebar'] = "sidebar_recursos_humanos_nomina";
+                
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 //////////////////////////////////////////////
+public function inserta_control_nomina()
+    {
+    $fec= $this->input->post('fec');
+     $this->load->model('recursos_humanos_model');
+     $this->recursos_humanos_model->inserta_control_nom($this->input->post('fec'),$this->input->post('suc'),$this->input->post('id_emp'));
+     redirect('recursos_humanos/tabla_nomina/'.$fec);
+    }
 //////////////////////////////////////////////
 //////////////////////////////////////////////
+   public function tabla_nomina_suc($fec,$suc)
+    {
+        
+        $this->load->model('catalogo_model');
+		$sucx = $this->catalogo_model->busca_sucursal_una($suc);
+        $data['titulo']= $sucx.'<br />ENTREGA DE NOMINAS '.$fec;
+        $data['titulo1']= '';
+        $this->load->model('recursos_humanos_model');
+        $data['tabla']= $this->recursos_humanos_model->nomina_suc($fec,$suc);
+        $data['contenido'] = "recursos_humanos";
+        $data['selector'] = "recursos_humanos";
+        $data['sidebar'] = "sidebar_recursos_humanos_nomina";
+                
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+public function borra_nomina($fec,$suc,$id)
+    {
+    $data = array('suc_act' => 0);
+        $this->db->where('id', $id);
+        $this->db->update('desarrollo.nomina_d', $data); 
+                
+    }
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 //////////////////////////////////////////////

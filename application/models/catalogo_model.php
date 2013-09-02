@@ -2530,7 +2530,6 @@ $detalle.="
         
         $sql = "SELECT suc,nombre FROM  catalogo.sucursal where  tlid=1 or suc>=90006 order by nombre"; 
         $query = $this->db->query($sql,array($this->session->userdata('id')));
-        
         $suc = array();
         $suc[0] = "Selecciona una Sucursal";
         
@@ -4963,9 +4962,40 @@ order by dia";
  
     }
  /////////////////////////////////////////////////////
-/////////////////////////////////////////////////////
+///////////////////////////////////////////////////// agragar tarjeta
+function busca_sucursal_tar()
+    {
+        
+        $sql = "SELECT suc,nombre FROM  catalogo.sucursal 
+        where tlid=1 and suc>100 and suc<1600 
+        ";
+        $query = $this->db->query($sql);
+        
+        $suc = array();
+        $suc[0] = "Selecciona una Sucursal";
+        
+        foreach($query->result() as $row){
+            $suc[$row->suc] = $row->suc." - ".$row->nombre;
+        }
+        
+        
+        return $suc;  
+    }
 
+function guardar_tarjeta()
+    {
+            
+        $data = array(
+           'suc' => $this->input->post('sucursal'),
+           'fol1' => $this->input->post('inicial'),
+           'fol2' => $this->input->post('final')
+      
+        );
+     $this->db->insert('vtadc.tarjetas_suc', $data);
+     return $this->db->insert_id();
 
+}
 
-
+//////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
 }

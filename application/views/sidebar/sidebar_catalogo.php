@@ -78,7 +78,7 @@ echo anchor('catalogo_ger/cat_naturistas', 'PRODUCTOS NATURISTAS', 'class="butto
 echo ('<br /><br />');
 }
 if($nivel == 21 ){
-echo anchor('catalogo_ger/tabla_farmabodega', 'CATALOGO DE FARMABODEGA', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo anchor('catalogo_ger/tabla_farmabodega', 'CAT.FARMABODEGA', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo ('<br /><br />');    
 echo anchor('catalogo_ger/tabla_cambios_precios', 'CAMBIOS DE PRECIOS', 'class="button-link green"');
 echo ('<br /><br />');
@@ -91,17 +91,17 @@ echo ('<br /><br />');
 echo anchor('catalogo_ger/tabla_gener_patente', 'CATALOGOS DE PATENTE ALM', 'class="button-link green"');
 }
 if( $nivel==9){
-echo anchor('catalogo_ger/tabla_farmabodega', 'CATALOGO DE FARMABODEGA', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo  anchor('catalogo_ger/tabla_sup_asignadas_ger_ger', 'GERENTES  ', 'class="button-link blue" style="position:relative; width:140px; height:20px;"');
+echo ('<br /><br />');
+echo anchor('catalogo_ger/tabla_farmabodega', 'FARMABODEGA', 'class="button-link blue" style="position:relative; width:140px; height:20px;"');
 echo ('<br /><br />');    
-echo anchor('catalogo_ger/tabla_cambios_precios', 'CAMBIOS DE PRECIOS', 'class="button-link green"');
+echo anchor('catalogo_ger/tabla_cambios_precios', 'CAMBIOS DE PRECIOS', 'class="button-link blue" style="position:relative; width:140px; height:20px;"');
 echo ('<br /><br />');
-echo  anchor('catalogo_ger/tabla_sup_asignadas_ger_ger', 'GERENTES  ', 'class="button-link pink"');
+echo anchor('catalogo_ger/tabla_natur', 'NATURISTAS', 'class="button-link blue" style="position:relative; width:140px; height:20px;"');
 echo ('<br /><br />');
-echo anchor('catalogo_ger/tabla_natur', 'PRODUCTOS NATURISTAS', 'class="button-link orange"');
+echo anchor('catalogo_ger/tabla_gener', 'GENERICOS Y DDR', 'class="button-link blue" style="position:relative; width:140px; height:20px;"');
 echo ('<br /><br />');
-echo anchor('catalogo_ger/tabla_gener', 'CATALOGOS DE GENERICOS', 'class="button-link green"');
-echo ('<br /><br />');
-echo anchor('catalogo_ger/tabla_gener_patente', 'CATALOGOS DE PATENTE ALM', 'class="button-link green"');
+//echo anchor('catalogo_ger/tabla_gener_patente', 'CATALOGOS DE PATENTE ALM', 'class="button-link green"');
 }
 if($nivel==53){
 echo anchor('catalogo_ger/tabla_genericos', 'GENERICOS', 'class="button-link green" style="position:relative; width:190px; height:20px;"');

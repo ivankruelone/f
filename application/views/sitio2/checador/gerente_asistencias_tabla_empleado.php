@@ -32,9 +32,11 @@
                         $justificadas = 0;
                         $a = array('0' => 'NO', '1' => 'SI');
                         
-                        foreach($query->result() as $row){
                         $tope=substr($etiqueta,0,5).str_pad((date('m')-1),2,'0',STR_PAD_LEFT).'-'.date('d');
                         $ini=substr($etiqueta,0,10);
+                        
+
+                        foreach($query->result() as $row){
                         ?>
                         <tr>
                             <td><?php echo dia_de_la_semana($row->dia); ?></td>
@@ -51,22 +53,34 @@
                             
                             <?php 
                             $tope=0;
-                            if($tope<$ini & $this->session->userdata('tipo')== 0  and $tope>0 or ($this->session->userdata('nivel')==50) ){
-                            if($row->falta == 1 || $row->retardo == 1 ){
-                                
-                                if($row->justificada == 0 ){
-                                    echo anchor('checador/gerente_justificar/'.$row->id_registro, 'Just.', array('id' => 'justifica_'.$row->id)); 
-                                }else{
-                                    echo anchor('checador/gerente_justificar_quita/'.$row->id_registro, 'No Just.', array('id' => 'quita_'.$row->id)); 
-                                }
-                                
-                                ?>
-                                
-                                <button id="upload_button_<?php echo $row->id_registro; ?>">Comprobante</button>
-                                <?php
                             
-                                    echo anchor('checador/gerente_comprobantes/'.$row->id_registro, 'Comp.', array('id' => 'comprobantes_'.$row->id)); 
+                            if( $tope < $ini & $this->session->userdata('tipo') == 0  and $tope > 0 or ($this->session->userdata('nivel')==50) ){
+                            
+                                if($row->falta == 1 || $row->retardo == 1 ){
+                                    
+                                    if($row->justificada == 0 ){
+                                        //Quitar justificaciones desde asistencias...
+                                        //echo anchor('checador/gerente_justificar/'.$row->id_registro, 'Just.', array('id' => 'justifica_'.$row->id)); 
+                                    }else{
+                                        //echo anchor('checador/gerente_justificar_quita/'.$row->id_registro, 'No Just.', array('id' => 'quita_'.$row->id)); 
+                                    }
+                                    
+                                    ?>
+                                    
+                                    <!--</a><button id="upload_button_<?php echo $row->id_registro; ?>">Comprobante</button> -->
+                                    <?php
+                                
+                                        echo anchor('checador/gerente_comprobantes/'.$row->id_registro, 'Comp.', array('id' => 'comprobantes_'.$row->id)); 
+                                }
                             }
+                            
+                            if ( $this->session->userdata('nivel') == 51 && ( $row->falta == 1 || $row->retardo == 1 ) && $row->incidencia == 0 && $row->justificada == 0)
+                            {
+                                echo anchor('checador/gerente_incidencia_personal/'.$empleado_id.'/'.$inicio.'/'.$fin.'/'.$row->id, 'Llena incidencia');
+                            }elseif( $this->session->userdata('nivel') == 51 && $row->incidencia > 0 )
+                            {
+                                echo anchor('checador/formato_incidencias/'.$row->incidencia, 'Imprime incidencia', array('target' => '_blank'));
+                                
                             }
                             ?>
                             
@@ -97,8 +111,8 @@
 
                 </div>
                 
-                <div id="dialog" title="Basic dialog">
-                <div id="dialog2" title="Basic dialog">
-                </div>
+                <div id="dialog" title="Basic dialog"></div>
+                <div id="dialog2" title="Basic dialog"></div>
                 
-            </div>
+                </div>
+            

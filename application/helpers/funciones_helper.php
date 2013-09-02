@@ -197,5 +197,40 @@ if ( ! function_exists('dia_de_la_semana'))
        return $b;
     }
 }
+
+/**
+ * caduca_en_dias
+ *
+ * Dada una fecha te indica el numero de dias a caducar.
+ *
+ * @access	public
+ * @param	integer
+ * @return	integer
+ */
+if ( ! function_exists('nombre_del_mes'))
+{
+	function nombre_del_mes($mes){
+	   $a = array(
+        '01' => 'ENERO',
+        '02' => 'FEBRERO',
+        '03' => 'MARZO',
+        '04' => 'ABRIL',
+        '05' => 'MAYO',
+        '06' => 'JUNIO',
+        '07' => 'JULIO',
+        '08' => 'AGOSTO',
+        '09' => 'SEPTIEMBRE',
+        '10' => 'OCTUBRE',
+        '11' => 'NOVIEMBRE',
+        '12' => 'DICIEMBRE',
+       );
+       
+       $b = $a[$mes];
+       
+       return $b;
+    }
+}
+
+
 /* End of file funciones.php */
 /* Location: ./application/helpers/funciones.php */

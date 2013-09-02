@@ -8,6 +8,7 @@ class Checador extends CI_Controller
         $this->esta_logeado();
         $this->load->model('checador_model');
         $this->asigna_password();
+        $this->load->helper('funciones');
     }
 
     public function esta_logeado()
@@ -423,8 +424,41 @@ class Checador extends CI_Controller
             get_asistencias_periodo_gerente_empleado($empleado_id, $inicio, $fin);
         $data['etiqueta'] = $inicio . " al " . $fin;
         $data['empleado'] = $this->checador_model->get_atributos_empleado_id($empleado_id);
+        $data['empleado_id'] = $empleado_id;
+        $data['inicio'] = $inicio;
+        $data['fin'] = $fin;
         $this->load->helper('funciones');
         $this->load->view('site2', $data);
+    }
+
+    public function gerente_incidencia_personal($empleado_id, $inicio, $fin, $id)
+    {
+        $data['vista'] = 'sitio2/checador/gerente_asistencia_incidencia_personal';
+        $data['js'] = 'sitio2/checador/gerente_asistencia_incidencia_personal_js';
+        $data['menu'] = 'asistencias';
+        $data['etiqueta'] = $inicio . " al " . $fin;
+        $data['empleado'] = $this->checador_model->get_atributos_empleado_id($empleado_id);
+        $data['justificaciones'] = $this->checador_model->get_justificaciones_incidencias();
+        $data['registro'] = $this->checador_model->get_registro($id);
+        $data['id'] = $id;
+        $this->load->helper('funciones');
+        $this->load->view('site2', $data);
+    }
+    
+    function genera_incidencia()
+    {
+        $asistencia = $this->input->post('asistencia');
+        $justificacion = $this->input->post('justificacion');
+        $observaciones = $this->input->post('observaciones');
+        
+        echo $this->checador_model->inserta_incidencia($asistencia, $justificacion, $observaciones);
+        
+    }
+    
+    function formato_incidencias($incidencia)
+    {
+        $data['incidencia'] = $this->checador_model->get_incidencia_detalle($incidencia);
+        $this->load->view('impresiones/asistencias_incidencias', $data);
     }
 
     function gerente_justificar($id)
@@ -763,8 +797,60 @@ class Checador extends CI_Controller
         $data['query'] = $this->checador_model->get_vacaciones2($config['per_page'], $this->
             uri->segment(3));
         $this->load->view('site2', $data);
+    }
 
+    public function formato_incidencias_validar()
+    {
+        $this->load->library('pagination');
+        $this->load->model('checador_model');
+        $config['base_url'] = site_url() . "/checador/formato_incidencias_validar";
+        $config['total_rows'] = $this->checador_model->cuenta_incidencias_novalidadas();
+        $config['first_link'] = '<font size="+1">Primero</font>';
+        $config['last_link'] = '<font size="+1">Ultimo</font>';
+        $config['next_link'] = '<font size="+1">Siguiente</font>';
+        $config['prev_link'] = '<font size="+1">Anterior</font>';
+        $config['per_page'] = '25';
 
+        $this->pagination->initialize($config);
+
+        $data['vista'] = 'sitio2/checador/incidencias_pendientes_por_validar';
+        $data['js'] = 'sitio2/checador/incidencias_pendientes_por_validar_js';
+        $data['menu'] = 'incidencias';
+        $data['query'] = $this->checador_model->get_incidencias_no_validadas($config['per_page'], $this->
+            uri->segment(3));
+        $this->load->view('site2', $data);
+    }
+    
+    function validar_incidencia($incidencia)
+    {
+        echo $this->checador_model->actualiza_incidencia($incidencia, 1);
+    }
+
+    function rechazar_incidencia($incidencia)
+    {
+        echo $this->checador_model->actualiza_incidencia($incidencia, 2);
+    }
+
+    public function formato_incidencias_historico()
+    {
+        $this->load->library('pagination');
+        $this->load->model('checador_model');
+        $config['base_url'] = site_url() . "/checador/formato_incidencias_historico";
+        $config['total_rows'] = $this->checador_model->cuenta_incidencias_validadas();
+        $config['first_link'] = '<font size="+1">Primero</font>';
+        $config['last_link'] = '<font size="+1">Ultimo</font>';
+        $config['next_link'] = '<font size="+1">Siguiente</font>';
+        $config['prev_link'] = '<font size="+1">Anterior</font>';
+        $config['per_page'] = '25';
+
+        $this->pagination->initialize($config);
+
+        $data['vista'] = 'sitio2/checador/incidencias_pendientes_por_validar';
+        $data['js'] = 'sitio2/checador/incidencias_pendientes_por_validar_js';
+        $data['menu'] = 'incidencias';
+        $data['query'] = $this->checador_model->get_incidencias_validadas($config['per_page'], $this->
+            uri->segment(3));
+        $this->load->view('site2', $data);
     }
 
     function validar_vacaciones($id, $nomina)

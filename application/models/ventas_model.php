@@ -1402,7 +1402,7 @@ $fecmes=$fec.'-01';
 $s="insert into comision_det(suc, fecha, cia, nomina, dias, importe, aplica, tipo, no_dias, motivo, ger, sup, puestox,
 completo, nueva_nomina, nueva_cia,id_user, fecham,clave)
 
-(select a.suc,a.fecha,d.cia,d.nomina,0,(c.gere),LAST_DAY(now()),'C',0,'premiog',a.ger,a.sup,d.puesto,e.completo,d.nomina,d.cia,
+(select a.suc,a.fecha,d.cia,d.nomina,0,(c.gere),LAST_DAY(now()),'C',0,'premiog',a.ger,a.sup,d.puesto,trim(e.completo),d.nomina,d.cia,
 $id_user,date(now('%Y-%m-%d %H:%i:%s')),143
 from comision_ctl a
 left join catalogo.sucursal b on b.suc=a.suc
@@ -1416,7 +1416,7 @@ $this->db->query($s);
 $s1="insert into comision_det
 (suc, fecha, cia, nomina, dias, importe, aplica, tipo, no_dias, motivo, ger, sup, puestox, completo, nueva_nomina,
  nueva_cia,id_user, fecham,clave)
- (select a.suc,a.fecha,d.cia,d.nomina,0,(c.sup),LAST_DAY(now()),'C',0,'premios',a.ger,a.sup,e.puestox,e.completo,d.nomina,d.cia,
+ (select a.suc,a.fecha,d.cia,d.nomina,0,(c.sup),LAST_DAY(now()),'C',0,'premios',a.ger,a.sup,e.puestox,trim(e.completo),d.nomina,d.cia,
 0,date(now('%Y-%m-%d %H:%i:%s')),143
 from comision_ctl a
 left join catalogo.sucursal b on b.suc=a.suc
@@ -1445,7 +1445,7 @@ $this->db->query($s1);
                     $this->db->where('tipo', 'A');
                     $this->db->update('desarrollo.comision_det', $dos);
     
-$ss="insert into faltante(fecha, corte, nomina, turno, fal, id_cor, id_user, suc, plaza, cia, cianom, plazanom,  tipo, clave,
+$ss="insert ignore into faltante(fecha, corte, nomina, turno, fal, id_cor, id_user, suc, plaza, cia, cianom, plazanom,  tipo, clave,
 observacion, succ, fecpre, fechai, varios)
 (select date_sub(LAST_DAY(now()),interval 1 month),0,nueva_nomina, 0,sum(importe),0,id_user,suc,0,0,nueva_cia,0,2,clave,
 'Bono por venta',
@@ -2476,28 +2476,28 @@ $this->db->query($s1);
                     $this->db->where('tipo', 'A');
                     $this->db->update('desarrollo.comision_det', $dos);
     
-$ss="insert into faltante(fecha, corte, nomina, turno, fal, id_cor, id_user, suc, plaza, cia, cianom, plazanom,  tipo, clave,
+$ss="insert ignore into faltante(fecha, corte, nomina, turno, fal, id_cor, id_user, suc, plaza, cia, cianom, plazanom,  tipo, clave,
 observacion, succ, fecpre, fechai, varios)
 (select date_sub(LAST_DAY(now()),interval 1 month),0,nueva_nomina, 0,sum(importe+i_enc+i_jef),0,id_user,suc,0,0,nueva_cia,0,2,clave,
 case
 when motivo='comision' and i_enc>0 and importe>0
-then 'COMISION DEL 10 % Y 1% POR SER ENCARGADO DEL date_sub(LAST_DAY(now()),interval 1 month)'
+then 'COMISION DEL 10 % Y 1% POR SER ENCARGADO DEL $fec'
 when motivo='comision' and i_jef>0 and importe>0
-then 'COMISION DEL 10 % Y 0.5% POR SER JEFE DEL date_sub(LAST_DAY(now()),interval 1 month)'
+then 'COMISION DEL 10 % Y 0.5% POR SER JEFE DEL $fec'
 when motivo='comision' and i_jef=0 and i_enc=0 and importe>0
-then 'COMISION DEL 10 % DEL date_sub(LAST_DAY(now()),interval 1 month)'
+then 'COMISION DEL 10 % DEL $fec'
 when motivo='comision' and i_jef>0 and importe=0
-then 'COMISION DEL 0.5% POR SER JEFE DEL date_sub(LAST_DAY(now()),interval 1 month)'
+then 'COMISION DEL 0.5% POR SER JEFE DEL $fec'
 when motivo='comision' and i_enc>0 and importe=0
-then 'COMISION DEL 1% POR SER ENCARGADO DEL date_sub(LAST_DAY(now()),interval 1 month)'
+then 'COMISION DEL 1% POR SER ENCARGADO DEL $fec'
 when motivo='comisions'
-then 'COMISION SUPERVISOR DEL 0.5% DEL date_sub(LAST_DAY(now()),interval 1 month)'
+then 'COMISION SUPERVISOR DEL 0.5% DEL $fec'
 when motivo='comisiong'
-then 'COMISION GERENTE DEL 0.3% DEL date_sub(LAST_DAY(now()),interval 1 month)'
+then 'COMISION GERENTE DEL 0.3% DEL $fec'
 when motivo='premiog'
-then 'PREMIO GERENTE POR VTA ALCANZADA DELdate_sub(LAST_DAY(now()),interval 1 month)'
+then 'PREMIO GERENTE POR VTA ALCANZADA DEL $fec'
 when motivo='premios'
-then 'PREMIO SUPERVISOR POR VTA ALCANZADA DEL date_sub(LAST_DAY(now()),interval 1 month)'
+then 'PREMIO SUPERVISOR POR VTA ALCANZADA DEL $fec'
 
 end as obser,
 suc,LAST_DAY(now()),date(now()),
@@ -2537,8 +2537,7 @@ function control_comision_ctl_his($fec)
 left join catalogo.sucursal b on b.suc=a.suc
 left join  desarrollo.comision_det c on c.suc=a.suc and c.motivo=a.motivo and c.fecha=a.fecha and c.tipo='C' and nueva_nomina>0
 where a.motivo='comision' and a.fecha='$fec' and a.tipo='C'
-group by ger,medico,sup,suc
-        ";
+group by ger,medico,sup,suc";
        
         $q = $this->db->query($s);
        

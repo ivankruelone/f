@@ -51,13 +51,13 @@
 </div>    
   <script language="javascript" type="text/javascript">
     $(window).load(function () {
-        $("#suc").focus();
+        $("#solicitud").focus();
     });
     
     $(document).ready(function(){
-    ///////////////////////////////////////////////////////////////////////            
+   ///////////////////////////////////////////////////////////////////////            
         function enter2tab(e) { 
-       if (e.keyCode == 13) { 
+       if (e.keyCode == 8) { 
            cb = parseInt($(this).attr('tabindex')); 
      
            if ($(':input[tabindex=\'' + (cb + 1) + '\']') != null) { 
@@ -70,19 +70,18 @@
        } 
    }
 ///////////////////////////////////////////////////////////////////////    
+    $('#suc').change(function(){
+     var suc = $('#suc').attr("value"); 
 
-    $('#suc').blur(function(){
-      var suc = $('#suc').attr("value"); 
-      alert(suc);
      if(suc > ' '){
             $.post("<?php echo site_url();?>/sistemas/busca_nomina/", { suc: suc}, function(data){
-                if(data == ' '){
+                 if(data == ' '){
                     alert('Producto ' + suc + ' no encontrado.');
                     $('#suc').val('').focus();
+                    $('#nom').val('');
                 }else{
                 
             $("#nom").html(data);
-
             $('#nom').focus();
             }
              });
@@ -90,22 +89,14 @@
      
       });
      ////////////////////////////
-   
-   
-   
-   
-   
-   
-   
-/////////////////////////////////////////////////
+ /////////////////////////////////////////////////
 /////////////////////////////////////////////////
     $('#sistemas_form_reporte1').submit(function() {
        
-        var suc = $('#suc').attr("value").length;
-        var nom = $('#nom').attr("value").length;
-        var problema = $('#problema').attr("value").length;
-       alert(suc);
-          if(suc >0  && problema<>' ' && nom>3){
+         suc = $('#suc').attr("value");
+         nom = $('#nom').attr("value");
+         problema = $('#problema').attr("value").length;
+          if(suc >0  && problema>15 && nom>3){
     	    if(confirm("Seguro que los datos son correctos?")){
     	    return true;
     	    }else{

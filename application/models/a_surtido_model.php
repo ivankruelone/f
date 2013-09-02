@@ -3464,7 +3464,7 @@ function actualiza_sob(id, valor){
         <table cellpadding=\"3\" border=\"1\">
         <thead>
         <tr>
-        <td align=\"center\" ><strong>FALTANTE Y SOBRANTE</strong></td>
+        <td align=\"center\" colspan=\"6\"><strong>FALTANTE Y SOBRANTE</strong></td>
         </tr>
         <tr>
         <th width=\"5%\"><strong>#</strong></th>
@@ -3482,6 +3482,7 @@ function actualiza_sob(id, valor){
         $sobrante = 0;
         $faltante = 0;
      
+        if ($query->num_rows() > 0){
         foreach($query->result() as $row)
         {
             $tabla.="
@@ -3498,6 +3499,15 @@ function actualiza_sob(id, valor){
             $sobrante = $sobrante + $row->sobrante;
             $faltante = $faltante + $row->faltante;
         }
+        
+        }else{
+                $tabla.="
+                <tr>
+                <td colspan=\"6\">NO HAY RESULTADOS</td>
+                </tr>
+                ";
+                }
+        
         
         $tabla.="</tbody>
         <tfoot>
@@ -3520,39 +3530,39 @@ function actualiza_sob(id, valor){
         $query=$this->db->query($sql,array($fecha1, $fecha2));
         $row=$query->row();
         
-        
-        $devueltas = $faltante + $falysob  + $sobrante + $sinincidencias;
+        $devueltas = $faltante + $falysob  + $sobrante + $sinincidencias;	
         
         $tabla = "<table width=\"80%\" cellpadding=\"3\" border=\"1\">
             <tr>
                 <td width=\"60%\">PEDIDOS FORMULADOS  </td>
                 <td width=\"10%\">".number_format($row->cuenta, 0)."</td>
+                
                 <td width=\"10%\">".number_format((100))."%</td>
             </tr>          
             <tr>
                 <td>REQUISICIONES DEVUELTAS </td>
                 <td>".number_format($devueltas, 0)."</td>
-                <td>".number_format(($devueltas/$row->cuenta) *100, 2)."%</td>
+                <td>".number_format(($row->cuenta > 0) ? ($devueltas/$row->cuenta)*100 : 0, 2)."%</td>
             </tr>
             <tr>
                 <td>CON FALTANTE</td>
                 <td>".number_format($faltante, 0)."</td>
-                <td>".number_format(($faltante/$devueltas) *100, 2)."%</td>
+                <td>".number_format(($devueltas > 0) ? ($faltante/$devueltas)*100 : 0, 2)."%</td>
             </tr>
             <tr>
                 <td>CON FALTANTE Y SOBRANTE</td>
                 <td>".number_format($falysob, 0)."</td>
-                <td>".number_format(($falysob/$devueltas) *100, 2)."%</td>
+                <td>".number_format(($devueltas > 0) ? ($falysob/$devueltas)*100 : 0, 2)."%</td>
             </tr>
             <tr>
                 <td>CON SOBRANTE</td>
                 <td>".number_format($sobrante, 0)."</td>
-                <td>".number_format(($sobrante/$devueltas) *100, 2)."%</td>
+                <td>".number_format(($devueltas > 0) ? ($sobrante/$devueltas)*100 : 0, 2)."%</td>
             </tr>
             <tr>
                 <td>SIN FALTANTE NI SOBRANTE</td>
                 <td>".number_format($sinincidencias, 0)."</td>
-                <td>".number_format(($sinincidencias/$devueltas) *100, 2)."%</td>
+                <td>".number_format(($devueltas > 0 ) ? ($sinincidencias/$devueltas)*100 : 0, 2)."%</td>
             </tr>
         </table>";
         
@@ -3564,6 +3574,232 @@ function actualiza_sob(id, valor){
         {
         
         $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis f
+        left join catalogo.sucursal s on f.suc=s.suc
+        where fechas>='$fecha1'and fechas<='$fecha2' and faltante>0 and sobrante=0 and validar=1;";
+        $query = $this->db->query($sql);
+        
+        $tabla= "
+        <table cellpadding=\"3\" border=\"1\">
+        <thead>
+        <tr>
+        <td align=\"center\" colspan=\"5\"><strong>FALTANTE</strong></td>
+        </tr>
+        <tr>
+        <th width=\"5%\"><strong>#</strong></th>
+        <th align=\"center\" width=\"15%\">Folio</th>
+        <th width=\"45%\">Sucursal</th>
+        <th align=\"lefht\"width=\"15%\">Fecha</th>
+        <th align=\"right\" width=\"20%\">Faltate</th>
+        
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        
+        $n = 1;
+      
+        $faltante = 0;
+        
+        if ($query->num_rows() > 0){
+            foreach($query->result() as $row)
+            {
+                $tabla.="
+                <tr>
+                <td align=\"left\" width=\"5%\">".$n."</td>
+                <td align=\"center\" width=\"15%\">".$row->id."</td>
+                <td width=\"45%\">".$row->suc." - ".$row->nombre."</td>
+                <td align=\"lefht\" width=\"15%\">".$row->fechas."</td>
+                <td align=\"right\" width=\"20%\">".$row->faltante."</td>
+              
+                </tr>
+                ";
+                $n++;
+       
+                $faltante = $faltante + $row->faltante;
+            }
+        }else{
+                $tabla.="
+                <tr>
+                <td COLSPAN=\"5\">NO HAY RESULTADOS</td>
+                </tr>
+                ";
+            }
+        
+        $tabla.="</tbody>
+        <tfoot>
+        <tr>
+        <td align=\"right\" colspan=\"4\">TOTALES</td>
+      
+        <td align=\"right\">".number_format($faltante,2)."</td>
+        </tr>
+        </tfoot>
+        </table>";
+        return array('tabla' => $tabla, 'folios' => $query->num_rows());
+    }
+    
+        function reporte_folio_sobrante($fecha1, $fecha2)
+    
+        {
+        
+        $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis f
+        left join catalogo.sucursal s on f.suc=s.suc
+        where fechas>='$fecha1'and fechas<='$fecha2' and sobrante>0 and faltante=0 and validar=1;";
+        $query = $this->db->query($sql);
+        
+        $tabla= "
+        <table cellpadding=\"3\" border=\"1\">
+        <thead>
+        <tr>
+        <td align=\"center\" colspan=\"5\"><strong>SOBRANTE</strong></td>
+        </tr>
+        <tr>
+        <th width=\"5%\"><strong>#</strong></th>
+        <th align=\"center\" width=\"15%\">Folio</th>
+        <th width=\"45%\">Sucursal</th>
+        <th align=\"lefht\"width=\"15%\">Fecha</th>
+        
+        <th align=\"right\" width=\"20%\">Sobrante</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        
+        $n = 1;
+        $sobrante = 0;
+        $faltante = 0;
+     
+        if ($query->num_rows() > 0){
+        foreach($query->result() as $row)
+        {
+            $tabla.="
+            <tr>
+            <td align=\"left\" width=\"5%\">".$n."</td>
+            <td align=\"center\" width=\"15%\">".$row->id."</td>
+            <td width=\"45%\">".$row->suc." - ".$row->nombre."</td>
+            <td align=\"lefht\" width=\"15%\">".$row->fechas."</td>
+         
+            <td align=\"right\" width=\"20%\">".$row->sobrante."</td>
+            </tr>
+            ";
+            $n++;
+            $sobrante = $sobrante + $row->sobrante;  
+        }
+        
+        }else{
+                $tabla.="
+                <tr>
+                <td colspan=\"5\">NO HAY RESULTADOS</td>
+                </tr>
+                ";
+            }	
+        
+        $tabla.="</tbody>
+        <tfoot>
+        <tr>
+        <td align=\"right\" colspan=\"4\">TOTALES</td>
+        <td align=\"right\">".number_format($sobrante,2)."</td>
+      
+        </tr>
+        </tfoot>
+        </table>";
+        return array('tabla' => $tabla, 'folios' => $query->num_rows());
+    }
+    
+    function reporte_folio_sin_incidencias($fecha1, $fecha2)
+    
+        {
+        
+        $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis f
+        left join catalogo.sucursal s on f.suc=s.suc
+        where fechas>='$fecha1'and fechas<='$fecha2' and faltante=0 and sobrante=0 and validar=1;";
+        $query = $this->db->query($sql);
+        
+        $tabla= "
+        <table cellpadding=\"3\" border=\"1\">
+        <thead>
+        <tr>
+        <td align=\"center\" colspan=\"6\"><strong>SIN INCIDENCIAS</strong></td>
+        </tr>
+        <tr>
+        <th width=\"5%\"><strong>#</strong></th>
+        <th align=\"center\" width=\"10%\">Folio</th>
+        <th width=\"40%\">Sucursal</th>
+        <th align=\"lefht\"width=\"15%\">Fecha</th>
+        <th align=\"lefht\"width=\"15%\">Faltante</th>
+        <th align=\"right\" width=\"15%\">Sobrante</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        
+        $n = 1;
+        $sobrante = 0;
+        $faltante = 0;
+     
+     
+        if ($query->num_rows() > 0){
+        foreach($query->result() as $row)
+        {
+            $tabla.="
+            <tr>
+            <td align=\"left\" width=\"5%\">".$n."</td>
+            <td align=\"center\" width=\"10%\">".$row->id."</td>
+            <td width=\"40%\">".$row->suc." - ".$row->nombre."</td>
+            <td align=\"lefht\" width=\"15%\">".$row->fechas."</td>
+            <td align=\"right\" width=\"15%\">".$row->faltante."</td>
+            <td align=\"right\" width=\"15%\">".$row->sobrante."</td>
+            </tr>
+            ";
+            $n++;
+            $faltante = $faltante + $row->faltante;
+            $sobrante = $sobrante + $row->sobrante;
+           
+        }
+        
+        }else{
+                $tabla.="
+                <tr>
+                <td colspan=\"6\">NO HAY RESULTADOS</td>
+                </tr>
+                ";
+            }	
+        
+        
+        $tabla.="</tbody>
+        <tfoot>
+        <tr>
+        <td align=\"right\" colspan=\"4\">TOTALES</td>
+        <td align=\"right\">".number_format($faltante,2)."</td>
+        <td align=\"right\">".number_format($sobrante,2)."</td>
+      
+        </tr>
+        </tfoot>
+        </table>";
+        return array('tabla' => $tabla, 'folios' => $query->num_rows());
+    }
+    
+    function reporte_folio_esp_encabezado($fecha1, $fecha2)
+    {
+        $tabla = "
+        <table>
+        <tr>
+        <td><strong>FALTANTES Y/O SOBRANTES FORMULADOS</strong></td>
+        <td><strong>REPORTE DEL DIA $fecha1 AL $fecha2</strong></td>
+        </tr>
+        <tr>
+        <td colspan=\"2\" align=\"right\"> Fecha de Impresion: ".date('d/m/Y H:i:s')."</td>
+        </tr>
+        </table>";
+        
+        return $tabla;
+    }
+    
+    
+    function reporte_folio_faltante_esp($fecha1, $fecha2)
+    
+        {
+        
+        $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis_especial f
         left join catalogo.sucursal s on f.suc=s.suc
         where fechas>='$fecha1'and fechas<='$fecha2' and faltante>0 and sobrante=0 and validar=1;";
         $query = $this->db->query($sql);
@@ -3619,143 +3855,6 @@ function actualiza_sob(id, valor){
         return array('tabla' => $tabla, 'folios' => $query->num_rows());
     }
     
-        function reporte_folio_sobrante($fecha1, $fecha2)
-    
-        {
-        
-        $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis f
-        left join catalogo.sucursal s on f.suc=s.suc
-        where fechas>='$fecha1'and fechas<='$fecha2' and sobrante>0 and faltante=0 and validar=1;";
-        $query = $this->db->query($sql);
-        
-        $tabla= "
-        <table cellpadding=\"3\" border=\"1\">
-        <thead>
-        <tr>
-        <td align=\"center\" ><strong>SOBRANTE</strong></td>
-        </tr>
-        <tr>
-        <th width=\"5%\"><strong>#</strong></th>
-        <th align=\"center\" width=\"15%\">Folio</th>
-        <th width=\"45%\">Sucursal</th>
-        <th align=\"lefht\"width=\"15%\">Fecha</th>
-        
-        <th align=\"right\" width=\"20%\">Sobrante</th>
-        </tr>
-        </thead>
-        <tbody>
-        ";
-        
-        $n = 1;
-        $sobrante = 0;
-        $faltante = 0;
-     
-        foreach($query->result() as $row)
-        {
-            $tabla.="
-            <tr>
-            <td align=\"left\" width=\"5%\">".$n."</td>
-            <td align=\"center\" width=\"15%\">".$row->id."</td>
-            <td width=\"45%\">".$row->suc." - ".$row->nombre."</td>
-            <td align=\"lefht\" width=\"15%\">".$row->fechas."</td>
-         
-            <td align=\"right\" width=\"20%\">".$row->sobrante."</td>
-            </tr>
-            ";
-            $n++;
-            $sobrante = $sobrante + $row->sobrante;
-           
-        }
-        
-        $tabla.="</tbody>
-        <tfoot>
-        <tr>
-        <td align=\"right\" colspan=\"4\">TOTALES</td>
-        <td align=\"right\">".number_format($sobrante,2)."</td>
-      
-        </tr>
-        </tfoot>
-        </table>";
-        return array('tabla' => $tabla, 'folios' => $query->num_rows());
-    }
-    
-    function reporte_folio_sin_incidencias($fecha1, $fecha2)
-    
-        {
-        
-        $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis f
-        left join catalogo.sucursal s on f.suc=s.suc
-        where fechas>='$fecha1'and fechas<='$fecha2' and faltante=0 and sobrante=0 and validar=1;";
-        $query = $this->db->query($sql);
-        
-        $tabla= "
-        <table cellpadding=\"3\" border=\"1\">
-        <thead>
-        <tr>
-        <td align=\"center\" ><strong>SIN INCIDENCIAS</strong></td>
-        </tr>
-        <tr>
-        <th width=\"5%\"><strong>#</strong></th>
-        <th align=\"center\" width=\"10%\">Folio</th>
-        <th width=\"40%\">Sucursal</th>
-        <th align=\"lefht\"width=\"15%\">Fecha</th>
-        <th align=\"lefht\"width=\"15%\">Faltante</th>
-        <th align=\"right\" width=\"15%\">Sobrante</th>
-        </tr>
-        </thead>
-        <tbody>
-        ";
-        
-        $n = 1;
-        $sobrante = 0;
-        $faltante = 0;
-     
-        foreach($query->result() as $row)
-        {
-            $tabla.="
-            <tr>
-            <td align=\"left\" width=\"5%\">".$n."</td>
-            <td align=\"center\" width=\"10%\">".$row->id."</td>
-            <td width=\"40%\">".$row->suc." - ".$row->nombre."</td>
-            <td align=\"lefht\" width=\"15%\">".$row->fechas."</td>
-            <td align=\"right\" width=\"15%\">".$row->faltante."</td>
-            <td align=\"right\" width=\"15%\">".$row->sobrante."</td>
-            </tr>
-            ";
-            $n++;
-            $faltante = $faltante + $row->faltante;
-            $sobrante = $sobrante + $row->sobrante;
-           
-        }
-        
-        $tabla.="</tbody>
-        <tfoot>
-        <tr>
-        <td align=\"right\" colspan=\"4\">TOTALES</td>
-        <td align=\"right\">".number_format($faltante,2)."</td>
-        <td align=\"right\">".number_format($sobrante,2)."</td>
-      
-        </tr>
-        </tfoot>
-        </table>";
-        return array('tabla' => $tabla, 'folios' => $query->num_rows());
-    }
-    
-    function reporte_folio_esp_encabezado($fecha1, $fecha2)
-    {
-        $tabla = "
-        <table>
-        <tr>
-        <td><strong>FALTANTES Y/O SOBRANTES FORMULADOS</strong></td>
-        <td><strong>REPORTE DEL DIA $fecha1 AL $fecha2</strong></td>
-        </tr>
-        <tr>
-        <td colspan=\"2\" align=\"right\"> Fecha de Impresion: ".date('d/m/Y H:i:s')."</td>
-        </tr>
-        </table>";
-        
-        return $tabla;
-    }
     
     
     function reporte_folio_esp($fecha1, $fecha2)
@@ -3799,16 +3898,17 @@ function actualiza_sob(id, valor){
             </tr>
             ";
             $n++;
-            $sobrante = $sobrante + $row->sobrante;
             $faltante = $faltante + $row->faltante;
+            $sobrante = $sobrante + $row->sobrante;
+            
         }
         
         $tabla.="</tbody>
         <tfoot>
         <tr>
         <td align=\"right\" colspan=\"4\">TOTALES</td>
-        <td align=\"right\">".number_format($sobrante,2)."</td>
         <td align=\"right\">".number_format($faltante,2)."</td>
+        <td align=\"right\">".number_format($sobrante,2)."</td>
         </tr>
         </tfoot>
         </table>";

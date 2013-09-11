@@ -449,6 +449,9 @@ left join catalogo.sucursal b on b.suc=a.suc
 left join catalogo.cat_almacen_clasifica c on c.sec=a.sec
 where a.sec>0 and a.sec<=2000 and b.tipo2<>'F' and c.tipo in($var0) and a.suc<1600 and b.tlid=1
 and b.dia<>' '
+ and a.suc<>170 and a.suc<>171 and a.suc<>172 and a.suc<>173 and a.suc<>174 and a.suc<>175 and a.suc<>176 and a.suc<>177
+ and a.suc<>178 and a.suc<>179 and a.suc<>180 and a.suc<>181 and a.suc<>182 and a.suc<>183 and a.suc<>184 and a.suc<>185
+ and a.suc<>186 and a.suc<>187 
 group by regional,a.suc
 order by prome desc
 "; 
@@ -5193,181 +5196,135 @@ $num=0;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function control_ventas_nat($aaa)
+function control_ventas_nat($fec)
     {
-$tim01=0;$tim02=0;$tim03=0;$tim04=0;$tim05=0;$tim06=0;$tim07=0;$tim08=0;$tim09=0;$tim10=0;$tim11=0;$tim12=0;
-$tima01=0;$tima02=0;$tima03=0;$tima04=0;$tima05=0;$tima06=0;$tima07=0;$tima08=0;$tima09=0;$tima10=0;$tima11=0;$tima12=0;
-        $id_user= $this->session->userdata('id');
-        $plaza= $this->session->userdata('plaza');
-$aaax=$aaa-1;
-        $s="SELECT b.regional, c.nombre as supervx,
-sum(importe_act_1)as imp01,
-sum(importe_act_2)as imp02,
-sum(importe_act_3)as imp03,
-sum(importe_act_4)as imp04,
-sum(importe_act_5)as imp05,
-sum(importe_act_6)as imp06,
-sum(importe_act_7)as imp07,
-sum(importe_act_8)as imp08,
-sum(importe_act_9)as imp09,
-sum(importe_act_10)as imp10,
-sum(importe_act_11)as imp11,
-sum(importe_act_12)as imp12,
-sum(importe_ant_1)as impn01,
-sum(importe_ant_2)as impn02,
-sum(importe_ant_3)as impn03,
-sum(importe_ant_4)as impn04,
-sum(importe_ant_5)as impn05,
-sum(importe_ant_6)as impn06,
-sum(importe_ant_7)as impn07,
-sum(importe_ant_8)as impn08,
-sum(importe_ant_9)as impn09,
-sum(importe_ant_10)as impn10,
-sum(importe_ant_11)as impn11,
-sum(importe_ant_12)as impn12
-FROM vtadc.fe_prox_det_nat  a
-left join catalogo.sucursal b on b.suc=a.suc
-left join  desarrollo.usuarios c on c.plaza=b.regional and c.nivel=21 and c.activo=1
-where aaa=$aaa and tlid=1 and b.suc>100 and b.suc<=2000 and b.tipo2<>'F'
-group by b.regional";
+ $id_user= $this->session->userdata('id');
+        $s="select sum(can*vta)as venta,
+         
+        a.suc,b.nombre,b.tipo2,b.superv,b.regional,sum(can)as can,sum(importe)importe,sum(can*des)as descuento,
+sum(imp_cancela)cancela,
+
+
+
+
+sum(case when c.iva='S'
+        then round((importe-imp_cancela)/(1+b.iva),2)
+        else
+        (importe-imp_cancela)
+        end)as imp_menos_iva_menos_cancela,
+
+(sum(case when c.iva='S'
+        then round((importe-imp_cancela)/(1+b.iva),2)
+        else
+        (importe-imp_cancela)
+        end)*.01)as uno,
+        d.nombre as gerx
+        
+
+
+        from vtadc.venta_detalle_nat a
+        left join catalogo.sucursal b on b.suc=a.suc
+        left join catalogo.cat_naturistas c on c.sec=a.sec
+        left join usuarios d on d.plaza=b.regional and responsable='R'
+        where b.tipo2<>'F'  and date_format(fecha, '%Y-%m') = '$fec' and a.suc<1600 
+        and a.suc<>170 and a.suc<>171 and a.suc<>172 and a.suc<>173 and a.suc<>174 and a.suc<>175
+        and a.suc<>176 and a.suc<>177 and a.suc<>178 and a.suc<>179 and a.suc<>180 and a.suc<>181 and a.suc<>182
+        and a.suc<>183 and a.suc<>184 and a.suc<>185 and a.suc<>186 and a.suc<>187 and a.suc<>188
+        group by regional order by regional desc
+
+        ";
         $q = $this->db->query($s);
         
-$num=0;
+        $num=0;
+            $totcan=0;
+            $totimp=0;
+            $totdes=0;
+            $totimp_b=0;
+            $totimp_b_c=0;
+            $totimp_b_c_iva=0;
+            $totcortes=0;
+        $ventas_cortes=0;
         $tabla= "
-        <table cellpadding=\"3\">
-        <thead>
-        
-        <th colspan=\"7\">REPORTE DE VENTAS DE PRODUCTOS NATURISTAS</th>
-        </thead>
+        <table cellpadding=\"3\" border=\"1\">
+   
+         <tr>
+        <th colspan=\"13\">COMISIONES NATURISTAS</th>
+        </tr>
+        <tr>
+         <th>#</th>
+         <th>SUCURSAL</th>
+        <th>VTA-IVA<br />
+        -T.AIRE<br />DEPTO.CORTES</th>
+        <th>IMPORTE</th>
+        <th>DESCUENTO</th>
+        <th>IMP BRUTO</th>
+        <th>CANC.</th>
+        <th>IMP.BRUTO - CANC - IVA</th>
+        <th></th>
+        <th></th>
+        </tr>
         <tbody>
         ";
         
-  $por01=0;$por02=0;$por03=0;$por04=0;$por05=0;$por06=0;$por07=0;$por08=0;$por09=0;$por10=0;$por11=0;$por12=0;
+  $por=0;
         foreach($q->result() as $r)
         {
-if($r->impn01 > $r->imp01 && $r->impn01 > 0){$por01=(($r->imp01*100)/$r->impn01);}
-if($r->impn02 > $r->imp02 && $r->impn02 > 0){$por02=(($r->imp02*100)/$r->impn02);}
-if($r->impn03 > $r->imp03 && $r->impn03 > 0){$por03=(($r->imp03*100)/$r->impn03);}
-if($r->impn04 > $r->imp04 && $r->impn04 > 0){$por04=(($r->imp04*100)/$r->impn04);}
-if($r->impn05 > $r->imp05 && $r->impn05 > 0){$por05=(($r->imp05*100)/$r->impn05);}
-if($r->impn06 > $r->imp06 && $r->impn06 > 0){$por06=(($r->imp06*100)/$r->impn06);}
-if($r->impn07 > $r->imp07 && $r->impn07 > 0){$por07=(($r->imp07*100)/$r->impn07);}
-if($r->impn08 > $r->imp08 && $r->impn08 > 0){$por08=(($r->imp08*100)/$r->impn08);}
-if($r->impn09 > $r->imp09 && $r->impn09 > 0){$por09=(($r->imp09*100)/$r->impn09);}
-if($r->impn10 > $r->imp10 && $r->impn10 > 0){$por10=(($r->imp10*100)/$r->impn10);}
-if($r->impn11 > $r->imp11 && $r->impn11 > 0){$por11=(($r->imp11*100)/$r->impn11);}
-if($r->impn12 > $r->imp12 && $r->impn12 > 0){$por12=(($r->imp12*100)/$r->impn12);}
-	   
+        $ss="select regional,a.suc,sum(siniva)as venta_cortes
+
+ from catalogo.sucursal a
+left join cortes_c aa on aa.suc=a.suc
+left join cortes_d bb on bb.id_cc=aa.id and clave1>0 and clave1<=48 and clave1<>20
+ where  date_format(fechacorte,'%Y-%m')='$fec' and a.tipo2<>'F' and tlid=1 and a.suc>100
+and a.suc<1600
+        and a.suc<>170 and a.suc<>171 and a.suc<>172 and a.suc<>173 and a.suc<>174 and a.suc<>175
+        and a.suc<>176 and a.suc<>177 and a.suc<>178 and a.suc<>179 and a.suc<>180 and a.suc<>181 and a.suc<>182
+        and a.suc<>183 and a.suc<>184 and a.suc<>185 and a.suc<>186 and a.suc<>187 and a.suc<>188
+and regional=$r->regional
+group by a.regional"; 
+$qq=$this->db->query($ss);
+if($qq->num_rows() > 0){
+$rr=$qq->row();
+$venta_cortes=$rr->venta_cortes;     
+}
+$l1 = anchor('nacional/tabla_control_ventas_nat_ger/'.$fec.'/'.$r->regional, '<img src="'.base_url().'img/edit.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para ver!', 'class' => 'encabezado'));  
 	   $num=$num+1;
-       $l1 = anchor('nacional/tabla_control_ventas_nat_ger/'.$r->regional.'/'.$aaa,$r->supervx.'</a>', array('title' => 'Haz Click aqui para ver el detalle!', 'class' => 'encabezado'));  
+ $por=($r->imp_menos_iva_menos_cancela/$venta_cortes)*100;       
             $tabla.="
             <tr>
-            <td align=\"left\" colspan=\"1\">Sup</td>
-            <td align=\"left\" colspan=\"6\">$l1</td>
+            <td align=\"right\">".$num."</td>
+            <td align=\"left\" colspan=\"1\">".$r->regional." - ".$r->gerx."</td>
+            <td align=\"right\">".number_format($venta_cortes,2)."</td>
+            <td align=\"right\">".number_format($r->venta,2)."</td>
+            <td align=\"right\">".number_format($r->descuento,2)."</td>
+            <td align=\"right\">".number_format($r->importe,2)."</td>
+            <td align=\"right\">".number_format($r->cancela,2)."</td>
+            <td align=\"right\">".number_format($r->imp_menos_iva_menos_cancela,2)."</td>
+            <td align=\"right\">% ".number_format($por,2)."</td>
+            <td align=\"right\">".$l1."</td>
             </tr>
-            <tr>
-            <td align=\"left\">Mes</td>
-            <td align=\"right\">Ene <font color=\"red\">% ".number_format($por01,2)."</font></td>
-            <td align=\"right\">Feb <font color=\"red\">% ".number_format($por02,2)."</font></td>
-            <td align=\"right\">Mar <font color=\"red\">% ".number_format($por03,2)."</font></td>
-            <td align=\"right\">Abr <font color=\"red\">% ".number_format($por04,2)."</font></td>
-            <td align=\"right\">May <font color=\"red\">% ".number_format($por05,2)."</font></td>
-            <td align=\"right\">Jun <font color=\"red\">% ".number_format($por06,2)."</font></td>
-            </tr>
-            <tr>
-<td align=\"left\" colspan=\"1\">Naturista $aaa</td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp01,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp02,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp03,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp04,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp05,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp06,2)."</font></td>
-            </tr>
-            <tr>
-<td align=\"left\" colspan=\"1\">Naturista $aaax</td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn01,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn02,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn03,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn04,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn05,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn06,2)."</font></td>
-            </tr>
-            <tr>
-            <td align=\"left\">Mes</td>
-            <td align=\"right\">Jul  <font color=\"red\">% ".number_format($por07,2)."</font></td>
-            <td align=\"right\">Ago  <font color=\"red\">% ".number_format($por08,2)."</font></td>
-            <td align=\"right\">Sep  <font color=\"red\">% ".number_format($por09,2)."</font></td>
-            <td align=\"right\">Oct  <font color=\"red\">% ".number_format($por10,2)."</font></td>
-            <td align=\"right\">Nov  <font color=\"red\">% ".number_format($por11,2)."</font></td>
-            <td align=\"right\">Dic  <font color=\"red\">% ".number_format($por12,2)."</font></td>
-            </tr>
-            <tr>
-<td align=\"left\" colspan=\"1\">Naturista $aaa</td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp07,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp08,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp09,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp10,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp11,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp12,2)."</font></td>
-			</tr>
-            <tr>
-<td align=\"left\" colspan=\"1\">Naturista $aaax</td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn07,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn08,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn09,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn10,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn11,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn12,2)."</font></td>
-<td align=\"right\"><font color=\"blue\"></font></td>	
-			</tr>";
-$tim01=$tim01+$r->imp01;
-$tim02=$tim02+$r->imp02;
-$tim03=$tim03+$r->imp03;
-$tim04=$tim04+$r->imp04;
-$tim05=$tim05+$r->imp05;
-$tim06=$tim06+$r->imp06;
-$tim07=$tim07+$r->imp07;
-$tim08=$tim08+$r->imp08;
-$tim09=$tim09+$r->imp09;
-$tim10=$tim10+$r->imp10;
-$tim11=$tim11+$r->imp11;
-$tim12=$tim12+$r->imp12;
-$tima01=$tima01+$r->impn01;
-$tima02=$tima02+$r->impn02;
-$tima03=$tima03+$r->impn03;
-$tima04=$tima04+$r->impn04;
-$tima05=$tima05+$r->impn05;
-$tima06=$tima06+$r->impn06;
-$tima07=$tima07+$r->impn07;
-$tima08=$tima08+$r->impn08;
-$tima09=$tima09+$r->impn09;
-$tima10=$tima10+$r->impn10;
-$tima11=$tima11+$r->impn11;
-$tima12=$tima12+$r->impn12;
+            ";
+           $totcortes=$totcortes+$venta_cortes;
+           $totcan=$totcan+$r->can;
+           $totimp=$totimp+$r->venta;
+           $totdes=$totdes+$r->descuento;
+           $totimp_b=$totimp_b+$r->importe;
+           $totimp_b_c=$totimp_b_c+$r->cancela;
+           $totimp_b_c_iva=$totimp_b_c_iva+$r->imp_menos_iva_menos_cancela;
+           
+     
         }
          $tabla.="
-         <tr>
-            <td align=\"center\" colspan=\"12\"><font size=\"+2\">TOTAL</font></td>
-            </tr>
-            <td align=\"right\"><font color=\"black\">$aaa</font></td>
-            <td align=\"right\"><font color=\"black\">ENE: ".number_format($tim01,2)."</font><br /><font color=\"blue\">JUL: ".number_format($tim07,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">FEB: ".number_format($tim02,2)."</font><br /><font color=\"blue\">AGO: ".number_format($tim08,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">MAR: ".number_format($tim03,2)."</font><br /><font color=\"blue\">SEP: ".number_format($tim09,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">ABR: ".number_format($tim04,2)."</font><br /><font color=\"blue\">OCT: ".number_format($tim10,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">MAY: ".number_format($tim05,2)."</font><br /><font color=\"blue\">NOV: ".number_format($tim11,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">JUN: ".number_format($tim06,2)."</font><br /><font color=\"blue\">DEC: ".number_format($tim12,2)."</font></td>
-         </tr>
-            
-         <tr>
-            <td align=\"right\"><font color=\"black\">$aaax</font></td>
-            <td align=\"right\"><font color=\"black\">ENE: ".number_format($tima01,2)."</font><br /><font color=\"blue\">JUL: ".number_format($tima07,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">MAR: ".number_format($tima02,2)."</font><br /><font color=\"blue\">SEP: ".number_format($tima08,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">ABR: ".number_format($tima03,2)."</font><br /><font color=\"blue\">OCT: ".number_format($tima09,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">FEB: ".number_format($tima04,2)."</font><br /><font color=\"blue\">AGO: ".number_format($tima10,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">MAY: ".number_format($tima05,2)."</font><br /><font color=\"blue\">NOV: ".number_format($tima11,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">JUN: ".number_format($tima06,2)."</font><br /><font color=\"blue\">DEC: ".number_format($tima12,2)."</font></td>
-        </tr>    
         </tbody>
+        <tr>
+        <td align=\"right\" colspan=\"2\">TOTAL</td>
+        <td align=\"right\">".number_format($totcortes,2)."</td>
+        <td align=\"right\">".number_format($totimp,2)."</td>
+        <td align=\"right\">".number_format($totdes,2)."</td>
+        <td align=\"right\">".number_format($totimp_b,2)."</td>
+        <td align=\"right\">".number_format($totimp_b_c,2)."</td>
+        <td align=\"right\">".number_format($totimp_b_c_iva,2)."</td>
+        
+        </tr>
         </table>";
         
         return $tabla;
@@ -5375,438 +5332,270 @@ $tima12=$tima12+$r->impn12;
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function control_ventas_nat_ger($ger,$aaa)
+function control_ventas_nat_ger($fec,$ger)
     {
-$tim01=0;$tim02=0;$tim03=0;$tim04=0;$tim05=0;$tim06=0;$tim07=0;$tim08=0;$tim09=0;$tim10=0;$tim11=0;$tim12=0;
-$tima01=0;$tima02=0;$tima03=0;$tima04=0;$tima05=0;$tima06=0;$tima07=0;$tima08=0;$tima09=0;$tima10=0;$tima11=0;$tima12=0;
-        $id_user= $this->session->userdata('id');
-        $plaza= $this->session->userdata('plaza');
-$aaax=$aaa-1;
-        $s="SELECT b.superv, c.nombre as supervx,
-sum(importe_act_1)as imp01,
-sum(importe_act_2)as imp02,
-sum(importe_act_3)as imp03,
-sum(importe_act_4)as imp04,
-sum(importe_act_5)as imp05,
-sum(importe_act_6)as imp06,
-sum(importe_act_7)as imp07,
-sum(importe_act_8)as imp08,
-sum(importe_act_9)as imp09,
-sum(importe_act_10)as imp10,
-sum(importe_act_11)as imp11,
-sum(importe_act_12)as imp12,
-sum(importe_ant_1)as impn01,
-sum(importe_ant_2)as impn02,
-sum(importe_ant_3)as impn03,
-sum(importe_ant_4)as impn04,
-sum(importe_ant_5)as impn05,
-sum(importe_ant_6)as impn06,
-sum(importe_ant_7)as impn07,
-sum(importe_ant_8)as impn08,
-sum(importe_ant_9)as impn09,
-sum(importe_ant_10)as impn10,
-sum(importe_ant_11)as impn11,
-sum(importe_ant_12)as impn12
-FROM vtadc.fe_prox_det_nat  a
-left join catalogo.sucursal b on b.suc=a.suc
-left join  desarrollo.usuarios c on c.plaza=b.superv and c.nivel=14 and c.activo=1 and responsable='R'
-where aaa=$aaa and b.regional=$ger and tlid=1 and b.suc>100 and b.suc<=2000 and b.tipo2<>'F'
-group by b.superv";
+$id_user= $this->session->userdata('id');
+        $s="select sum(can*vta)as venta,
+         
+      a.suc,b.nombre,b.tipo2,b.superv,b.regional,sum(can)as can,sum(importe)importe,sum(can*des)as descuento,
+sum(imp_cancela)cancela,
+
+sum(case when c.iva='S'
+        then round((importe-imp_cancela)/(1+b.iva),2)
+        else
+        (importe-imp_cancela)
+        end)as imp_menos_iva_menos_cancela,
+
+(sum(case when c.iva='S'
+        then round((importe-imp_cancela)/(1+b.iva),2)
+        else
+        (importe-imp_cancela)
+        end)*.01)as uno,
+        d.nombre as supx
+        
+
+
+        from vtadc.venta_detalle_nat a
+        left join catalogo.sucursal b on b.suc=a.suc
+        left join catalogo.cat_naturistas c on c.sec=a.sec
+        left join usuarios d on d.plaza=b.superv and responsable='R' and nivel=14 and d.activo=1
+        where b.tipo2<>'F'  and date_format(fecha, '%Y-%m') = '$fec' and a.suc<1600 
+        and a.suc<>170 and a.suc<>171 and a.suc<>172 and a.suc<>173 and a.suc<>174 and a.suc<>175
+        and a.suc<>176 and a.suc<>177 and a.suc<>178 and a.suc<>179 and a.suc<>180 and a.suc<>181 and a.suc<>182
+        and a.suc<>183 and a.suc<>184 and a.suc<>185 and a.suc<>186 and a.suc<>187 and a.suc<>188
+        and b.regional=$ger
+        group by superv order by superv desc
+
+        ";
         $q = $this->db->query($s);
         
-$num=0;
+        $num=0;
+            $totcan=0;
+            $totimp=0;
+            $totdes=0;
+            $totimp_b=0;
+            $totimp_b_c=0;
+            $totimp_b_c_iva=0;
+            $totcortes=0;
+        $ventas_cortes=0;
         $tabla= "
-        <table cellpadding=\"3\">
-        <thead>
-        
-        <th colspan=\"7\">REPORTE DE VENTAS DE PRODUCTOS NATURISTAS</th>
-        </thead>
+        <table cellpadding=\"3\" border=\"1\">
+   
+         <tr>
+        <th colspan=\"13\">COMISIONES NATURISTAS</th>
+        </tr>
+        <tr>
+         <th>#</th>
+         <th>SUCURSAL</th>
+        <th>VTA-IVA<br />
+        -T.AIRE<br />DEPTO.CORTES</th>
+        <th>IMPORTE</th>
+        <th>DESCUENTO</th>
+        <th>IMP BRUTO</th>
+        <th>CANC.</th>
+        <th>IMP.BRUTO - CANC - IVA</th>
+        <th></th>
+        <th></th>
+        </tr>
         <tbody>
         ";
         
-  $por01=0;$por02=0;$por03=0;$por04=0;$por05=0;$por06=0;$por07=0;$por08=0;$por09=0;$por10=0;$por11=0;$por12=0;
+  $por=0;
         foreach($q->result() as $r)
         {
-if($r->impn01 > $r->imp01 && $r->impn01 > 0){$por01=(($r->imp01*100)/$r->impn01);}
-if($r->impn02 > $r->imp02 && $r->impn02 > 0){$por02=(($r->imp02*100)/$r->impn02);}
-if($r->impn03 > $r->imp03 && $r->impn03 > 0){$por03=(($r->imp03*100)/$r->impn03);}
-if($r->impn04 > $r->imp04 && $r->impn04 > 0){$por04=(($r->imp04*100)/$r->impn04);}
-if($r->impn05 > $r->imp05 && $r->impn05 > 0){$por05=(($r->imp05*100)/$r->impn05);}
-if($r->impn06 > $r->imp06 && $r->impn06 > 0){$por06=(($r->imp06*100)/$r->impn06);}
-if($r->impn07 > $r->imp07 && $r->impn07 > 0){$por07=(($r->imp07*100)/$r->impn07);}
-if($r->impn08 > $r->imp08 && $r->impn08 > 0){$por08=(($r->imp08*100)/$r->impn08);}
-if($r->impn09 > $r->imp09 && $r->impn09 > 0){$por09=(($r->imp09*100)/$r->impn09);}
-if($r->impn10 > $r->imp10 && $r->impn10 > 0){$por10=(($r->imp10*100)/$r->impn10);}
-if($r->impn11 > $r->imp11 && $r->impn11 > 0){$por11=(($r->imp11*100)/$r->impn11);}
-if($r->impn12 > $r->imp12 && $r->impn12 > 0){$por12=(($r->imp12*100)/$r->impn12);}
-	   
+        $ss="select regional,a.suc,sum(siniva)as venta_cortes
+
+ from catalogo.sucursal a
+left join cortes_c aa on aa.suc=a.suc
+left join cortes_d bb on bb.id_cc=aa.id and clave1>0 and clave1<=48 and clave1<>20
+ where  date_format(fechacorte,'%Y-%m')='$fec' and a.tipo2<>'F' and tlid=1 and a.suc>100
+and a.suc<1600
+        and a.suc<>170 and a.suc<>171 and a.suc<>172 and a.suc<>173 and a.suc<>174 and a.suc<>175
+        and a.suc<>176 and a.suc<>177 and a.suc<>178 and a.suc<>179 and a.suc<>180 and a.suc<>181 and a.suc<>182
+        and a.suc<>183 and a.suc<>184 and a.suc<>185 and a.suc<>186 and a.suc<>187 and a.suc<>188
+and superv=$r->superv
+group by a.regional"; 
+$qq=$this->db->query($ss);
+if($qq->num_rows() > 0){
+$rr=$qq->row();
+$venta_cortes=$rr->venta_cortes;     
+}
+$por=($r->imp_menos_iva_menos_cancela/$venta_cortes)*100;
+$l1 = anchor('nacional/tabla_control_ventas_nat_sup/'.$fec.'/'.$r->superv, '<img src="'.base_url().'img/edit.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para ver!', 'class' => 'encabezado'));  
 	   $num=$num+1;
-       $l1 = anchor('nacional/tabla_control_ventas_nat_sup/'.$r->superv.'/'.$aaa,$r->supervx.'</a>', array('title' => 'Haz Click aqui para ver el detalle!', 'class' => 'encabezado'));  
+        
             $tabla.="
             <tr>
-            <td align=\"left\" colspan=\"1\">Sup</td>
-            <td align=\"left\" colspan=\"6\">$l1</td>
+            <td align=\"right\">".$num."</td>
+            <td align=\"left\" colspan=\"1\">".$r->superv." - ".$r->supx."</td>
+            <td align=\"right\">".number_format($venta_cortes,2)."</td>
+            <td align=\"right\">".number_format($r->venta,2)."</td>
+            <td align=\"right\">".number_format($r->descuento,2)."</td>
+            <td align=\"right\">".number_format($r->importe,2)."</td>
+            <td align=\"right\">".number_format($r->cancela,2)."</td>
+            <td align=\"right\">".number_format($r->imp_menos_iva_menos_cancela,2)."</td>
+            <td align=\"right\">% ".number_format($por,2)."</td>
+            <td align=\"right\">".$l1."</td>
             </tr>
-            <tr>
-            <td align=\"left\">Mes</td>
-            <td align=\"right\">Ene <font color=\"red\">% ".number_format($por01,2)."</font></td>
-            <td align=\"right\">Feb <font color=\"red\">% ".number_format($por02,2)."</font></td>
-            <td align=\"right\">Mar <font color=\"red\">% ".number_format($por03,2)."</font></td>
-            <td align=\"right\">Abr <font color=\"red\">% ".number_format($por04,2)."</font></td>
-            <td align=\"right\">May <font color=\"red\">% ".number_format($por05,2)."</font></td>
-            <td align=\"right\">Jun <font color=\"red\">% ".number_format($por06,2)."</font></td>
-            </tr>
-            <tr>
-<td align=\"left\" colspan=\"1\">Naturista $aaa</td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp01,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp02,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp03,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp04,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp05,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp06,2)."</font></td>
-            </tr>
-            <tr>
-<td align=\"left\" colspan=\"1\">Naturista $aaax</td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn01,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn02,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn03,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn04,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn05,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn06,2)."</font></td>
-            </tr>
-            <tr>
-            <td align=\"left\">Mes</td>
-            <td align=\"right\">Jul <font color=\"red\">% ".number_format($por07,2)."</font></td>
-            <td align=\"right\">Ago <font color=\"red\">% ".number_format($por08,2)."</font></td>
-            <td align=\"right\">Sep <font color=\"red\">% ".number_format($por09,2)."</font></td>
-            <td align=\"right\">Oct <font color=\"red\">% ".number_format($por10,2)."</font></td>
-            <td align=\"right\">Nov <font color=\"red\">% ".number_format($por11,2)."</font></td>
-            <td align=\"right\">Dic <font color=\"red\">% ".number_format($por12,2)."</font></td>
-            </tr>
-            <tr>
-<td align=\"left\" colspan=\"1\">Naturista $aaa</td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp07,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp08,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp09,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp10,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp11,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($r->imp12,2)."</font></td>
-			</tr>
-            <tr>
-<td align=\"left\" colspan=\"1\">Naturista $aaax</td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn07,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn08,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn09,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn10,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn11,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($r->impn12,2)."</font></td>
-<td align=\"right\"><font color=\"blue\"></font></td>	
-			</tr>";
-$tim01=$tim01+$r->imp01;
-$tim02=$tim02+$r->imp02;
-$tim03=$tim03+$r->imp03;
-$tim04=$tim04+$r->imp04;
-$tim05=$tim05+$r->imp05;
-$tim06=$tim06+$r->imp06;
-$tim07=$tim07+$r->imp07;
-$tim08=$tim08+$r->imp08;
-$tim09=$tim09+$r->imp09;
-$tim10=$tim10+$r->imp10;
-$tim11=$tim11+$r->imp11;
-$tim12=$tim12+$r->imp12;
-$tima01=$tima01+$r->impn01;
-$tima02=$tima02+$r->impn02;
-$tima03=$tima03+$r->impn03;
-$tima04=$tima04+$r->impn04;
-$tima05=$tima05+$r->impn05;
-$tima06=$tima06+$r->impn06;
-$tima07=$tima07+$r->impn07;
-$tima08=$tima08+$r->impn08;
-$tima09=$tima09+$r->impn09;
-$tima10=$tima10+$r->impn10;
-$tima11=$tima11+$r->impn11;
-$tima12=$tima12+$r->impn12;
+            ";
+           $totcortes=$totcortes+$venta_cortes;
+           $totcan=$totcan+$r->can;
+           $totimp=$totimp+$r->venta;
+           $totdes=$totdes+$r->descuento;
+           $totimp_b=$totimp_b+$r->importe;
+           $totimp_b_c=$totimp_b_c+$r->cancela;
+           $totimp_b_c_iva=$totimp_b_c_iva+$r->imp_menos_iva_menos_cancela;
+           
+     
         }
          $tabla.="
-         <tr>
-            <td align=\"center\" colspan=\"12\"><font size=\"+2\">TOTAL</font></td>
-            </tr>
-            <td align=\"right\"><font color=\"black\">$aaa</font></td>
-            <td align=\"right\"><font color=\"black\">ENE: ".number_format($tim01,2)."</font><br /><font color=\"blue\">JUL: ".number_format($tim07,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">FEB: ".number_format($tim02,2)."</font><br /><font color=\"blue\">AGO: ".number_format($tim08,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">MAR: ".number_format($tim03,2)."</font><br /><font color=\"blue\">SEP: ".number_format($tim09,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">ABR: ".number_format($tim04,2)."</font><br /><font color=\"blue\">OCT: ".number_format($tim10,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">MAY: ".number_format($tim05,2)."</font><br /><font color=\"blue\">NOV: ".number_format($tim11,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">JUN: ".number_format($tim06,2)."</font><br /><font color=\"blue\">DEC: ".number_format($tim12,2)."</font></td>
-         </tr>
-            
-         <tr>
-            <td align=\"right\"><font color=\"black\">$aaax</font></td>
-            <td align=\"right\"><font color=\"black\">ENE: ".number_format($tima01,2)."</font><br /><font color=\"blue\">JUL: ".number_format($tima07,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">MAR: ".number_format($tima02,2)."</font><br /><font color=\"blue\">SEP: ".number_format($tima08,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">ABR: ".number_format($tima03,2)."</font><br /><font color=\"blue\">OCT: ".number_format($tima09,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">FEB: ".number_format($tima04,2)."</font><br /><font color=\"blue\">AGO: ".number_format($tima10,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">MAY: ".number_format($tima05,2)."</font><br /><font color=\"blue\">NOV: ".number_format($tima11,2)."</font></td>
-            <td align=\"right\"><font color=\"black\">JUN: ".number_format($tima06,2)."</font><br /><font color=\"blue\">DEC: ".number_format($tima12,2)."</font></td>
-        </tr>    
         </tbody>
+        <tr>
+        <td align=\"right\" colspan=\"2\">TOTAL</td>
+        <td align=\"right\">".number_format($totcortes,2)."</td>
+        <td align=\"right\">".number_format($totimp,2)."</td>
+        <td align=\"right\">".number_format($totdes,2)."</td>
+        <td align=\"right\">".number_format($totimp_b,2)."</td>
+        <td align=\"right\">".number_format($totimp_b_c,2)."</td>
+        <td align=\"right\">".number_format($totimp_b_c_iva,2)."</td>
+        <td></td>
+        </tr>
         </table>";
         
         return $tabla;
-    
-    }
+        }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function control_ventas_nat_sup($superv,$aaa)
+function control_ventas_nat_sup($superv,$fec)
     {
-$aaax=$aaa-1;
-$fec1=$aaa.'-'.'01';$fec2=$aaa.'-'.'02';$fec3=$aaa.'-'.'03';$fec4=$aaa.'-'.'04';$fec5=$aaa.'-'.'05';$fec6=$aaa.'-'.'06';
-$fec7=$aaa.'-'.'07';$fec8=$aaa.'-'.'08';$fec9=$aaa.'-'.'09';$fec10=$aaa.'-'.'10';$fec11=$aaa.'-'.'11';$fec12=$aaa.'-'.'12';
-$m01=0;$m02=0;$m03=0;$m04=0;$m05=0;$m06=0;$m07=0;$m08=0;$m09=0;$m10=0;$m11=0;$m12=0;
-$im01=0;$im02=0;$im03=0;$im04=0;$im05=0;$im06=0;$im07=0;$im08=0;$im09=0;$im10=0;$im11=0;$im12=0;
-$tim01=0;$tim02=0;$tim03=0;$tim04=0;$tim05=0;$tim06=0;$tim07=0;$tim08=0;$tim09=0;$tim10=0;$tim11=0;$tim12=0;
-        $id_user= $this->session->userdata('id');
-        $plaza= $this->session->userdata('plaza');
-        $s="select *from catalogo.sucursal where 
-        superv=$superv and tipo2<>'F'
-        ";
-		$q = $this->db->query($s);
-        
-$num=0;
-        $tabla= "
-        <table cellpadding=\"3\">
-        <thead>
-        
-        <tr>
-        </tr>
+$id_user= $this->session->userdata('id');
+        $s="select sum(can*vta)as venta,
+         
+      a.suc,b.nombre,b.tipo2,b.superv,b.regional,sum(can)as can,sum(importe)importe,sum(can*des)as descuento,
+sum(imp_cancela)cancela,
 
-        </thead>
+sum(case when c.iva='S'
+        then round((importe-imp_cancela)/(1+b.iva),2)
+        else
+        (importe-imp_cancela)
+        end)as imp_menos_iva_menos_cancela,
+
+(sum(case when c.iva='S'
+        then round((importe-imp_cancela)/(1+b.iva),2)
+        else
+        (importe-imp_cancela)
+        end)*.01)as uno,
+        d.nombre as supx
+        
+
+
+        from vtadc.venta_detalle_nat a
+        left join catalogo.sucursal b on b.suc=a.suc
+        left join catalogo.cat_naturistas c on c.sec=a.sec
+        left join usuarios d on d.plaza=b.superv and responsable='R' and nivel=14 and d.activo=1
+        where b.tipo2<>'F'  and date_format(fecha, '%Y-%m') = '$fec' and a.suc<1600 
+        and a.suc<>170 and a.suc<>171 and a.suc<>172 and a.suc<>173 and a.suc<>174 and a.suc<>175
+        and a.suc<>176 and a.suc<>177 and a.suc<>178 and a.suc<>179 and a.suc<>180 and a.suc<>181 and a.suc<>182
+        and a.suc<>183 and a.suc<>184 and a.suc<>185 and a.suc<>186 and a.suc<>187 and a.suc<>188
+        and b.superv=$superv
+        group by a.suc order by a.suc 
+
+        ";
+        $q = $this->db->query($s);
+        
+        $num=0;
+            $totcan=0;
+            $totimp=0;
+            $totdes=0;
+            $totimp_b=0;
+            $totimp_b_c=0;
+            $totimp_b_c_iva=0;
+            $totcortes=0;
+        $ventas_cortes=0;
+        $tabla= "
+        <table cellpadding=\"3\" border=\"1\">
+   
+         <tr>
+        <th colspan=\"13\">COMISIONES NATURISTAS</th>
+        </tr>
+        <tr>
+         <th>#</th>
+         <th>SUCURSAL</th>
+        <th>VTA-IVA<br />
+        -T.AIRE<br />DEPTO.CORTES</th>
+        <th>IMPORTE</th>
+        <th>DESCUENTO</th>
+        <th>IMP BRUTO</th>
+        <th>CANC.</th>
+        <th>IMP.BRUTO - CANC - IVA</th>
+        <th>% Porcentaje</th>
+        </tr>
         <tbody>
         ";
         
-  
+  $por=0;$suc=0;
         foreach($q->result() as $r)
         {
-		$sx="select 
-sum(importe_act_1)as imp01,
-sum(importe_act_2)as imp02,
-sum(importe_act_3)as imp03,
-sum(importe_act_4)as imp04,
-sum(importe_act_5)as imp05,
-sum(importe_act_6)as imp06,
-sum(importe_act_7)as imp07,
-sum(importe_act_8)as imp08,
-sum(importe_act_9)as imp09,
-sum(importe_act_10)as imp10,
-sum(importe_act_11)as imp11,
-sum(importe_act_12)as imp12,
-sum(importe_ant_1)as impn01,
-sum(importe_ant_2)as impn02,
-sum(importe_ant_3)as impn03,
-sum(importe_ant_4)as impn04,
-sum(importe_ant_5)as impn05,
-sum(importe_ant_6)as impn06,
-sum(importe_ant_7)as impn07,
-sum(importe_ant_8)as impn08,
-sum(importe_ant_9)as impn09,
-sum(importe_ant_10)as impn10,
-sum(importe_ant_11)as impn11,
-sum(importe_ant_12)as impn12
-from vtadc.fe_prox_det
-		 where suc=$r->suc and aaa=$aaa and lab='NATURISTAS'";       
-	    $qx = $this->db->query($sx);
-	    if($qx->num_rows()> 0){
- 		   $rx= $qx->row();
-$im01=$rx->imp01;$im02=$rx->imp02;$im03=$rx->imp03;$im04=$rx->imp04;$im05=$rx->imp05;$im06=$rx->imp06;
-$im07=$rx->imp07;$im08=$rx->imp08;$im09=$rx->imp09;$im10=$rx->imp10;$im11=$rx->imp11;$im12=$rx->imp12;
-$imn01=$rx->impn01;$imn02=$rx->impn02;$imn03=$rx->impn03;$imn04=$rx->impn04;$imn05=$rx->impn05;$imn06=$rx->impn06;
-$imn07=$rx->impn07;$imn08=$rx->impn08;$imn09=$rx->impn09;$imn10=$rx->impn10;$imn11=$rx->impn11;$imn12=$rx->impn12;
-}
-$s01="select a.suc,sum(siniva)as vta from cortes_c a left join cortes_d b on b.id_cc=a.id
-where date_format(a.fechacorte,'%Y-%m')='$fec1' and suc=$r->suc  and b.clave1<>20 and clave1<29 group by suc";       
-$q01 = $this->db->query($s01);if($q01->num_rows()> 0){$r01= $q01->row();$v01=$r01->vta;}else{$v01=0;}
-$s02="select a.suc,sum(siniva)as vta from cortes_c a left join cortes_d b on b.id_cc=a.id
-where date_format(a.fechacorte,'%Y-%m')='$fec2' and suc=$r->suc  and b.clave1<>20 and clave1<29 group by suc";       
-$q02 = $this->db->query($s02);if($q02->num_rows()> 0){$r02= $q02->row();$v02=$r02->vta;}else{$v02=0;}
-$s03="select a.suc,sum(siniva)as vta from cortes_c a left join cortes_d b on b.id_cc=a.id
-where date_format(a.fechacorte,'%Y-%m')='$fec3' and suc=$r->suc  and b.clave1<>20 and clave1<29 group by suc";       
-$q03 = $this->db->query($s03);if($q03->num_rows()> 0){$r03= $q03->row();$v03=$r03->vta;}else{$v03=0;}
-$s04="select a.suc,sum(siniva)as vta from cortes_c a left join cortes_d b on b.id_cc=a.id
-where date_format(a.fechacorte,'%Y-%m')='$fec4' and suc=$r->suc  and b.clave1<>20 and clave1<29 group by suc";       
-$q04 = $this->db->query($s04);if($q04->num_rows()> 0){$r04= $q04->row();$v04=$r04->vta;}else{$v04=0;}
-$s05="select a.suc,sum(siniva)as vta  from cortes_c a left join cortes_d b on b.id_cc=a.id
-where date_format(a.fechacorte,'%Y-%m')='$fec5' and suc=$r->suc  and b.clave1<>20 and clave1<29 group by suc";       
-$q05 = $this->db->query($s05);if($q05->num_rows()> 0){$r05= $q05->row();$v05=$r05->vta;}else{$v05=0;}
-$s06="select a.suc,sum(siniva)as vta  from cortes_c a left join cortes_d b on b.id_cc=a.id
-where date_format(a.fechacorte,'%Y-%m')='$fec6' and suc=$r->suc  and b.clave1<>20 and clave1<29 group by suc";       
-$q06 = $this->db->query($s06);if($q06->num_rows()> 0){$r06= $q06->row();$v06=$r06->vta;}else{$v06=0;}
-$s07="select a.suc,sum(siniva)as vta  from cortes_c a left join cortes_d b on b.id_cc=a.id
-where date_format(a.fechacorte,'%Y-%m')='$fec7' and suc=$r->suc  and b.clave1<>20 and clave1<29 group by suc";       
-$q07= $this->db->query($s07);if($q07->num_rows()> 0){$r07= $q07->row();$v07=$r07->vta;}else{$v07=0;}
-$s08="select a.suc,sum(siniva)as vta  from cortes_c a left join cortes_d b on b.id_cc=a.id
-where date_format(a.fechacorte,'%Y-%m')='$fec8' and suc=$r->suc  and b.clave1<>20 and clave1<29 group by suc";       
-$q08 = $this->db->query($s08);if($q08->num_rows()> 0){$r08= $q08->row();$v08=$r08->vta;}else{$v08=0;}
-$s09="select a.suc,sum(siniva)as vta  from cortes_c a left join cortes_d b on b.id_cc=a.id
-where date_format(a.fechacorte,'%Y-%m')='$fec9' and suc=$r->suc  and b.clave1<>20 and clave1<29 group by suc";       
-$q09 = $this->db->query($s09);if($q09->num_rows()> 0){$r09= $q09->row();$v09=$r09->vta;}else{$v09=0;}
-$s10="select a.suc,sum(siniva)as vta  from cortes_c a left join cortes_d b on b.id_cc=a.id
-where date_format(a.fechacorte,'%Y-%m')='$fec10' and suc=$r->suc  and b.clave1<>20 and clave1<29 group by suc";       
-$q10 = $this->db->query($s10);if($q10->num_rows()> 0){$r10= $q10->row();$v10=$r10->vta;}else{$v10=0;}
-$s11="select a.suc,sum(siniva)as vta  from cortes_c a left join cortes_d b on b.id_cc=a.id
-where date_format(a.fechacorte,'%Y-%m')='$fec11' and suc=$r->suc  and b.clave1<>20 and clave1<29 group by suc";       
-$q11 = $this->db->query($s11);if($q11->num_rows()> 0){$r11= $q11->row();$v11=$r11->vta;}else{$v11=0;}
-$s12="select a.suc,sum(siniva)as vta  from cortes_c a left join cortes_d b on b.id_cc=a.id
-where date_format(a.fechacorte,'%Y-%m')='$fec12' and suc=$r->suc  and b.clave1<>20 and clave1<29 group by suc";       
-$q12 = $this->db->query($s12);if($q12->num_rows()> 0){$r12= $q12->row();$v12=$r12->vta;}else{$v12=0;}
+        $ss="select regional,a.suc,sum(siniva)as venta_cortes
 
-if($v01>0){$p01=($im01*100)/$v01;}else{$p01=0;}
-if($v02>0){$p02=($im02*100)/$v02;}else{$p02=0;}
-if($v03>0){$p03=($im03*100)/$v03;}else{$p03=0;}
-if($v04>0){$p04=($im04*100)/$v04;}else{$p04=0;}
-if($v05>0){$p05=($im05*100)/$v05;}else{$p05=0;}
-if($v06>0){$p06=($im06*100)/$v06;}else{$p06=0;}
-if($v07>0){$p07=($im07*100)/$v07;}else{$p07=0;}
-if($v08>0){$p08=($im08*100)/$v08;}else{$p08=0;}
-if($v09>0){$p09=($im09*100)/$v09;}else{$p09=0;}
-if($v10>0){$p10=($im10*100)/$v10;}else{$p10=0;}
-if($v11>0){$p11=($im11*100)/$v11;}else{$p11=0;}
-if($v12>0){$p12=($im12*100)/$v12;}else{$p12=0;}
-	   
+ from catalogo.sucursal a
+left join cortes_c aa on aa.suc=a.suc
+left join cortes_d bb on bb.id_cc=aa.id and clave1>0 and clave1<=48 and clave1<>20
+ where  date_format(fechacorte,'%Y-%m')='$fec' and a.tipo2<>'F' and tlid=1 and a.suc>100
+and a.suc<1600
+        and a.suc<>170 and a.suc<>171 and a.suc<>172 and a.suc<>173 and a.suc<>174 and a.suc<>175
+        and a.suc<>176 and a.suc<>177 and a.suc<>178 and a.suc<>179 and a.suc<>180 and a.suc<>181 and a.suc<>182
+        and a.suc<>183 and a.suc<>184 and a.suc<>185 and a.suc<>186 and a.suc<>187 and a.suc<>188
+and a.suc=$r->suc
+group by a.suc"; 
+$qq=$this->db->query($ss);
+if($qq->num_rows() > 0){
+$rr=$qq->row();
+$venta_cortes=$rr->venta_cortes;     
+}
+$por=($r->imp_menos_iva_menos_cancela/$venta_cortes)*100;
+if($por>=13){$suc=$suc+1;$color='blue';}else{$color='black';}
 	   $num=$num+1;
-       $l1 = anchor('nacional/venta_producto_nat/'.$r->suc.'/'.$aaa,$r->tipo2.' - '.$r->suc.' - '.$r->nombre.'</a>', array('title' => 'Haz Click aqui para ver el detalle!', 'class' => 'encabezado'));  
+        
             $tabla.="
             <tr>
-            <td align=\"left\" colspan=\"1\">Sucursal</td>
-            <td align=\"left\" colspan=\"6\">$l1</td>
+            <td align=\"right\"><font color=\"$color\">".$num."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->suc." - ".$r->nombre."</font></td>
+            <td align=\"right\"><font color=\"$color\">".number_format($venta_cortes,2)."</font></td>
+            <td align=\"right\"><font color=\"$color\">".number_format($r->venta,2)."</font></td>
+            <td align=\"right\"><font color=\"$color\">".number_format($r->descuento,2)."</font></td>
+            <td align=\"right\"><font color=\"$color\">".number_format($r->importe,2)."</font></td>
+            <td align=\"right\"><font color=\"$color\">".number_format($r->cancela,2)."</font></td>
+            <td align=\"right\"><font color=\"$color\">".number_format($r->imp_menos_iva_menos_cancela,2)."</font></td>
+            <td align=\"right\"><font color=\"$color\">% ".number_format($por,2)."</font></td>
             </tr>
-            <tr>
-            <td align=\"left\">Mes</td>
-            <td align=\"center\">Ene</td>
-            <td align=\"center\">Feb</td>
-            <td align=\"center\">Mar</td>
-            <td align=\"center\">Abr</td>
-            <td align=\"center\">May</td>
-            <td align=\"center\">Jun</td>
-            </tr>
-            <tr>
-<td align=\"left\" colspan=\"1\">Venta $aaa</td>
-<td align=\"right\"><font color=\"green\">".number_format($v01,2)."</font></td>
-<td align=\"right\"><font color=\"green\">".number_format($v02,2)."</font></td>
-<td align=\"right\"><font color=\"green\">".number_format($v03,2)."</font></td>
-<td align=\"right\"><font color=\"green\">".number_format($v04,2)."</font></td>
-<td align=\"right\"><font color=\"green\">".number_format($v05,2)."</font></td>
-<td align=\"right\"><font color=\"green\">".number_format($v06,2)."</font></td>
-            </tr>
-            
-            <tr>
-<td align=\"left\" colspan=\"1\">Naturista $aaa</td>
-<td align=\"right\"><font color=\"blue\">".number_format($im01,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($im02,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($im03,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($im04,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($im05,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($im06,2)."</font></td>
-            </tr>
-
-            <tr>
-<td align=\"left\" colspan=\"1\">%</td>
-<td align=\"right\"><font color=\"orange\">% ".number_format($p01,2)."</font></td>
-<td align=\"right\"><font color=\"orange\">% ".number_format($p02,2)."</font></td>
-<td align=\"right\"><font color=\"orange\">% ".number_format($p03,2)."</font></td>
-<td align=\"right\"><font color=\"orange\">% ".number_format($p04,2)."</font></td>
-<td align=\"right\"><font color=\"orange\">% ".number_format($p05,2)."</font></td>
-<td align=\"right\"><font color=\"orange\">% ".number_format($p06,2)."</font></td>	
-			</tr>
-<tr>
-<td align=\"left\" colspan=\"1\">Naturista $aaax</td>
-<td align=\"right\"><font color=\"black\">".number_format($imn01,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($imn02,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($imn03,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($imn04,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($imn05,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($imn06,2)."</font></td>
-            </tr>
-<tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr>            
-            <tr>
-            <td align=\"left\">Mes</td>
-            <td align=\"center\">Jul</td>
-            <td align=\"center\">Ago</td>
-            <td align=\"center\">Sep</td>
-            <td align=\"center\">Oct</td>
-            <td align=\"center\">Nov</td>
-            <td align=\"center\">Dic</td>
-            </tr>
-             
-            <tr>
-<td align=\"left\" colspan=\"1\">Venta</td>
-<td align=\"right\"><font color=\"green\">".number_format($v07,2)."</font></td>
-<td align=\"right\"><font color=\"green\">".number_format($v08,2)."</font></td>
-<td align=\"right\"><font color=\"green\">".number_format($v09,2)."</font></td>
-<td align=\"right\"><font color=\"green\">".number_format($v10,2)."</font></td>
-<td align=\"right\"><font color=\"green\">".number_format($v11,2)."</font></td>
-<td align=\"right\"><font color=\"green\">".number_format($v12,2)."</font></td>
-            </tr>
-            <tr>
-<td align=\"left\" colspan=\"1\">Naturista</td>
-<td align=\"right\"><font color=\"blue\">".number_format($im07,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($im08,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($im09,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($im10,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($im11,2)."</font></td>
-<td align=\"right\"><font color=\"blue\">".number_format($im12,2)."</font></td>	
-			</tr>
-			<tr>
-<td align=\"left\" colspan=\"1\">%</td>
-<td align=\"right\"><font color=\"orange\">% ".number_format($p07,2)."</font></td>
-<td align=\"right\"><font color=\"orange\">% ".number_format($p08,2)."</font></td>
-<td align=\"right\"><font color=\"orange\">% ".number_format($p09,2)."</font></td>
-<td align=\"right\"><font color=\"orange\">% ".number_format($p10,2)."</font></td>
-<td align=\"right\"><font color=\"orange\">% ".number_format($p11,2)."</font></td>
-<td align=\"right\"><font color=\"orange\">% ".number_format($p12,2)."</font></td>	
-			</tr>
-<tr>
-<td align=\"left\" colspan=\"1\">Naturista $aaax</td>
-<td align=\"right\"><font color=\"black\">".number_format($imn07,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($imn08,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($imn09,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($imn10,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($imn11,2)."</font></td>
-<td align=\"right\"><font color=\"black\">".number_format($imn12,2)."</font></td>
-            </tr> 
             ";
-$tim01=$tim01+$im01;
-$tim02=$tim02+$im02;
-$tim03=$tim03+$im03;
-$tim04=$tim04+$im04;
-$tim05=$tim05+$im05;
-$tim06=$tim06+$im06;
-$tim07=$tim07+$im07;
-$tim08=$tim08+$im08;
-$tim09=$tim09+$im09;
-$tim10=$tim10+$im10;
-$tim11=$tim11+$im11;
-$tim12=$tim12+$im12;
+           $totcortes=$totcortes+$venta_cortes;
+           $totcan=$totcan+$r->can;
+           $totimp=$totimp+$r->venta;
+           $totdes=$totdes+$r->descuento;
+           $totimp_b=$totimp_b+$r->importe;
+           $totimp_b_c=$totimp_b_c+$r->cancela;
+           $totimp_b_c_iva=$totimp_b_c_iva+$r->imp_menos_iva_menos_cancela;
+           
+     
         }
          $tabla.="
-         <tr>
-          <tr>
-            <td align=\"center\" colspan=\"12\"><font size=\"+2\">TOTAL</font></td>
-            </tr>
-            <td align=\"right\"><font color=\"blue\"><strong>".number_format($tim01,2)."</strong></font></td>
-            <td align=\"right\"><font color=\"blue\"><strong>".number_format($tim02,2)."</strong></font></td>
-            <td align=\"right\"><font color=\"blue\"><strong>".number_format($tim03,2)."</strong></font></td>
-            <td align=\"right\"><font color=\"blue\"><strong>".number_format($tim04,2)."</strong></font></td>
-            <td align=\"right\"><font color=\"blue\"><strong>".number_format($tim05,2)."</strong></font></td>
-            <td align=\"right\"><font color=\"blue\"><strong>".number_format($tim06,2)."</strong></font></td>
-            <td align=\"right\"><font color=\"blue\"><strong>".number_format($tim07,2)."</strong></font></td>
-            <td align=\"right\"><font color=\"blue\"><strong>".number_format($tim08,2)."</strong></font></td>
-            <td align=\"right\"><font color=\"blue\"><strong>".number_format($tim09,2)."</strong></font></td>
-            <td align=\"right\"><font color=\"blue\"><strong>".number_format($tim10,2)."</strong></font></td>
-            <td align=\"right\"><font color=\"blue\"><strong>".number_format($tim11,2)."</strong></font></td>
-            <td align=\"right\"><font color=\"blue\"><strong>".number_format($tim12,2)."</strong></font></td>
-        </tr>    
         </tbody>
+        <tr>
+        <td align=\"right\" colspan=\"2\">TOTAL</td>
+        <td align=\"right\">".number_format($totcortes,2)."</td>
+        <td align=\"right\">".number_format($totimp,2)."</td>
+        <td align=\"right\">".number_format($totdes,2)."</td>
+        <td align=\"right\">".number_format($totimp_b,2)."</td>
+        <td align=\"right\">".number_format($totimp_b_c,2)."</td>
+        <td align=\"right\">".number_format($totimp_b_c_iva,2)."</td>
+        <td></td>
+        </tr>
+        <tr>
+        <td colspan=\"9\">TOTAL DE SUCURSALES CON COMISION $suc</td>
+        </tr>
         </table>";
         
         return $tabla;

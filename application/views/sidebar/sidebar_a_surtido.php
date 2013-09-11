@@ -20,17 +20,25 @@ echo anchor('a_surtido/tabla_control_his', 'FOLIOS CERRADOS', 'class="button-lin
 echo anchor('a_surtido/tabla_control_his1', 'FOLIOS CERRADOS ESPECIALES', 'class="button-link pink" style="position:relative; width:190px; height:20px;"');
 echo "<br/>";
 echo "<br/><strong>REPORTES DE PEDIDOS CERRADOS</strong><br/><br/>";
-echo anchor('a_surtido/reporte_diario', 'REPORTES DE CAPTURA PDF', 'class="button-link red" style="position:relative; width:190px; height:20px;"');
+//echo anchor('a_surtido/reporte_diario', 'REPORTES DE CAPTURA PDF', 'class="button-link red" style="position:relative; width:190px; height:20px;"');
 echo "<br/><br/><br/><br/>";
 if($nivel== 24){
 echo "<br/><strong>CAPTURA</strong><br/><br/>";
 echo anchor('a_surtido/captura_sob_fal', 'SOBRANTE/FALTANTE FORMULADO', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo "<br/><br/>";
-echo anchor('a_surtido/tabla_sob_fal', 'FORMULADOS', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo anchor('a_surtido/tabla_sob_fal', 'FORMULADOS DEVUELTOS', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo "<br/><br/>";
+echo anchor('a_surtido/folios_totales', 'FORMULADOS ENVIADOS', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo "<br/><br/>";
+echo anchor('a_surtido/folios_pendientes', 'FORMULADOS PENDIENTES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo "<br/><br/><br/><br/>";
 echo anchor('a_surtido/captura_sob_fal_esp', 'SOBRANTE/FALTANTE ESPECIALES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo "<br/><br/>";
-echo anchor('a_surtido/tabla_sob_fal_esp', 'ESPECIALES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo anchor('a_surtido/tabla_sob_fal_esp', 'ESPECIALES DEVUELTOS', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo "<br/><br/>";
+echo anchor('a_surtido/folios_totales_esp', 'ESPECIALES ENVIADOS', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo "<br/><br/>";
+echo anchor('a_surtido/folios_pendientes_esp', 'ESPECIALES PENDIENTES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 }
 
 }
@@ -47,6 +55,7 @@ echo anchor('a_surtido/reporte_diario_xclave', 'REPORTE SURTIDO X CLAVE', 'class
 if($nivel== 12){
 echo "<br/><br/>";    
 echo anchor('a_surtido/tabla_sob_fal', 'FOLIOS FORMULADOS', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo anchor('a_surtido/tabla_sob_fal_esp', 'FOLIOS ESPECIALES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo "<br/><br/><br/><br/>";
 }
 }

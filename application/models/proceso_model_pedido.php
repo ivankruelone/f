@@ -18,8 +18,7 @@ if($dianombre=='Tue'){$dia='MAR';}
 if($dianombre=='Wed'){$dia='MIE';}
 if($dianombre=='Thu'){$dia='JUE';}
 if($dianombre=='Fri'){$dia='VIE';}
-    $s="select a.tlid,SUBDATE(date(now()),INTERVAL 2 DAY)as dia_lim,
-b.fechai,fechag, sum(cantidad)as can, a.suc,a.nombre from catalogo.sucursal a
+    $s="select a.tlid,SUBDATE(date(now()),INTERVAL 2 DAY)as dia_lim, DATEDIFF(SUBDATE(date(now()),INTERVAL 2 DAY), fechai) AS diferencia, b.fechai,fechag, sum(cantidad)as can, a.suc,a.nombre from catalogo.sucursal a
 left join desarrollo.inv b on b.suc=a.suc
 where a.dia='$dia' and sec>0
 group by a.suc ORDER BY FECHAI";
@@ -36,6 +35,7 @@ $tabla= "
         <th>Sucursal</th>
         <th>Piezas</th>
         <th>Tlid</th>
+        <th>Editar</th>
         </tr>
         </thead>
         <tbody>
@@ -44,6 +44,11 @@ $tabla= "
   $num=1;      
         foreach($q->result() as $r)
         {
+            if($r->diferencia>2){
+            $l= anchor('procesos/editar_dia/'.$r->suc, '<img src="'.base_url().'img/Edit.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para editar', 'class' => 'encabezado'));
+            }else{
+                $l=null;
+            }
             $tabla.="
             <tr>
             <td align=\"left\"><font color=\"orange\">".$num."</font></td>
@@ -54,6 +59,7 @@ $tabla= "
             <td align=\"left\">".$r->nombre."</td>
             <td align=\"center\">".number_format($r->can,0)."</td>
             <td align=\"left\">".$r->tlid."</td>
+            <td style=\"text-align: center;\">".$l."</td>
             </tr>
             ";
             $num=$num+1;
@@ -67,6 +73,8 @@ $tabla= "
 }
 ///////////////////////////////////////
 ///////////////////////////////////////
+
+
    function __arreglo_pedido_formulado_una($suc,$por1,$por2,$por3,$por4,$por5)
     {
 $dianombre=date('D');
@@ -1278,6 +1286,90 @@ $this->db->query($sx9);
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+function editar_dia_suc($suc)
+    {
+        $this->db->where('suc', $suc);
+        $query = $this->db->get('catalogo.sucursal');
+        //echo $this->db->last_query();
+        
+        return $query;
+        
+    }
+
+function editar_dia($dia, $suc)
+    {
+        $data = array(
+           'dia' => $this->input->post('dia')
+           
+        );
+        
+        $this->db->where('suc', $suc);
+        $this->db->update('catalogo.sucursal', $data);
+        //echo $this->db->last_query();
+        //die();
+        
+        return $this->db->affected_rows(); 
+    }
+
+function invd1()
+{
+
+    $s="select a.tlid,SUBDATE(date(now()),INTERVAL 2 DAY)as dia_lim, DATEDIFF(now(), SUBDATE(date(now()),INTERVAL 2 DAY)) AS diferencia,
+b.fechai,fechag, sum(cantidad)as can, a.suc,a.nombre from catalogo.sucursal a
+left join desarrollo.inv b on b.suc=a.suc
+where a.dia='PEN' and sec>0
+group by a.suc ORDER BY FECHAI";
+$q=$this->db->query($s);
+$tabla1= "
+        <table>
+        <thead>
+        <tr>
+        <th>#</th>
+        <th>Fecha Limite</th>
+        <th>Fecha de archivo</th>
+        <th>Fecha de procesos</th>
+        <th>Nid</th>
+        <th>Sucursal</th>
+        <th>Piezas</th>
+        <th>Tlid</th>
+        <th>Editar</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        
+  $num=1;      
+        foreach($q->result() as $r)
+        {
+           
+            $l= anchor('procesos/editar_dia/'.$r->suc, '<img src="'.base_url().'img/Edit.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para editar', 'class' => 'encabezado'));
+           
+            $tabla1.="
+            <tr>
+            <td align=\"left\"><font color=\"orange\">".$num."</font></td>
+            <td align=\"left\">".$r->dia_lim."</td>
+            <td align=\"left\">".$r->fechai."</td>
+            <td align=\"left\">".$r->fechag."</td>
+            <td align=\"left\">".$r->suc."</td>
+            <td align=\"left\">".$r->nombre."</td>
+            <td align=\"center\">".number_format($r->can,0)."</td>
+            <td align=\"left\">".$r->tlid."</td>
+            <td style=\"text-align: center;\">".$l."</td>
+            </tr>
+            ";
+            $num=$num+1;
+        }
+        
+        $tabla1.="
+        </tbody>
+        </table>";
+        
+        return $tabla1;
+}
+///////////////////////////////////////
+///////////////////////////////////////
+
+
 
 }
 

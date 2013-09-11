@@ -68,4 +68,95 @@ class Reportes extends CI_Controller
         $this->load->view('impresiones/reporte_suc_cia', $data);
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+public function rep_rutas()
+    {
+        $data['mensaje']= '';
+        $data['titulo']='REPORTE DE SUCURSALES POR RUTA';
+        $this->load->model('reportes_model');
+        $data['contenido'] = "r_x_d";
+        $data['selector'] = "reportes";
+        $data['sidebar'] = "sidebar_reportes";
+        $data['tabla'] = '';
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+    
+    function reporte_submit1()
+    {
+        $fecha1 = $this->input->post('fecha1');
+        $fecha2 = $this->input->post('fecha2');
+        
+        $this->load->model('reportes_model');
+
+        $data['cabeza'] = $this->reportes_model->reporte_ruta_encabezado($fecha1, $fecha2);
+        $data['detalle'] = $this->reportes_model->reporte_ruta($fecha1, $fecha2);
+        //print_r($data);
+        $this->load->view('impresiones/reporte_x_ruta', $data);
+    }
+    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+public function rep_esp()
+    {
+        $data['mensaje']= '';
+        $data['titulo']='REPORTE DE PEDIDOS ESPECIALES Y METRO';
+        $this->load->model('reportes_model');
+        $data['contenido'] = "reporte_ped_metro_y _esp";
+        $data['selector'] = "reportes";
+        $data['sidebar'] = "sidebar_reportes";
+        $data['tabla'] = '';
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+    
+    function reporte_submit2()
+    {
+        $fecha1 = $this->input->post('fecha1');
+        $fecha2 = $this->input->post('fecha2');
+        
+        $this->load->model('reportes_model');
+
+        $data['cabeza'] = $this->reportes_model->reporte_esp_metro_encabezado($fecha1, $fecha2);
+        $data['detalle'] = $this->reportes_model->reporte_esp_metro($fecha1, $fecha2);
+        //print_r($data);
+        $this->load->view('impresiones/reporte_esp_metro', $data);
+    }
+    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+public function rep_pza()
+    {
+        $data['mensaje']= '';
+        $data['titulo']='REPORTE DE PRODUCTOS X CLAVE ESPECIALES Y METRO';
+        $this->load->model('reportes_model');
+        $data['contenido'] = "reporte_piezas";
+        $data['selector'] = "reportes";
+        $data['sidebar'] = "sidebar_reportes";
+        $data['tabla'] = '';
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+    
+    function reporte_submit3()
+    {
+        $fecha1 = $this->input->post('fecha1');
+        $fecha2 = $this->input->post('fecha2');
+        
+        $this->load->model('reportes_model');
+
+        $data['cabeza'] = $this->reportes_model->reporte_esp_metro_encabezado1($fecha1, $fecha2);
+        $data['detalle'] = $this->reportes_model->reporte_esp_metro1($fecha1, $fecha2);
+        //print_r($data);
+        $this->load->view('impresiones/reporte_esp_metro', $data);
+    }
+
+
       }

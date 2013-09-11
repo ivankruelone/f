@@ -707,8 +707,6 @@ class Nacional extends CI_Controller
  
  
  
- 
- 
     public function index()
     {
         $data['mensaje']= '';
@@ -1100,8 +1098,9 @@ class Nacional extends CI_Controller
         $this->load->model('catalogo_model');
 		$data['mesx'] = $this->catalogo_model->busca_mes();
         $data['aaax'] = $this->catalogo_model->busca_anio();
-        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL';
-        $data['contenido'] = "nacional_form_ventas";
+        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL<br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />';
+        $data['contenido'] = "nacional";
         $data['selector'] = "nacional";
         $data['sidebar'] = "sidebar_nacional_ven";
               
@@ -2091,13 +2090,14 @@ public function corte_detalle($id_cc,$fec,$suc)
 /////////////////////////////////////////////////////////////////////////////////////////
    public function tabla_control_ventas_nat()
     {
-        $aaa= $this->input->post('aaa');
-        
+        $aaa=$this->input->post('aaa');
+        $fec=$this->input->post('aaa').'-'.str_pad($this->input->post('mes'),2,"0",STR_PAD_LEFT);
+        $this->load->model('catalogo_model');
+        $mesx = $this->catalogo_model->busca_mes_unico($this->input->post('mes'));
         $this->load->model('nacional_model');
-        $data['fechac']= date('Y-m-d');
-        $data['tabla'] = $this->nacional_model->control_ventas_nat($aaa);
+         $data['tabla'] = $this->nacional_model->control_ventas_nat($fec);
         
-        $data['titulo'] = "REPORTE DE VENTAS NATURISTAS  DEL $aaa";
+        $data['titulo'] = "REPORTE DE VENTAS NATURISTAS  DE $mesx  DEL $aaa";
         $data['titulo1'] = "";
         $data['contenido'] = "nacional";
         $data['selector'] = "nacional";
@@ -2109,13 +2109,16 @@ public function corte_detalle($id_cc,$fec,$suc)
     }
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
-   public function tabla_control_ventas_nat_ger($ger,$aaa)
+   public function tabla_control_ventas_nat_ger($fec,$ger)
     {
+        $aaa=substr($fec,0,4);
+        $mes=substr($fec,6,2);
+        $this->load->model('catalogo_model');
+        $mesx = $this->catalogo_model->busca_mes_unico($mes);
         $this->load->model('nacional_model');
-        $data['fechac']= date('Y-m-d');
-        $data['tabla'] = $this->nacional_model->control_ventas_nat_ger($ger,$aaa);
+         $data['tabla'] = $this->nacional_model->control_ventas_nat_ger($fec,$ger);
         
-        $data['titulo'] = "REPORTE DE VENTAS NATURISTAS  DEL $aaa";
+        $data['titulo'] = "REPORTE DE VENTAS NATURISTAS  DE $mesx  DEL $aaa";
         $data['titulo1'] = "";
         $data['contenido'] = "nacional";
         $data['selector'] = "nacional";
@@ -2126,13 +2129,16 @@ public function corte_detalle($id_cc,$fec,$suc)
         $this->load->view('extrafooter');
     }
 /////////////////////////////////////////////////////////////////////////////////////////
-   public function tabla_control_ventas_nat_sup($superv,$aaa)
+   public function tabla_control_ventas_nat_sup($fec,$superv)
     {
+        $aaa=substr($fec,0,4);
+        $mes=substr($fec,6,2);
+        $this->load->model('catalogo_model');
+        $mesx = $this->catalogo_model->busca_mes_unico($mes);
         $this->load->model('nacional_model');
-        $data['fechac']= date('Y-m-d');
-        $data['tabla'] = $this->nacional_model->control_ventas_nat_sup($superv,$aaa);
+        $data['tabla'] = $this->nacional_model->control_ventas_nat_sup($superv,$fec);
         
-        $data['titulo'] = "REPORTE DE VENTAS NATURISTAS  DEL $aaa";
+        $data['titulo'] = "REPORTE DE VENTAS NATURISTAS  DE $mesx  DEL $aaa";
         $data['titulo1'] = "";
         $data['contenido'] = "nacional";
         $data['selector'] = "nacional";
@@ -2267,7 +2273,8 @@ public function corte_detalle($id_cc,$fec,$suc)
         $data['mensaje']= '';
         $data['titulo']= 'MOVIMIENTOS DE SUCURSALES';
         $data['titulo1']= '';
-        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL';
+        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL<br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />';
         $data['contenido'] = "nacional";
         $data['selector'] = "nacional";
         $data['sidebar'] = "sidebar_nacional_mov";

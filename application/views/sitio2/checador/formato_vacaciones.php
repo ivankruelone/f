@@ -49,7 +49,9 @@
                     <thead>
                         <tr>
                             <th style="text-align: center;">Periodo</th>
+                            <th style="text-align: center;">Dias Otorgados</th>
                             <th style="text-align: center;">Dias</th>
+                            <th style="text-align: center;">Prima</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,7 +60,9 @@
                         foreach($query2->result()  as $row2){?>
                         <tr>
                             <td style="text-align: center;"><?php echo $row2->aaa1." - ".$row2->aaa2; ?></td>
+                            <td style="text-align: center;"><?php echo $row2->dias_ley; ?></td>
                             <td style="text-align: center;"><?php echo $row2->dias; ?></td>
+                            <td style="text-align: center;"><?php echo $row2->prima; ?> %</td>
                         </tr>
                         <?php 
                         
@@ -73,6 +77,8 @@
                         </tr>
                     </tfoot>
                 </table>
+                
+                <p>Fecha de ingreso: <?php echo $datos->fechaalta?></p>
 
                 
                 </div>

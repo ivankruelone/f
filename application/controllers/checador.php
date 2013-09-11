@@ -26,6 +26,48 @@ class Checador extends CI_Controller
         $this->load->view('site2', $data);
     }
     
+    public function busca_nomina()
+    {
+        $nomina = $this->input->post('nomina');
+        $id = $this->checador_model->get_id_from_nomina($nomina);
+        $data['vista'] = 'sitio2/checador/perfil_usuario2';
+        $data['js'] = 'sitio2/checador/perfil_usuario2_js';
+        $data['query'] = $this->checador_model->get_atributos_empleado_nomina($nomina);
+        $data['vacaciones'] = $this->checador_model->get_vacaciones_nomina($nomina);
+        $data['incapacidades'] = $this->checador_model->get_incapacidades($nomina);
+        $data['incidencias'] = $this->checador_model->get_incidencias_empleado_id($id);
+        $data['empiricos'] = $this->checador_model->get_totales_empiricos_julio_2013();
+        $data['reales'] = $this->checador_model->get_totales_reales_julio_2013($id);
+        $data['menu'] = 'perfil';
+        $this->load->view('site2', $data);
+    }
+    
+    public function ayuda()
+    {
+        $data['vista'] = 'sitio2/checador/ayuda';
+        $data['js'] = 'sitio2/checador/ayuda_js';
+        $data['menu'] = 'ayuda';
+        $data['query'] = $this->checador_model->get_ayuda();
+        $this->load->view('site2', $data);
+    }
+    
+    public function rh()
+    {
+        $data['vista'] = 'sitio2/checador/rh';
+        $data['js'] = 'sitio2/checador/rh_js';
+        $data['menu'] = 'ayuda';
+        $this->load->view('site2', $data);
+    }
+    
+    public function bajar_reglamento_comedor()
+    {
+        $this->load->helper('download');
+        $name = 'COMEDOR.pdf';
+        $data = file_get_contents("./documentos/".$name); // Read the file's contents
+
+        force_download($name, $data); 
+    }
+
     public function bajar_tutorial()
     {
         $this->load->helper('download');
@@ -431,7 +473,7 @@ class Checador extends CI_Controller
         $this->load->view('site2', $data);
     }
 
-    public function gerente_incidencia_personal($empleado_id, $inicio, $fin, $id)
+    public function gerente_incidencia_personal($empleado_id, $inicio, $fin, $id, $reedirecciona)
     {
         $data['vista'] = 'sitio2/checador/gerente_asistencia_incidencia_personal';
         $data['js'] = 'sitio2/checador/gerente_asistencia_incidencia_personal_js';
@@ -441,6 +483,7 @@ class Checador extends CI_Controller
         $data['justificaciones'] = $this->checador_model->get_justificaciones_incidencias();
         $data['registro'] = $this->checador_model->get_registro($id);
         $data['id'] = $id;
+        $data['redirecciona'] = $reedirecciona;
         $this->load->helper('funciones');
         $this->load->view('site2', $data);
     }
@@ -541,6 +584,9 @@ class Checador extends CI_Controller
             get_asistencias_periodo_gerente_empleado($empleado_id, $inicio, $fin);
         $data['etiqueta'] = $inicio . " al " . $fin;
         $data['empleado'] = $this->checador_model->get_atributos_empleado_id($empleado_id);
+        $data['empleado_id'] = $empleado_id;
+        $data['inicio'] = $inicio;
+        $data['fin'] = $fin;
         $this->load->helper('funciones');
         $this->load->view('site2', $data);
     }
@@ -720,11 +766,17 @@ class Checador extends CI_Controller
     public function admin_reporte_asistencias()
     {
         $quincena = $this->input->post('quincena');
+        
+        $datos = $this->checador_model->get_quincena($quincena);
+        $row = $datos->row();
+        $this->checador_model->procesar_datos_fecha($row->incio, $row->fin);
+
         $depto = $this->input->post('depto');
         $data['datos'] = $this->checador_model->get_arreglo($quincena, $depto);
-        $data['retardos'] = $this->checador_model->get_arreglo_retardos($quincena, $depto);
-        $data['faltas'] = $this->checador_model->get_arreglo_faltas($quincena, $depto);
+        //$data['retardos'] = $this->checador_model->get_arreglo_retardos($quincena, $depto);
+        //$data['faltas'] = $this->checador_model->get_arreglo_faltas($quincena, $depto);
         $data['justificaciones'] = $this->checador_model->get_reporte_juntificacion($quincena, $depto);
+        $data['faltasyretardos'] = $this->checador_model->get_reporte_faltasyretardos($quincena, $depto);
         $this->load->view('impresiones/asistencias_personal_depto', $data);
     }
 
@@ -735,6 +787,8 @@ class Checador extends CI_Controller
         $data['menu'] = 'formatos';
         $data['query'] = $this->checador_model->get_vacaciones();
         $data['query2'] = $this->checador_model->get_periodos();
+        $datos = $this->checador_model->get_atributos_empleado_id($this->session->userdata('id'));
+        $data['datos'] = $datos->row();
         $this->load->view('site2', $data);
     }
 
@@ -821,9 +875,9 @@ class Checador extends CI_Controller
         $this->load->view('site2', $data);
     }
     
-    function validar_incidencia($incidencia)
+    function validar_incidencia($incidencia, $asistencia)
     {
-        echo $this->checador_model->actualiza_incidencia($incidencia, 1);
+        echo $this->checador_model->actualiza_incidencia($incidencia, 1, $asistencia);
     }
 
     function rechazar_incidencia($incidencia)
@@ -980,9 +1034,10 @@ class Checador extends CI_Controller
 
     function __arreglo_anios_trabajados()
     {
-        $sql = "SELECT cia, nomina, floor(DATEDIFF(date(now() + interval 6 MONTH), fechahis)/365) as anios, fechahis, fechaalta 
-        FROM catalogo.cat_empleado c 
-        where tipo = 1 and fechahis <> '0000-00-00';";
+        $sql = "SELECT c.cia, otorgados, nomina, floor(DATEDIFF(date(now() + interval 6 MONTH), fechahis)/365) as anios, fechahis, fechaalta
+FROM catalogo.cat_empleado c
+left join catalogo.cat_compa_nomina n on c.cia = n.cia
+where tipo = 1 and fechahis <> '0000-00-00';";
 
         $sql2 = "SELECT * FROM periodo_vacas p;";
 
@@ -992,8 +1047,10 @@ class Checador extends CI_Controller
         $query2 = $this->db->query($sql2);
 
         $c = array();
+        $d = array();
         foreach ($query2->result() as $row2) {
             $c[$row2->aaa] = $row2->dias;
+            $d[$row2->aaa] = $row2->regalo;
         }
 
 
@@ -1011,7 +1068,14 @@ class Checador extends CI_Controller
                 $a[$b][$i]['alta'] = $row->fechaalta;
                 $a[$b][$i]['aaa1'] = $anio_inicial + $i;
                 $a[$b][$i]['aaa2'] = $anio_inicial + $i + 1;
-                $a[$b][$i]['dias'] = $c[$i];
+                if( $row->otorgados == 1 )
+                {
+                    $a[$b][$i]['dias'] = $c[$i] + $d[$i];
+                }else
+                {
+                    $a[$b][$i]['dias'] = $c[$i];
+                }
+                
 
             }
 
@@ -1027,7 +1091,7 @@ class Checador extends CI_Controller
     {
         $a = $this->__arreglo_anios_trabajados();
 
-        $b = "insert ignore into periodo_vacas_detaller (cia, nomina, aaa1, aaa2, dias, aaa, dias_ley) values ";
+        $b = "insert into periodo_vacas_detaller (cia, nomina, aaa1, aaa2, dias, aaa, dias_ley) values ";
 
         foreach ($a as $anio) {
             //id, cia, nomina, aaa1, aaa2, dias, aaa, dias_ley
@@ -1039,7 +1103,7 @@ class Checador extends CI_Controller
 
         }
 
-        $b = substr($b, 0, -1) . ";";
+        $b = substr($b, 0, -1) . " on duplicate key update dias_ley = values(dias_ley);";
 
         $this->db->query($b);
 

@@ -110,6 +110,7 @@ function reporte_act($id)
    public function reportes_his()
     {
          $tit= 'Reporte de sistemas';
+         $this->load->model('sistemas_model');
         $data['titulo']= 'Reporte de sistemas';
         $data['tabla']= '';
         $data['contenido']= "sistemas_form_reporte_fecha";
@@ -121,8 +122,24 @@ function reporte_act($id)
         $this->load->view('extrafooter');
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
    public function reportes_his_imp()
+    {
+         $tit= 'Reporte de sistemas';
+         $this->load->model('sistemas_model');
+        $data['titulo']= 'Reporte de sistemas';
+        $data['tabla']= $this->sistemas_model->tabla_reporte_his($tit);
+        $data['contenido']= "blanco";
+        $data['selector'] = "reporte";
+        $data['sidebar'] = "sidebar_sistemas";
+                
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+   public function reportes_his_imp__todo()
     {
       	$this->load->model('sistemas_model');
       $data['cabeza']= "
@@ -135,6 +152,23 @@ function reporte_act($id)
    </table> 
             ";
             $data['detalle']=$this->sistemas_model->reporte_impresion();
+            $this->load->view('impresiones/sistemas_reportes', $data);
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+   public function reportes_his_imp_uno($id)
+    {
+      	$this->load->model('sistemas_model');
+      $data['cabeza']= "
+    <table>
+           
+    <tr>
+    <td colspan=\"2\" align=\"center\"><font size=\"+5\"><strong>REPORTES<BR /></strong></font></td>
+    </tr>
+    
+   </table> 
+            ";
+            $data['detalle']=$this->sistemas_model->reporte_impresion_una($id);
             $this->load->view('impresiones/sistemas_reportes', $data);
     }
 

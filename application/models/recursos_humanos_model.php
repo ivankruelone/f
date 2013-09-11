@@ -979,12 +979,12 @@ function empleados_mov_ab($fec1,$fec2,$mot)
       $query = $this->db->query($sql);
       }
       if($nivel==33){
-     if($tipo < 2){
+     if($tipo == 1){
      $sql = "SELECT a.*,b.nombre,b.dire,d.ciax
       FROM catalogo.cat_alta_empleado a
       left join catalogo.sucursal b on b.suc=a.suc
       left join catalogo.cat_compa_nomina d on d.cia=a.cia
-      where tipo=2 
+      where tipo=2 and motivo='RETENCION'
       order by fecha desc
       ";
       $query = $this->db->query($sql);
@@ -1796,10 +1796,18 @@ $this->db->query($s);
      $nivel= $this->session->userdata('nivel');   
      $tipo= $this->session->userdata('tipo');   
      $dia=substr($fec,8,2);
-       $s = "select b.ciax,a.*,
-       (select motivo from catalogo.cat_alta_empleado where motivo='RETENCION' and activo=1 and id_causa<>7 and empleado=a.nomina)as motivo
+       $s = "select b.ciax,a.*,d.completo as id_entregax,d.puestox as puex,
+       (select motivo from catalogo.cat_alta_empleado where motivo='RETENCION' and activo=1 and id_causa<>7 and empleado=a.nomina)as motivo,
+       (select folioi from faltante 
+       where clave=644 and '$fec' between fechai and date_add(fechai,interval fal day)and nomina=a.nomina)as inca,
+       
+       (select 'Vacaciones' from reg_vacaciones d where d.nomina=a.nomina and '$fec' between fec1 and fec2)as vaca
+               
        from entrega_nomina_d a 
-       left join catalogo.cat_compa_nomina b on b.cia=a.cia where a.quincena='$fec' and a.suc_act=$suc";
+       left join catalogo.cat_compa_nomina b on b.cia=a.cia
+       left join entrega_nomina_c c on c.suc=a.suc_act and c.fecha=a.quincena
+       left join catalogo.cat_empleado d on d.id=c.id_entrega 
+       where a.quincena='$fec' and a.suc_act=$suc and aplicado=' '";
       $q = $this->db->query($s);
         
         $tabla1= "
@@ -1818,11 +1826,19 @@ $this->db->query($s);
         </thead>
         <tbody>
         ";
-    $num=0;$vales=0;
+    $num=0;$vales=0;$puex='';$id_entregax='';
+    $tot1=0;$tot2=0;$tot3=0;$tot4=0;$tot5=0;$tot6=0;$inca='';$incapacidad=0;$retencion=0;$vacacion=0;$vacaciones=0;
+    
         foreach($q->result() as $r)
         {
-        if($r->cia==1 and $dia>27){$vales=$vales+1;}
-        $l1 = anchor('recursos_humanos/nomina_suc_bor/'.$r->fecha.'/'.$r->suc.'/'.$r->id, '<img src="'.base_url().'img/error.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para ver formato!', 'class' => 'encabezado'));
+        $id_entregax=$r->id_entregax;$puex=$r->puex;
+        if($r->inca>' '){$inca='Incap. '.$r->inca;$incapacidad=$incapacidad+1;}else{$inca='';} 
+        if($r->vaca>' '){$vacaciones=$vacaciones+1;}   
+        if($r->motivo=='RETENCION'){$retencion=$retencion+1;}
+            
+        if(($r->cia==1 and $dia>27) || ($r->cia==2 and $dia>27) || ($r->cia==4 and $dia>27) ||($r->cia==5 and $dia>27)
+          ){$vales=$vales+1;}
+        $l1 = anchor('recursos_humanos/borra_nomina/'.$fec.'/'.$r->suc.'/'.$r->id, '<img src="'.base_url().'img/error.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para ver formato!', 'class' => 'encabezado'));
             
            $num=$num+1;
             $tabla1.="
@@ -1832,18 +1848,37 @@ $this->db->query($s);
             <td align=\"left\">".$r->nomina."</td>
             <td align=\"left\">".$r->completo."</td>
             <td align=\"left\">".$r->puestox."</td>
-            <td align=\"left\">".$r->motivo."</td>
+            <td align=\"left\">".$r->motivo." ".$inca." ".$r->vaca."</td>
             <td align=\"left\">".$l1."</td>
             </tr>
             ";
             
         
         }
+        
+        $fin=$num-$retencion-$vacaciones-$incapacidad;
         $tabla1.="
         </tbody>
         <tfoot>
         <tr>
-        <td colspan=\"6\">Total de empleado $num<br />Paquete de vales $vales</td>
+        <td colspan=\"6\" align=\"center\"><strong>TOTAL DE EMPLEADOS $num</strong></td>
+        </tr>
+        <tr>
+        <td colspan=\"2\" align=\"center\"><strong>Incapacidad</strong></td>
+        <td align=\"center\"><strong>Retencion</strong></td>
+        <td align=\"center\"><strong>Vacaciones</strong></td>
+        <td align=\"center\"><strong>Vales</strong></td>
+        <td align=\"center\"><strong>Nominas entregadas</strong></td>
+        </tr>
+        <tr>
+        <td colspan=\"2\" align=\"center\"><strong>$incapacidad</strong></td>
+        <td align=\"center\"><strong>$retencion</strong></td>
+        <td align=\"center\"><strong>$vacaciones</strong></td>
+        <td align=\"center\"><strong>$vales</strong></td>
+        <td align=\"center\"><strong>$fin</strong></td>
+        </tr>
+        <tr>
+        <td colspan=\"6\">Entrego Nomina a: $id_entregax $puex</td>
         </tr>
         </tfoot>
         </table>";
@@ -1851,6 +1886,300 @@ $this->db->query($s);
         return $tabla1;
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function quincena_final($fec)
+    {
+     $id_user= $this->session->userdata('id');
+     $nivel= $this->session->userdata('nivel');   
+     $tipo= $this->session->userdata('tipo');   
+    
+       $s = "select a.*,b.nombre,f.completo,f.puestox,
+       (select count(*)from entrega_nomina_d where quincena='$fec' and suc_act=a.suc)as nominas,
+       (select count(*)from entrega_nomina_d where quincena='$fec' and suc_act=a.suc and cia in(1,2,4,5))as vales,
+       
+       (select count(*) from entrega_nomina_d c
+left join reg_vacaciones d on d.nomina=c.nomina and '$fec' between fec1 and fec2
+where c.quincena='$fec' and c.suc_act=a.suc and d.fec1 is not null)as vacacion,
+
+(select count(*) from faltante 
+where clave=644 and '$fec' between fechai and date_add(fechai,interval fal day)and succ=a.suc)as inca,
+
+(select count(*) from entrega_nomina_d c
+left join catalogo.cat_alta_empleado d on d.empleado=c.nomina and activo=1 and id_causa<>7 and motivo='RETENCION' AND d.cia=c.cia
+where c.quincena='$fec' and c.suc_act=a.suc and d.nomina is not null)as retencion
+
+       from entrega_nomina_c a 
+       left join catalogo.sucursal b on b.suc=a.suc
+       left join catalogo.cat_empleado f on f.id=a.id_entrega 
+       where a.fecha='$fec'";
+      $q = $this->db->query($s);
+        
+        $tabla1= "
+        <table border=\"1\">
+        <thead>
+        <tr>
+        <th align=\"center\">#</th>
+        <th align=\"center\">Nid</th>
+        <th align=\"center\">Sucursal</th>
+        <th align=\"center\">Empleado</th>
+        <th align=\"center\">Retencion</th>
+        <th align=\"center\">Vacaciones</th>
+        <th align=\"center\">Vales</th>
+        <th align=\"center\">Incapacidad</th>
+        <th align=\"center\">Normal</th>
+        <th align=\"center\">Tot.Emp.</th>
+        <th align=\"center\"></th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+    $num=0;$nor=0;$tot1=0;$tot2=0;$tot3=0;$tot4=0;$tot5=0;$tot6=0;$inca='';
+        foreach($q->result() as $r)
+        {
+        $nor=(($r->nominas)-($r->retencion)-($r->vales)-($r->vacacion)-($r->inca));
+        $l1 = anchor('recursos_humanos/impresion_final/'.$fec.'/'.$r->suc, '<img src="'.base_url().'img/reportes2.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para ver formato!', 'class' => 'encabezado'));
+            
+           $num=$num+1;
+            $tabla1.="
+            <tr>
+            <td align=\"left\">".$num."</td>
+            <td align=\"left\">".$r->suc."</td>
+            <td align=\"left\">".$r->nombre."</td>
+            <td align=\"left\">".$r->completo."<br />".$r->puestox."</td>
+            <td align=\"left\">".$r->retencion."</td>
+            <td align=\"left\">".$r->vacacion."</td>
+            <td align=\"left\">".$r->vales."</td>
+            <td align=\"left\">".$r->inca."</td>
+            <td align=\"left\">".$nor."</td>
+            <td align=\"left\">".$r->nominas."</td>
+            <td align=\"left\">".$l1."</td>
+            </tr>
+            ";
+         $tot1=$tot1+$r->retencion;
+         $tot2=$tot2+$r->vacacion;
+         $tot3=$tot3+$r->vales;
+         $tot4=$tot4+$r->inca;
+         $tot5=$tot5+$nor;
+         $tot6=$tot6+$r->nominas;   
+        $nor=0;
+        }
+        $tabla1.="
+        </tbody>
+        <tfoot>
+        <tr>
+        <td colspan=\"4\">TOTAL DE SUCURSALES ".number_format($num,0)."</td>
+        <td>".number_format($tot1,0)."</td>
+        <td>".number_format($tot2,0)."</td>
+        <td>".number_format($tot3,0)."</td>
+        <td>".number_format($tot4,0)."</td>
+        <td>".number_format($tot5,0)."</td>
+        <td>".number_format($tot6,0)."</td>
+        </tr>
+        </tfoot>
+        </table>";
+        
+        return $tabla1;
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function nomina_imprime($fec, $suc)
+    {
+     $id_user= $this->session->userdata('id');
+     $nivel= $this->session->userdata('nivel');   
+     $tipo= $this->session->userdata('tipo');   
+     $dia=substr($fec,8,2);
+       $s = "select b.ciax,a.*,
+       (select motivo from catalogo.cat_alta_empleado 
+       where motivo='RETENCION' and activo=1 and id_causa<>7 and empleado=a.nomina)as motivo,
+       
+       (select folioi from faltante 
+       where clave=644 and '$fec' between fechai and date_add(fechai,interval fal day)and nomina=a.nomina)as inca,
+       
+       (select 'Vacaciones' from reg_vacaciones d where d.nomina=a.nomina and '$fec' between fec1 and fec2)as vaca
+ 
+       from entrega_nomina_d a 
+       left join catalogo.cat_compa_nomina b on b.cia=a.cia
+       left join entrega_nomina_c c on c.suc=a.suc_act and c.fecha=a.quincena
+       left join catalogo.cat_empleado d on d.id=c.id_entrega 
+       where a.quincena='$fec' and a.suc_act=$suc and aplicado='S'";
+      $q = $this->db->query($s);
+        
+        $tabla1= "
+        <table border=\"1\" cellpadding=\"3\">
+        <thead>
+        <tr>
+        <th align=\"center\" width=\"20\"><strong>#</strong></th>
+        <th align=\"center\" width=\"210\"><strong>Empresa</strong></th>
+        <th align=\"center\" width=\"50\"><strong>Nomina</strong></th>
+        <th align=\"center\" width=\"180\"><strong>Empleado</strong></th>
+        <th align=\"center\" width=\"100\"><strong>Puesto</strong></th>
+        <th align=\"center\" width=\"100\"><strong>Observacion</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+    $num=0;$vales=0;$retencion=0;$inca='';$incapacidad=0;$puex='';$id_entregax='';
+        foreach($q->result() as $r)
+        {
+        $id_entregax=$r->id_entregax;$puex=$r->puex;
+        if($r->inca>' '){$inca='Incap. '.$r->inca;$incapacidad=$incapacidad+1;}else{$inca='';} 
+        if($r->vaca>' '){$vacaciones=$vacaciones+1;}   
+        if($r->motivo=='RETENCION'){$retencion=$retencion+1;}
+        if(($r->cia==1 and $dia>27) || ($r->cia==2 and $dia>27) || ($r->cia==4 and $dia>27) ||($r->cia==5 and $dia>27)
+          ){$vales=$vales+1;}
+        $l1 = anchor('recursos_humanos/borra_nomina/'.$fec.'/'.$r->suc.'/'.$r->id, '<img src="'.base_url().'img/error.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para ver formato!', 'class' => 'encabezado'));
+            
+           $num=$num+1;
+            $tabla1.="
+            <tr>
+            <td align=\"left\" width=\"20\">".$num."</td>
+            <td align=\"left\" width=\"210\">".$r->ciax."</td>
+            <td align=\"left\" width=\"50\">".$r->nomina."</td>
+            <td align=\"left\" width=\"180\">".$r->completo."</td>
+            <td align=\"left\" width=\"100\">".$r->puestox."</td>
+            <td align=\"left\" width=\"100\">".$r->motivo." ".$inca."  ".$r->vaca."</td>
+            </tr>
+            ";
+            
+        
+        }
+        $fin=$num-$retencion-$vacaciones-$incapacidad;
+        $tabla1.="
+        </tbody>
+        <tfoot>
+        <tr>
+        <td colspan=\"6\" align=\"center\"><strong>TOTAL DE EMPLEADOS $num</strong></td>
+        </tr>
+        <tr>
+        <td colspan=\"2\" align=\"center\"><strong>Incapacidad</strong></td>
+        <td align=\"center\"><strong>Retencion</strong></td>
+        <td align=\"center\"><strong>Vacaciones</strong></td>
+        <td align=\"center\"><strong>Vales</strong></td>
+        <td align=\"center\"><strong>Nominas entregadas</strong></td>
+        </tr>
+        <tr>
+        <td colspan=\"2\" align=\"center\"><strong>$incapacidad</strong></td>
+        <td align=\"center\"><strong>$retencion</strong></td>
+        <td align=\"center\"><strong>$vacacion</strong></td>
+        <td align=\"center\"><strong>$vales</strong></td>
+        <td align=\"center\"><strong>$fin</strong></td>
+        </tr>
+        <tr>
+        <td colspan=\"6\">Entrego Nomina a: $id_entregax $puex</td>
+        </tr>
+        </tfoot>
+        </table>";
+        return $tabla1;
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function vacacion($id_emp)
+    {
+     $id_user= $this->session->userdata('id');
+     $nivel= $this->session->userdata('nivel');   
+     $tipo= $this->session->userdata('tipo');   
+    
+       $s = "SELECT b.*,a.completo, a.puestox,fechahis,c.prima   
+FROM catalogo.cat_empleado a
+left join periodo_vacas_detaller b on b.nomina=a.nomina   and a.cia=b.cia
+left join periodo_vacas c on c.aaa=b.aaa
+ where a.id=$id_emp";
+      $q = $this->db->query($s);
+        
+        $tabla1= "
+        <table border=\"1\">
+        <thead>
+        <tr>
+        <th align=\"center\">#</th>
+        <th align=\"center\">Ingresa</th>
+        <th align=\"center\">Nomina</th>
+        <th align=\"center\">Empleado</th>
+        <th align=\"center\">Periodo</th>
+        <th align=\"center\">% prima</th>
+        <th align=\"center\">Dias</th>
+        <th align=\"center\">Quedan</th>
+        
+        <th align=\"center\"></th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+    $num=0;$nor=0;$tot1=0;$tot2=0;$tot3=0;$tot4=0;$tot5=0;$tot6=0;$inca='';
+        foreach($q->result() as $r)
+        {
+           $num=$num+1;
+            $tabla1.="
+            <tr>
+            <td align=\"left\">".$num."</td>
+            <td align=\"left\">".$r->fechahis."</td>
+            <td align=\"left\">".$r->nomina."</td>
+            <td align=\"left\">".$r->completo."</td>
+            <td align=\"left\">".$r->aaa1."-".$r->aaa2."</td>
+             <td align=\"left\">% ".$r->prima."</td>
+            <td align=\"left\">".$r->dias_ley."</td>
+            <td align=\"left\">".$r->dias."</td>
+            <td align='right'><font size='-1'><input name='canvac_$r->id' type='text' id='canvac_$r->id' size='5' maxlength='5' value='$r->dias' /></font></td>
+            </tr>
+            ";
+         $tot1=$tot1+$r->dias;
+         $tot2=$tot2+$r->dias_ley;   
+        $nor=0;
+        }
+        $tabla1.="
+        </tbody>
+        <tfoot>
+        <tr>
+        <td colspan=\"6\">".number_format($num,0)." A&ntilde;os</td>
+        <td>".number_format($tot2,0)."</td>
+        <td>".number_format($tot1,0)."</td>
+        
+        </tr>
+        </tfoot>
+        </table>
+        
+        <script language=\"javascript\" type=\"text/javascript\">
+
+$('input:text[name^=\"canvac_\"]').change(function() {
+    
+    var nombre = $(this).attr('name');
+    var valor = $(this).attr('value');
+    
+    var id = nombre.split('_');
+    id = id[1];
+    //alert(id + \" \" + valor);
+    actualiza_vac(id, valor);
+
+});
+
+function actualiza_vac(id, valor){
+    $.ajax({type: \"POST\",
+        url: \"".site_url()."/recursos_humanos/actualiza_canvac/\", data: ({ id: id, valor: valor }),
+            success: function(data){
+                
+                
+
+        },
+        beforeSend: function(data){
+
+        }
+        });
+}
+
+</script>
+        
+        
+        
+        ";
+        
+        return $tabla1;
+    }
 
 
 

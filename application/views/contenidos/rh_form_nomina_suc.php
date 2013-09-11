@@ -77,7 +77,7 @@ $data_nomina = array(
    });  
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
-    $('#recursos_humanos_form_alta').submit(function() {
+    $('#rh_form_nomina_suc').submit(function() {
         var  cia = $('#cia').attr("value");
         var suc = $('#suc').attr("value");
         var fecha = $('#fecha').attr("value").length;

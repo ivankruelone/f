@@ -384,6 +384,75 @@ where a.motivo=2 and b.tipo=1 and a.tipo<>4";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function rh_cambios($tit)
+{
+        $id_user= $this->session->userdata('id');
+        $nivel= $this->session->userdata('nivel');
+        
+       $s = "select count(a.*)as num_suc,e.motivo,a.id_user,c.nombre as supx,b.succ,d.nombre as sucx, b.tipo,a.cia,a.nomina,b.completo,b.puestox,
+a.causa,obser2,a.fecha_c,fecha_mov,a.id_plaza
+from mov_supervisor a
+left join catalogo.cat_empleado b on b.nomina=a.nomina and a.cia=b.cia
+left join usuarios c on c.id=a.id_user
+left join catalogo.sucursal d on d.suc=b.succ
+left join catalogo.cat_alta_empleado e on e.cia=a.cia and e.empleado=a.nomina and e.motivo='RETENCION'
+where a.motivo=3 and b.tipo=1 group by a.nomina";
+        $q = $this->db->query($s); 
+    
+       $tabla= "
+       
+        <table cellpadding=\"2\" border=\"0\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\">
+        <caption>$tit </caption>
+        <thead>
+        <tr>
+        <th colspan=\"1\">#</th>
+        
+        <th colspan=\"1\">Sucursal Actual</th>
+        <th colspan=\"1\">Nomina</th>
+        <th colspan=\"1\">Empleado</th>
+        <th colspan=\"1\">Puesto</th>
+        <th colspan=\"1\">Mov.Solic.</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        $color='black';
+        $num=0;
+         foreach($q->result() as $r)
+        {
+       $num=$num+1; 
+        if($r->motivo=='RETENCION'){$color='red';}else{$color='black';}
+            
+            $tabla.="
+            <tr>
+            <td align=\"right\"><font size=\"1\" color=\"$color\">".$num."</font></td>
+            
+            <td align=\"left\"><font size=\"1\" color=\"$color\">" .$r->sucx."</font></font></td>
+            <td align=\"center\"><font size=\"1\" color=\"$color\">" .$r->nomina."</font></font></td>
+            <td align=\"left\"><font size=\"1\" color=\"$color\">" .$r->completo."</font></font></td>
+            <td align=\"left\"><font size=\"1\" color=\"$color\">".$r->puestox."</font></font></td>
+            <td align=\"center\"><font size=\"1\" color=\"$color\">" .$r->num_suc."</font></font></td>
+             </tr>
+            ";
+         }
+         $perdida=(76*15)*$num;
+         $tabla.="
+        </tbody>
+        <tfoot>
+        <tr>
+        <td colspan=\"11\" align=\"center\"><font size=\"5\" color=\"$color\">$num Empleados con cambios de sucursal</font></font></td>
+        </tr>
+        </tfoot>
+        </table>";
+
+
+        return $tabla;
+       
+}
+//**************************************************************
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////

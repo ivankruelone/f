@@ -36,3 +36,4 @@
     echo "<br />";
     echo form_close();
     echo $tabla;
+    echo $tabla1;

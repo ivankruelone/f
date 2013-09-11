@@ -622,6 +622,16 @@ function busca_emp()
     }
 //////////////////////////////////////////////
 //////////////////////////////////////////////
+function busca_emp_nomina()
+	{
+	
+    $nomx=$this->input->post('nomx');
+    $fec=$this->input->post('fec');
+    $this->load->model('catalogo_model');
+    echo $this->catalogo_model->busca_emple_nomina($nomx,$fec); 
+       
+    }
+//////////////////////////////////////////////
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 //////////////////////////////////////////////
@@ -945,7 +955,7 @@ function busca_emp()
         $this->load->model('catalogo_model');
         
         $data['tabla'] = '';
-        $data['titulo'] = "CATALOGO DE EMPLEADOS";
+        $data['titulo'] = "CATALOGO DE EMPLEADOS<BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR /><BR />";
         $data['contenido'] = "catalogo_1";
         $data['selector'] = "catalogo";
         $data['sidebar'] = "sidebar_prenomina";
@@ -1009,6 +1019,26 @@ function buscar_empleado3()
         $this->load->model('catalogo_model');
         $data['motx'] = $this->catalogo_model->busca_motivo_rh();
         $data['tabla'] = $this->catalogo_model->empleados_pendientes();
+        $data['titulo'] = "CATALOGO DE EMPLEADOS";
+        $data['contenido'] = "catalogo_form_empleados_captura";
+        $data['selector'] = "catalogo";
+        $data['sidebar'] = "sidebar_prenomina";
+        
+        
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    } 
+/////////////////////////////////////////////
+/////////////////////////////////////////////
+/////////////////////////////////////////////
+//////////////////////////////////////////////
+  public function tabla_empleados_captura_ret()
+    {
+        
+        $this->load->model('catalogo_model');
+        $data['motx'] = $this->catalogo_model->busca_motivo_rh();
+        $data['tabla'] = $this->catalogo_model->empleados_pendientes_ret();
         $data['titulo'] = "CATALOGO DE EMPLEADOS";
         $data['contenido'] = "catalogo_form_empleados_captura";
         $data['selector'] = "catalogo";
@@ -1143,6 +1173,8 @@ function buscar_empleado3()
 //////////////////////////////////////////////
    public function agrega_empleados()
     {//cia, rfc, cur, afilia, pat, mat, nom, puesto, suc, fecha_i, salario, integrado, registro_pat, id_user, motivo, causa, id, dire, num, col, cp, mun, entidad
+        $tipo= $this->session->userdata('tipo');
+        $nivel= $this->session->userdata('nivel');
         
         $cia= $this->input->post('cia');
         $rfc= $this->input->post('rfc');
@@ -1171,11 +1203,19 @@ function buscar_empleado3()
 	    $this->load->model('catalogo_model');
         $this->catalogo_model->agrega_member_empleado($cia,$rfc,$cur,$afilia,$pat,$mat,$nom,$puesto,$suc,$fecha_i,$salario,
         $integrado,$registro_pat,$motivo,$causa,$dire,$num,$col,$cp,$mun,$entidad,$autoriza,$nomina,$suc);
-    redirect('catalogo/tabla_empleados_captura');
+    if($nivel==33){
+    redirect('catalogo/tabla_empleados_captura_ret');    
+    }else{
+    redirect('catalogo/tabla_empleados_captura');    
+    }
+    
     } 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    public function cambia_empleados_archi()
     {//cia, rfc, cur, afilia, pat, mat, nom, puesto, suc, fecha_i, salario, integrado, registro_pat, id_user, motivo, causa, id, dire, num, col, cp, mun, entidad
+        $tipo= $this->session->userdata('tipo');
+        $nivel= $this->session->userdata('nivel');
+        
         $id_nom= $this->input->post('id_nom');
         $cia= $this->input->post('cia');
         $rfc= $this->input->post('rfc');
@@ -1216,11 +1256,18 @@ function buscar_empleado3()
       
         $this->catalogo_model->agrega_member_empleado($ciaf,$rfc,$cur,$afilia,$pat,$mat,$nom,$puestof,$sucf,$fecha_i,$salario,
         $integrado,$registro_pat,$motivo,$causa,$dire,$num,$col,$cp,$mun,$entidad,$autoriza,$nomina,$succ);
-    redirect('catalogo/tabla_empleados_captura');
+    if($nivel==33){
+    redirect('catalogo/tabla_empleados_captura_ret');    
+    }else{
+    redirect('catalogo/tabla_empleados_captura');    
+    }
     } 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    public function agrega_empleados_bajas()
     {//cia, rfc, cur, afilia, pat, mat, nom, puesto, suc, fecha_i, salario, integrado, registro_pat, id_user, motivo, causa, id, dire, num, col, cp, mun, entidad
+        $tipo= $this->session->userdata('tipo');
+        $nivel= $this->session->userdata('nivel');
+        
         $id_nom= $this->input->post('id_nom');
        
         $this->load->model('catalogo_model');
@@ -1259,28 +1306,50 @@ function buscar_empleado3()
       
         $this->catalogo_model->agrega_member_empleado($cia,$rfc,$cur,$afilia,$pat,$mat,$nom,$puesto,$suc,$fecha_i,$salario,
         $integrado,$registro_pat,$motivo,$causa,$dire,$num,$col,$cp,$mun,$entidad,$autoriza,$nomina,$succ);
-    redirect('catalogo/tabla_empleados_captura');
+    if($nivel==33){
+    redirect('catalogo/tabla_empleados_captura_ret');    
+    }else{
+    redirect('catalogo/tabla_empleados_captura');    
+    }
     } 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  public function tabla_empleados_borrar_c($id,$motivo)
     {
+     $tipo= $this->session->userdata('tipo');
+        $nivel= $this->session->userdata('nivel');
      $this->load->model('catalogo_model');
      $this->catalogo_model->delete_member_empleados($id);
-     redirect('catalogo/tabla_empleados_captura');
+     if($nivel==33){
+    redirect('catalogo/tabla_empleados_captura_ret');    
+    }else{
+    redirect('catalogo/tabla_empleados_captura');    
+    }
     }
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   public function tabla_empleados_borrar($id,$motivo)
     {
+     $tipo= $this->session->userdata('tipo');
+     $nivel= $this->session->userdata('nivel');
      $this->load->model('catalogo_model');
      $this->catalogo_model->delete_member_empleados($id);
-     redirect('catalogo/tabla_empleados_captura');
+     if($nivel==33){
+    redirect('catalogo/tabla_empleados_captura_ret');    
+    }else{
+    redirect('catalogo/tabla_empleados_captura');    
+    }
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   public function tabla_empleados_validar($id,$motivo)
     {
+    $tipo= $this->session->userdata('tipo');
+    $nivel= $this->session->userdata('nivel');
     $this->load->model('catalogo_model');
-     $this->catalogo_model->valida_member_empleados($id,$motivo);
-    redirect('catalogo/tabla_empleados_captura');
+    $this->catalogo_model->valida_member_empleados($id,$motivo);
+    if($nivel==33){
+    redirect('catalogo/tabla_empleados_captura_ret');    
+    }else{
+    redirect('catalogo/tabla_empleados_captura');    
+    }
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

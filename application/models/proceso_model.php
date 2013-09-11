@@ -11,14 +11,11 @@ var $is_logged_in;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function almacen_ped_sur($fec){
-
 $aaa=substr($fec,0,4);    
 $s1="insert into desarrollo.ped_sur_periodo (aaa, sec, ped01, sur01, ped02, sur02, ped03, sur03, ped04, sur04, ped05, sur05, ped06, sur06, ped07, sur07, ped08, sur08, ped09, sur09, ped10, sur10, ped11, sur11, ped12, sur12)
 (select $aaa,sec,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 from catalogo.sec_generica where sec>0 and sec<=2000)
 on duplicate key update aaa=values(aaa)";
 $this->db->query($s1);
-
-
 }
 
 

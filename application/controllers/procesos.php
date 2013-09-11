@@ -265,6 +265,7 @@ class Procesos extends CI_Controller
         $data['por4'] = $this->catalogo_model->busca_ord_dias();
         $data['por5'] = $this->catalogo_model->busca_ord_dias();
         $data['tabla'] = $this->proceso_model_pedido->invd();
+        $data['tabla1'] = $this->proceso_model_pedido->invd1();
         $data['contenido'] = "procesos_pedidos_formulados";
         $data['selector'] = "procesos";
         $data['sidebar'] = "sidebar_procesos";
@@ -628,7 +629,29 @@ class Procesos extends CI_Controller
  
  ////////////////////////////////////////////////////////////este procesos se correra anualmente
 
+function editar_dia($suc)
+    {
+        $this->load->model('proceso_model_pedido');
+
+        $data['contenido'] = 'editar_dia_suc';
+        $data['selector'] = "procesos";
+        $data['query'] = $this->proceso_model_pedido->editar_dia_suc($suc);
+        $data['suc'] = $suc;
+        
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
   
-    
+ function submit_p()
+    {
+        $suc = $this->input->post('suc');
+        $dia = $this->input->post('dia');
+
+        $this->load->model('proceso_model_pedido');
+        $id = $this->proceso_model_pedido->editar_dia($dia, $suc);
+
+        redirect('procesos/tabla_pedidos_formulados/' . $id);
+    }   
    
       }

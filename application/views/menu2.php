@@ -17,7 +17,7 @@ $id = $this->session->userdata('id');
                         ?>
                         <ul class="nav">
                             <li <?php if($menu == 'home'){?>class="active" <?php }?>><?php echo anchor('checador/index', 'Home');?></li>
-                            <li <?php if($menu == 'perfil'){?>class="active" <?php }?>><?php echo anchor('checador/perfil_usuario', 'Perfil');?></li>
+                            <li <?php if($menu == 'perfil'){?>class="active" <?php }?>><?php echo anchor('checador/perfil_usuario', 'Perfil <i class="icon-info-sign icon-white"></i>');?></li>
                             <li <?php if($menu == 'asistencias'){?>class="dropdown active" <?php }else{?> class="dropdown"<?php }?>>
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Asistencias <b class="caret"></b></a>                                
                                 <ul class="dropdown-menu">
@@ -35,15 +35,16 @@ $id = $this->session->userdata('id');
                                 }
                             ?>
                             <li <?php if($menu == 'formatos'){?>class="dropdown active" <?php }else{?> class="dropdown"<?php }?>>
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Formatos <b class="caret"></b></a>                                
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Formatos <i class="icon-file icon-white"></i> <b class="caret"></b></a>                                
                                 <ul class="dropdown-menu">
                                     <li><?php echo anchor('checador/formato_vacaciones', 'Vacaciones');?></li>
                                     <li><?php echo anchor('checador/formato_credencial', 'Credencial');?></li>
                                     <li><?php echo anchor('checador/formato_salidas', 'Salidas Personal');?></li>
-                                    <li><?php echo anchor('checador/formato_memo', 'MEMORANDUM');?></li>
                                 </ul>
                             </li>
-                            <li><?php echo anchor('login/logout', 'Cerrar Sesi&oacute;n');?></li>
+                            <li><?php echo anchor('checador/ayuda', 'Ayuda <i class="icon-question-sign icon-white"></i>');?></li>
+                            <li><?php echo anchor('checador/rh', 'RH <i class="icon-user icon-white"></i>');?></li>
+                            <li><?php echo anchor('login/logout', 'Cerrar Sesi&oacute;n <i class="icon-off icon-white"></i>');?></li>
                         </ul>
                         <?php
                         }elseif($nivel == 50){
@@ -94,11 +95,11 @@ $id = $this->session->userdata('id');
                             -->
                             <li><?php echo anchor('login/logout', 'Cerrar Sesi&oacute;n');?></li>
                         </ul>
-                        <form class="navbar-form pull-right">
-                            <input type="text" class="input-small search-query" />
+                        <?php echo form_open('checador/busca_nomina', array('class' => 'navbar-form pull-right')); ?>
+                            <input type="text" class="input-small search-query" name="nomina" required="required" placeholder="No. Nomina" />
                             <button type="submit" class="btn">Buscar</button>
-                        </form>
                         <?php
+                            echo form_close();
                         }elseif($nivel == 51){
                         ?>
                         <ul class="nav">

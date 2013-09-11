@@ -1525,7 +1525,11 @@ sum(case when c.iva='S'
         from vtadc.venta_detalle_nat a
         left join catalogo.sucursal b on b.suc=a.suc
         left join catalogo.cat_naturistas c on c.sec=a.sec
-        where tipo2<>'F'  and date_format(fecha, '%Y-%m') = '$fec' and a.suc<1600 group by suc order by porce desc
+        where tipo2<>'F'  and date_format(fecha, '%Y-%m') = '$fec' and a.suc<1600 
+        and a.suc<>170 and a.suc<>171 and a.suc<>172 and a.suc<>173 and a.suc<>174 and a.suc<>175
+        and a.suc<>176 and a.suc<>177 and a.suc<>178 and a.suc<>179 and a.suc<>180 and a.suc<>181 and a.suc<>182
+        and a.suc<>183 and a.suc<>184 and a.suc<>185 and a.suc<>186 and a.suc<>187 and a.suc<>188 
+        group by suc order by porce desc
 
         ";
         $q = $this->db->query($s);

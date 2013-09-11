@@ -63,6 +63,16 @@
                             
                             }
                             }
+                            
+                            if ( $this->session->userdata('nivel') == 54 && ( $row->falta == 1 || $row->retardo == 1 ) && $row->incidencia == 0 && $row->justificada == 0)
+                            {
+                                echo anchor('checador/gerente_incidencia_personal/'.$empleado_id.'/'.$inicio.'/'.$fin.'/'.$row->id.'/'.$this->uri->segment(2), 'Llena incidencia');
+                            }elseif( $this->session->userdata('nivel') == 54 && $row->incidencia > 0 )
+                            {
+                                echo anchor('checador/formato_incidencias/'.$row->incidencia, 'Imprime incidencia', array('target' => '_blank'));
+                                
+                            }
+
                             ?>
                             
                             </td>

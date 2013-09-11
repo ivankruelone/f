@@ -18,6 +18,10 @@
 	<td align="left" ><font size="+1"><strong>A&Ntilde;O: </strong></font></td>
 	<td align="left"><?php echo form_dropdown('aaa', $aaax, '', 'id="aaa"') ;?> </td>
  </tr>
+ <tr>
+	<td align="left" ><font size="+1"><strong>MES: </strong></font></td>
+	<td align="left"><?php echo form_dropdown('mes', $mesx, '', 'id="mes"') ;?> </td>
+ </tr>
 
 	<td colspan="2"align="center"><?php echo form_submit('envio', 'ACEPTAR');?></td>
 </tr>

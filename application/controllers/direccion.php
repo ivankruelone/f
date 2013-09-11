@@ -383,7 +383,14 @@ public function tabla_bajas()
         $data['tabla'] = $this->direccion_model->rh_bajas($tit);
         $this->load->view('contenidos/rh_incidencias_bajas', $data);     
 }
-
+////////////////////////////////////////////////////////////////
+public function tabla_cambios()
+    {
+        $this->load->model('direccion_model');
+        $tit= "Cambio de empleados";
+        $data['tabla'] = $this->direccion_model->rh_cambios($tit);
+        $this->load->view('contenidos/rh_cambios', $data);     
+}
 public function reporte_jus()
     {
         $this->load->model('checador_model');

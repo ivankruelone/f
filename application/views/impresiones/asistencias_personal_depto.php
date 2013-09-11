@@ -112,6 +112,8 @@ $pdf->writeHTML($tbl, true, false, false, false, '');
 
 }
 
+
+/***
 $ret = count($retardos);
 $fal = count($faltas);
 
@@ -152,6 +154,8 @@ EOD;
     }
 }
 
+*/
+
 
 // add a page
 $pdf->AddPage();
@@ -160,6 +164,24 @@ $pdf->SetFont('helvetica', '', 20);
 
 $tbl = <<<EOD
 $justificaciones
+EOD;
+$pdf->writeHTML($tbl, true, false, false, false, '');
+
+$pdf->AddPage();
+
+$pdf->SetFont('helvetica', '', 20);
+
+$tbl = <<<EOD
+$faltasyretardos
+EOD;
+$pdf->writeHTML($tbl, true, false, false, false, '');
+
+$pdf->AddPage();
+
+$pdf->SetFont('helvetica', '', 20);
+
+$tbl = <<<EOD
+$faltasyretardos
 EOD;
 $pdf->writeHTML($tbl, true, false, false, false, '');
 

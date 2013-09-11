@@ -27,6 +27,62 @@ class Checador_model extends CI_Model {
         return $query;
     }
 
+    function get_atributos_empleado_nomina($nomina)
+    {
+        $this->db->select("c.ciax, b.nombre, a.*", false);
+        $this->db->join('catalogo.cat_compa_nomina c', 'a.cia = c.cia', 'LEFT');
+        $this->db->join('catalogo.sucursal b', 'a.succ = b.suc', 'LEFT');
+        $this->db->where('a.nomina', $nomina);
+        $query = $this->db->get('catalogo.cat_empleado a');
+        return $query;
+    }
+    
+    function get_incidencias_empleado_id($id)
+    {
+        $sql = "SELECT diac, c.*
+FROM checador_asistencia c
+LEFT JOIN catalogo.cat_empleado e on c.empleado_id = e.id
+LEFT JOIN dias d on DAYOFWEEK(fecha) = dian
+where (falta = 1 or retardo = 1) and  empleado_id = ? and fecha >= '2013-07-01' and c.fecha > fechaalta order by fecha;";
+
+        $query = $this->db->query($sql, $id);
+        return $query;
+    }
+    
+    function get_totales_empiricos_julio_2013()
+    {
+        $sql = "SELECT sum(dias_laborados) as dias_laborados, sum(horas_laboradas) as horas_laboradas 
+        FROM checador_quincenas c where inicio >= '2013-07-01' and fin <= date(now());";
+        $query = $this->db->query($sql);
+        $row = $query->row();
+        return $row;
+    }
+    
+    function get_totales_reales_julio_2013($empleado_id)
+    {
+        $sql = "SELECT sum(horas_decimal) as horas, sum(case when DAYOFWEEK(fecha) = 1 then 0 when DAYOFWEEK(fecha) = 7 then 0 when falta = 1 and justificada = 0 then 0 else 1 end) as dias
+FROM checador_asistencia c
+where empleado_id = ? and fecha >= '2013-07-01' and fecha <= (select max(fin) from checador_quincenas where fin <= date(now()));";
+        $query = $this->db->query($sql, $empleado_id);
+        $row = $query->row();
+        return $row;
+    }
+
+    function get_id_from_nomina($nomina)
+    {
+        $this->db->select('id');
+        $this->db->where('nomina', $nomina);
+        $query = $this->db->get('catalogo.cat_empleado');
+        $row = $query->row();
+        return $row->id;
+    }
+    
+    function get_ayuda()
+    {
+        $query = $this->db->get('checador_faq');
+        return $query;
+    }
+
     function inserta_datos($a)
     {
         $this->db->insert_batch('checador_eventos', $a);
@@ -772,6 +828,8 @@ group by f.checador_id;";
         $this->__incapacidades($fecha);
         $this->__memos($fecha);
         $this->__sabado_domingo($fecha);
+        $this->__entrada_a_la_empresa($fecha);
+        $this->__reglas_especiales($fecha);
         
     }
     
@@ -865,6 +923,64 @@ where ? between fec1 and fec2 and validado = 1;";
         where fecha = ? and DAYOFWEEK(?) in (1, 7);";
         $this->db->query($sql, array($fecha, $fecha));
     }
+    
+    function __entrada_a_la_empresa($fecha)
+    {
+        $sql = "SELECT empleado_id, fecha
+FROM checador_asistencia c
+left join catalogo.cat_empleado e on c.empleado_id = e.id
+where fecha = ?
+and fecha <= fechahis;";
+
+        $query = $this->db->query($sql, $fecha);
+        
+        if($query->num_rows() > 0)
+        {
+            foreach($query->result() as $row){
+                $data = array(
+                    'retardo'       => 0,
+                    'falta'         => 0,
+                    'justificada'   => 0
+                    );
+                    
+                $this->db->where('fecha', $fecha);
+                $this->db->where('empleado_id', $row->empleado_id);
+                
+                $this->db->update('checador_asistencia', $data);
+            }
+        }
+    }
+    
+    function __reglas_especiales($fecha)
+    {
+        $sql = "SELECT id FROM catalogo.cat_empleado c where retardosoff = 1 and tipo = 1;";
+        $query = $this->db->query($sql);
+        
+        foreach($query->result() as $row)
+        {
+            $data = array(
+                'justificada'   => 1,
+                'motivo'        => 'EXCENTO DE RETARDOS'
+                );
+            $this->db->set('fecha_justifica', 'now()', false);
+            $this->db->where('fecha', $fecha);
+            $this->db->where('empleado_id', $row->id);
+            $this->db->where('retardo', 1);
+            $this->db->update('checador_asistencia', $data);
+        }
+    }
+    
+    function get_incapacidades($nomina)
+    {
+        $sql = "SELECT m.nomina, id_user, u.nombre as rh, fecha_c, dias, fecha_mov, fecha_mov + interval dias day as fecha_final, obser2, folio_inca
+FROM mov_supervisor m
+left join usuarios u on m.id_user = u.id
+where motivo = 5 and m.tipo = 2 and m.nomina = ?;";
+        $query = $this->db->query($sql, array($nomina));
+        return $query;
+        
+    }
+
 
     function gerente_justificar_guarda()
     {
@@ -888,7 +1004,7 @@ where ? between fec1 and fec2 and validado = 1;";
     
     function get_asistencias_periodo_empleado($empleado_id, $perini, $perfin)
     {
-        $sql = "SELECT diac, DATE_FORMAT(fecha, '%d') as fecha1, DATE_FORMAT(entrada, '%H:%i') as entrada, DATE_FORMAT(salida, '%H:%i') as salida, retardo, falta, horas_decimal
+        $sql = "SELECT diac, DATE_FORMAT(fecha, '%d') as fecha1, DATE_FORMAT(entrada, '%H:%i') as entrada, DATE_FORMAT(salida, '%H:%i') as salida, retardo, falta, horas_decimal, justificada, substring(motivo from 1 for 3) as motivo
 FROM checador_asistencia c
 LEFT JOIN dias d on DAYOFWEEK(fecha) = dian
 where empleado_id = ? and fecha between ? and ?
@@ -949,24 +1065,52 @@ order by c.fecha;";
         </thead>
         <tbody>';
         
-        $retardo = 0;
         $falta = 0;
+        $retardo = 0;
+        $falta_justificada = 0;
+        $retardo_justificado = 0;
         
         foreach($query->result() as $row)
         {
+            if($row->falta == 1 || ($row->retardo == 0 && ($row->diac == 'SAB' || $row->diac == 'DOM') ))
+            {
+                $tag1 = $row->motivo." ";
+                $tag2 = null;
+            }else{
+                $tag1 = null;
+                $tag2 = $row->motivo." ";
+            }
             
             $tabla.= '
             <tr>
             <td style="border-bottom: black; border-bottom-width: 1px; padding-bottom: 10px;">'.$row->diac.' '.$row->fecha1.'</td>
             <td align="center" style="border-bottom: black; border-bottom-width: 1px;">'.$row->entrada.'</td>
             <td align="center" style="border-bottom: black; border-bottom-width: 1px;">'.$row->salida.'</td>
-            <td align="right" style="border-bottom: black; border-bottom-width: 1px;">'.$row->retardo.'</td>
-            <td align="right" style="border-bottom: black; border-bottom-width: 1px;">'.$row->falta.'</td>
+            <td align="right" style="border-bottom: black; border-bottom-width: 1px;">'.$tag2.$row->retardo.'</td>
+            <td align="right" style="border-bottom: black; border-bottom-width: 1px;">'.$tag1.$row->falta.'</td>
             </tr>';
             
             $retardo = $retardo + $row->retardo;
             $falta = $falta + $row->falta;
+            
+            if($row->falta == 1 && $row->justificada == 1)
+            {
+                $falta_justificada = $falta_justificada + 1;
+            }
+            
+            if($row->retardo == 1 && $row->justificada == 1)
+            {
+                $retardo_justificado = $retardo_justificado + 1;
+            }
+            
+            
         }
+        
+        $retardos_por_aplicar = $retardo - $retardo_justificado;
+        $faltas_por_aplicar = $falta - $falta_justificada;
+        
+        $convierte = floor($retardos_por_aplicar / 3);
+        
         
 
         $tabla.= '        
@@ -976,6 +1120,16 @@ order by c.fecha;";
         <td colspan="3" align="right">Totales</td>
         <td align="right"><b>'.$retardo.'</b></td>
         <td align="right"><b>'.$falta.'</b></td>
+        </tr>
+        <tr>
+        <td colspan="3" align="right">Justificadas</td>
+        <td align="right"><b>'.$retardo_justificado.'</b></td>
+        <td align="right"><b>'.$falta_justificada.'</b></td>
+        </tr>
+        <tr>
+        <td colspan="3" align="right">Dias por descontar</td>
+        <td align="right"><b>'.($convierte).'</b></td>
+        <td align="right"><b>'.($faltas_por_aplicar).'</b></td>
         </tr>
         <tr>
         <td colspan="5" align="center"><br /><br /><br /><br /><br /><br /><br />______________________________</td>
@@ -988,6 +1142,7 @@ order by c.fecha;";
         </div>';
         return $tabla;
     }
+    
     
     function get_arreglo($quincena, $succ)
     {
@@ -1339,6 +1494,140 @@ order by nombre, e.completo, fecha;";
         
     }
     
+    public function get_reporte_faltasyretardos($quincena, $succ)
+    {
+        $this->db->where('id', $quincena);
+        $q1 = $this->db->get('checador_quincenas');
+        
+        $r1 = $q1->row();
+        
+        $sql = "SELECT nombre, e.nomina, completo, c.fecha, 'FALTA' as tipo
+FROM checador_asistencia c
+left join catalogo.cat_empleado e on c.empleado_id = e.id
+left join catalogo.sucursal s on e.succ = s.suc
+where c.fecha between ? and ? and e.tipo = 1 and e.checa = 1 and justificada = 0 and falta = 1 and succ = ?
+order by succ, completo;";
+
+        $sql2 = "SELECT nombre, e.nomina, completo, '$r1->fin' as fecha, 'ACUMULACION DE 3 O MAS RETARDOS' as tipo, floor(sum(retardo)/3) as retardos
+FROM checador_asistencia c
+left join catalogo.cat_empleado e on c.empleado_id = e.id
+left join catalogo.sucursal s on e.succ = s.suc
+where c.fecha between ? and ? and e.tipo = 1 and e.checa = 1 and justificada = 0 and retardo = 1 and succ = ?
+group by empleado_id
+having retardos >= 1
+order by succ, completo;";
+
+        $query = $this->db->query($sql, array($r1->inicio, $r1->fin, $succ));
+        
+        $query2 = $this->db->query($sql2, array($r1->inicio, $r1->fin, $succ));
+
+        $tabla = null;
+
+        $tabla .= '
+        <h5>REPORTE DE FALTAS PARA APLICAR EN LA QUINCENA.</h5>
+        <table style="font-size: 18px;" border="1" cellpadding="3">
+        <thead>
+            <tr>
+                <th width="20%" style="font-size: 18px;">Depto.</th>
+                <th width="6%" style="font-size: 18px;"># Nomina</th>
+                <th width="25%" style="font-size: 18px;">Nombre</th>
+                <th width="6%" style="font-size: 18px;">Fecha</th>
+                <th width="43%" style="font-size: 18px;">Motivo</th>
+            </tr>
+        </thead>
+        <tbody>';
+        
+        foreach($query->result() as $row)
+        {
+            $tabla .= '<tr>
+                <td width="20%" style="font-size: 18px;">' . $row->nombre . '</td>
+                <td width="6%" style="font-size: 18px;">' . $row->nomina . '</td>
+                <td width="25%" style="font-size: 18px;">' . $row->completo . '</td>
+                <td width="6%" style="font-size: 18px;">' . $row->fecha . '</td>
+                <td width="43%" style="font-size: 18px;">' . $row->tipo .'</td>
+            </tr>';
+        }
+
+        $tabla .= '</tbody>
+        <tfoot>
+        <tr>
+        <td colspan="5">
+            <p align="center" style="font-size: 18px; padding-top: 80px;"><br /><br /><br /><br /><br />__________________________________</p>
+            <p align="center" style="font-size: 18px;">NOMBRE Y FIRMA</p>
+        </td>
+        </tr>
+        </tfoot>
+        </table>';
+        
+        
+        $tabla .= '
+        <br />
+        <h5>REPORTE DE RETARDOS ACUMULADOS PARA APLICAR EN LA QUINCENA.</h5>
+        <table style="font-size: 18px;" border="1" cellpadding="3">
+        <thead>
+            <tr>
+                <th width="20%" style="font-size: 18px;">Depto.</th>
+                <th width="6%" style="font-size: 18px;"># Nomina</th>
+                <th width="25%" style="font-size: 18px;">Nombre</th>
+                <th width="6%" style="font-size: 18px;">Fecha</th>
+                <th width="43%" style="font-size: 18px;">Motivo</th>
+            </tr>
+        </thead>
+        <tbody>';
+        
+        foreach($query2->result() as $row2)
+        {
+            $tabla .= '<tr>
+                <td width="20%" style="font-size: 18px;">' . $row2->nombre . '</td>
+                <td width="6%" style="font-size: 18px;">' . $row2->nomina . '</td>
+                <td width="25%" style="font-size: 18px;">' . $row2->completo . '</td>
+                <td width="6%" style="font-size: 18px;">' . $row2->fecha . '</td>
+                <td width="43%" style="font-size: 18px;">' . $row2->tipo .'</td>
+            </tr>';
+        }
+
+        $tabla .= '</tbody>
+        <tfoot>
+        <tr>
+        <td colspan="5">
+            <p align="center" style="font-size: 18px; padding-top: 80px;"><br /><br /><br /><br /><br />__________________________________</p>
+            <p align="center" style="font-size: 18px;">NOMBRE Y FIRMA</p>
+        </td>
+        </tr>
+        </tfoot>
+        </table>';
+        
+        $tabla .= '<br />
+        <p style="font-size: 30px; ">* NOTA: TENDRAS HASTA EL CUARTO DIA HABIL DESPUES DE TERMINADO EL PERIODO PARA PRESENTAR LAS JUSTIFICACIONES DE LAS INCIDENCIAS.</p>
+        <br />';
+
+        $jus = $this->db->get('catalogo.cat_justificacion');
+        
+        $tabla .= '<p style="font-size: 25px; ">De acuerdo al caso presenta tus comprobantes.</p>
+<table style="font-size: 18px;" border="1" cellpadding="3">
+        <thead>
+            <tr>
+                <th width="25%" style="font-size: 18px;">Justificaci&oacute;n</th>
+                <th width="75%" style="font-size: 18px;">Comprobantes</th>
+            </tr>
+        </thead>
+        <tbody>';
+        
+        foreach($jus->result() as $j)
+        {
+            $tabla .= '<tr>
+                <td width="25%" style="font-size: 18px;">'.$j->justifica.'</td>
+                <td width="75%" style="font-size: 18px;">'.$j->justificantes.'</td>
+            </tr>';
+        }
+        
+        $tabla .= '</tbody>
+        </table>';
+        
+        return $tabla;
+        
+    }
+
     public function get_reporte_juntificacion2($quincena, $succ)
     {
         $this->db->where('id', $quincena);
@@ -2045,6 +2334,17 @@ order by nombre, e.completo, fecha;";
         return $query;
     }
 
+    function get_vacaciones_nomina($nomina)
+    {   
+        $this->db->select('v.*, u.nombre');
+        $this->db->from('reg_vacaciones v');
+        $this->db->join('usuarios u', 'v.id_validacion = u.id', 'LEFT');
+        $this->db->where('v.nomina', $nomina);
+        $this->db->order_by('v.id', 'DESC');
+        $query = $this->db->get();
+        return $query;
+    }
+
     function reporte_vacas($id, $succ)
     {
         $nivel = $this->session->userdata('nivel');
@@ -2176,7 +2476,11 @@ order by nombre, e.completo, fecha;";
 
     function get_periodos()
     {
-        $sql = "SELECT * FROM periodo_vacas_detaller where nomina = ? order by aaa1;";
+        $sql = "SELECT d.*, prima
+FROM periodo_vacas_detaller d
+left join periodo_vacas v on d.aaa = v.aaa
+where nomina = ?
+order by aaa1;";
         $query = $this->db->query($sql, $this->session->userdata('nomina'));
         return $query;
     }
@@ -2252,6 +2556,7 @@ order by nombre, e.completo, fecha;";
         $this->db->join('catalogo.cat_justificacion j', 'j.id = i.justificacion');
         $this->db->join('catalogo.sucursal s', 'e.succ = s.suc', 'left');
         $this->db->where('i.estatus', 0);
+        $this->db->order_by('i.incidencia');
         $this->db->limit($limit, $offset);
         
         $query = $this->db->get();
@@ -2267,13 +2572,14 @@ order by nombre, e.completo, fecha;";
         $this->db->join('catalogo.cat_justificacion j', 'j.id = i.justificacion');
         $this->db->join('catalogo.sucursal s', 'e.succ = s.suc', 'left');
         $this->db->where('i.estatus in(1, 2)', null, false);
+        $this->db->order_by('i.incidencia');
         $this->db->limit($limit, $offset);
         
         $query = $this->db->get();
         return $query;
     }
 
-    function actualiza_incidencia($incidencia, $estatus)
+    function actualiza_incidencia($incidencia, $estatus, $asistencia)
     {
         $data = array(
             'estatus' => $estatus,
@@ -2291,6 +2597,7 @@ order by nombre, e.completo, fecha;";
                 'id_justifica'  => $this->session->userdata('id')
                 );
             $this->db->set('fecha_justifica', 'now()', false);
+            $this->db->where('id', $asistencia);
             $this->db->update('checador_asistencia', $data2);
         }
         

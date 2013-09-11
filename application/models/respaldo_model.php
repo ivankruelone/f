@@ -1,6 +1,45 @@
  <?php
 	class respaldo_model extends CI_Model {
 
+function controlados(){
+$l='control_comprac'.date('YmdHis');
+$nombre='"c:/wamp/www/subir10/envia/'.$l.'.txt"';    
+$a="select *from almacen.control_comprac INTO OUTFILE $nombre FIELDS TERMINATED BY '||' LINES TERMINATED BY '\n\r';";
+$this->db->query($a);    
+$l='control_comprad'.date('YmdHis');
+$nombre='"c:/wamp/www/subir10/envia/'.$l.'.txt"';    
+$a="select *from almacen.control_comprad INTO OUTFILE $nombre FIELDS TERMINATED BY '||' LINES TERMINATED BY '\n\r';";
+$this->db->query($a);    
+$l='control_dev'.date('YmdHis');
+$nombre='"c:/wamp/www/subir10/envia/'.$l.'.txt"';    
+$a="select *from almacen.control_dev INTO OUTFILE $nombre FIELDS TERMINATED BY '||' LINES TERMINATED BY '\n\r';";
+$this->db->query($a);    
+$l='control_devd'.date('YmdHis');
+$nombre='"c:/wamp/www/subir10/envia/'.$l.'.txt"';    
+$a="select *from almacen.control_devd INTO OUTFILE $nombre FIELDS TERMINATED BY '||' LINES TERMINATED BY '\n\r';";
+$this->db->query($a);
+$l='control_invc'.date('YmdHis');
+$nombre='"c:/wamp/www/subir10/envia/'.$l.'.txt"';    
+$a="select *from almacen.control_invc INTO OUTFILE $nombre FIELDS TERMINATED BY '||' LINES TERMINATED BY '\n\r';";
+$this->db->query($a);
+$l='salidas_c'.date('YmdHis');
+$nombre='"c:/wamp/www/subir10/envia/'.$l.'.txt"';    
+$a="select *from almacen.salidas_c INTO OUTFILE $nombre FIELDS TERMINATED BY '||' LINES TERMINATED BY '\n\r';";
+$this->db->query($a);    
+
+$l='salidas_cc'.date('YmdHis');
+$nombre='"c:/wamp/www/subir10/envia/'.$l.'.txt"';    
+$a="select *from almacen.salidas_cc INTO OUTFILE $nombre FIELDS TERMINATED BY '||' LINES TERMINATED BY '\n\r';";
+$this->db->query($a); 
+$l='cat_con'.date('YmdHis');
+$nombre='"c:/wamp/www/subir10/envia/'.$l.'.txt"';    
+$a="select *from catalogo.cat_con INTO OUTFILE $nombre FIELDS TERMINATED BY '||' LINES TERMINATED BY '\n\r';";
+$this->db->query($a); 
+$l='suc_con'.date('YmdHis');
+$nombre='"c:/wamp/www/subir10/envia/'.$l.'.txt"';    
+$a="select *from  catalogo.suc_con INTO OUTFILE $nombre FIELDS TERMINATED BY '||' LINES TERMINATED BY '\n\r';";
+$this->db->query($a);   
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////almacen
 /////////////////////////////////////////////////////////////////////////////////////////////////////////almacen
 function catalogo(){

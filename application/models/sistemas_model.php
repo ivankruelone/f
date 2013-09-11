@@ -121,9 +121,69 @@ $tabla.="
 
 }
 
+function tabla_reporte_his($tit)
+{
+   $nivel= $this->session->userdata('nivel');
+    $sql="select a.*,b.nombre as sucx,c.completo 
+    from compras.reporte_c a 
+    left join catalogo.sucursal b on b.suc=a.suc
+    left join catalogo.cat_empleado c on c.nomina=a.solicita and c.tipo=1
+    where a.tipo='C' order by id desc";
+	  	$query = $this->db->query($sql);
+    	
+	    
+$tabla= "
+        <table border=\"1\">
+        <thead>
+        <tr>
+        <th colspan=\"7\" align=\"center\"><strong>$tit</strong></th>
+        </tr>
+        <tr>
+        <th><strong>Departamento</strong></th>
+        <th><strong>Solicita</strong></th>
+        <th><strong>Peticion</strong></th>
+       </tr>
+        </thead>
+        ";
+        $num=0;
+        foreach($query->result() as $row)
+        {
+
+ $l1 = anchor('sistemas/reportes_his_imp_uno/'.$row->id, '<img src="'.base_url().'img/reportes2.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para editar detalle !', 'class' => 'encabezado'));; 
+            $tabla.="
+            <tr bgcolor=\"#F4ECEC\">
+            <td align=\"left\">".$row->sucx."</td>
+            <td align=\"left\">".$row->completo."</td>
+            <td align=\"left\"> ".$row->problema."</td>
+            <td align=\"left\">".$l1."</td>
+            </tr>
+            <tr bgcolor=\"#F4ECEC\">
+            <td  colspan=\"4\" align=\"left\">".$row->solucion."</td>
+            </tr>
+            <tr bgcolor=\"#F4ECEC\">
+            <td  colspan=\"4\" align=\"left\">".$row->antes."</td>
+            </tr>
+            
+            <tr bgcolor=\"#F4ECEC\">
+            <td colspan=\"4\" align=\"left\">".$row->ahora."</td>
+            </tr>
+            
+            ";
+$num=$num+1;
+        }
+$tabla.="
+<tr>
+<td colspan=\"7\"><strong>TOTAL DE REPORTES:".number_format($num,0)."</strong></td>
+</tr> 
+</table>";
+        
+        
+        return $tabla;
+
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function reporte_impresion($id,$tit)
+function reporte_impresion($tit)
 {
    $nivel= $this->session->userdata('nivel');
     $sql="select a.*,b.nombre as sucx,c.completo ,c.puestox,d.completo as sis ,d.puestox as sisp
@@ -208,6 +268,91 @@ $tabla.="
 
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function reporte_impresion_una($id)
+{
+   $nivel= $this->session->userdata('nivel');
+    $sql="select a.*,b.nombre as sucx,c.completo ,c.puestox,d.completo as sis ,d.puestox as sisp
+    from compras.reporte_c a 
+    left join catalogo.sucursal b on b.suc=a.suc
+    left join catalogo.cat_empleado c on c.nomina=a.solicita and c.tipo=1
+    left join catalogo.cat_empleado d on d.nomina=a.atiende 
+    where a.tipo='C' and a.id=$id";
+	  	$query = $this->db->query($sql);
+  $l0="<img src=\"img/logo.png\" border=\"0\" width=\"50px\" />"; 
+$tabla="
+        <table border=\"0\">
+        
+        <thead>
+        
+        </thead>
+        ";
+        $num=0;
+        foreach($query->result() as $row)
+        {
+           $tabla.="
+            <tr>
+            <td align=\"left\" width=\"656\"><strong>$l0</strong></td>
+            </tr>
+            <tr>
+            <td align=\"left\" width=\"100\"><strong>Departamento</strong></td>
+            <td align=\"left\" width=\"556\">".$row->sucx."<br /></td>
+            </tr>
+            <tr>
+            <td align=\"left\" width=\"100\"><strong>Solicitante</strong></td>
+            <td align=\"left\" width=\"556\">".$row->completo."<br />".$row->puestox."<br /></td>
+            </tr>
+            <tr>
+            <td align=\"left\" width=\"656\"><strong>Peticion</strong></td>
+            </tr>
+            <tr>
+            <td align=\"left\" width=\"656\">".$row->problema."<br /></td>
+            </tr>
+            <tr>
+            <td align=\"left\" width=\"656\"><strong>Solucion</strong></td>
+            </tr>
+            <tr>
+            <td align=\"left\" width=\"656\">".$row->solucion."<br /></td>
+            </tr>
+            
+            <tr>
+            <td align=\"center\" width=\"328\"><strong>Antes</strong></td>
+            <td align=\"center\" width=\"328\"><strong>Ahora</strong><br /></td>
+            </tr>
+            <table border=\"1\">
+            <tr>
+            <td align=\"left\" width=\"328\">".$row->antes."</td>
+            <td align=\"left\" width=\"328\">".$row->ahora."<br /></td>
+            </tr>
+            </table>
+            <tr>
+            <td align=\"left\" width=\"536\"></td>
+            </tr>
+            <tr>
+            <td align=\"left\" width=\"656\"><br />".$row->sis."<br />".$row->sisp."</td>
+            </tr>
+            <tr>
+            <td align=\"left\" width=\"200\"><strong>La solicitud esta elaborada.:</strong></td>
+            <td align=\"left\" width=\"456\">".$row->fecha."</td>
+            </tr>
+            <tr>
+            <td align=\"left\" width=\"200\"><strong>Se liber&oacute;.:</strong></td>
+            <td align=\"left\" width=\"456\">".$row->libero."<br /><br /><br /><br /><br /><br /><br /></td>
+            </tr>
+            
+            ";
+$num=$num+1;
+        }
+$tabla.="
+
+</table>";
+        
+  // echo $tabla;
+   //die();     
+        return $tabla;
+
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -458,7 +603,7 @@ left join reg_vacaciones c on c.nomina=b.nomina and a.fecha between c.fec1 and c
 left join catalogo.sucursal d on d.suc=b.succ
 where
 a.fecha>='$fec1' and a.fecha<='$fec2' and retardo>0  and falta=0 and dias is  null and b.checa=1 and a.fecha>=fechahis
-group by empleado_id";
+group by empleado_id order by b.succ";
 $q=$this->db->query($s);
 $rr=0;
  foreach($q->result() as $r)
@@ -535,8 +680,14 @@ $tabla.="
             ";       
             
         }
-        }
+        $tabla.="
+            <tr>
+             <td align=\"left\" colspan=\"5\">----</td>
             
+            </tr>
+            ";      
+        
+        }
         }
 $tabla.="
 </tbody>
@@ -690,7 +841,12 @@ $tabla.="
             
       
         }
+        $tabla.="
+            <tr>
+             <td align=\"left\" colspan=\"5\">----</td>
             
+            </tr>
+            ";        
         }
 $tabla.="
 </tbody>

@@ -266,13 +266,161 @@ class A_surtido extends CI_Controller
         $fecha2 = $this->input->post('fec2');
         
         $this->load->model('a_surtido_model');
+        
+        $faltante = $this->a_surtido_model->reporte_folio_faltante_esp($fecha1, $fecha2);
+        $falysob  = $this->a_surtido_model->reporte_folio_esp($fecha1, $fecha2);
+        $sobrante = $this->a_surtido_model->reporte_folio_sobrante_esp($fecha1, $fecha2);
+        $sinincidencias = $this->a_surtido_model->reporte_folio_sin_incidencias_esp($fecha1, $fecha2);
 
         $data['cabeza'] = $this->a_surtido_model->reporte_folio_esp_encabezado($fecha1, $fecha2);
-        $data['detalle'] = $this->a_surtido_model->reporte_folio_esp($fecha1, $fecha2);
+        $data['detalle'] = $faltante['tabla'];
+        $data['detalle1'] = $falysob ['tabla'];
+        $data['detalle2'] = $sobrante ['tabla'];
+        $data['detalle3'] = $sinincidencias ['tabla'];
        
+       $data['detalle4'] = $this->a_surtido_model->reporte_porcentajes_esp($faltante['folios'],
+       $falysob['folios'], $sobrante['folios'], $sinincidencias['folios'],$fecha1,$fecha2);
         
         $this->load->view('impresiones/reporte_folio_esp', $data);
     }    
+    
+    
+    public function folios_totales()
+    {   
+        $data['mensaje']= '';
+        $data['titulo']= 'FORMULADOS ENVIADOS';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');
+       
+
+		$data['contenido'] = "reporte_folios_totales";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }  
+    
+    public function reporte_folios_tot_submit ()
+    {
+        ini_set('memory_limit','2000M');
+        set_time_limit(0);
+        $fecha1 = $this->input->post('fec1');
+        $fecha2 = $this->input->post('fec2');
+        
+        $this->load->model('a_surtido_model');
+        
+        $data['cabeza'] = $this->a_surtido_model->reporte_folio_tot_encabezado($fecha1, $fecha2);
+        $data['detalle'] = $this->a_surtido_model->reporte_folio_tot_detalle($fecha1, $fecha2);
+        
+        
+        $this->load->view('impresiones/reporte_folio_tot', $data);  
+        
+    }
+    
+    public function folios_totales_esp()
+    {   
+        $data['mensaje']= '';
+        $data['titulo']= 'ESPECIALES ENVIADOS';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');
+       
+
+		$data['contenido'] = "reporte_folios_totales_esp";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }  
+    
+    
+    public function reporte_folios_tot_esp_submit ()
+    {
+        ini_set('memory_limit','2000M');
+        set_time_limit(0);
+        $fecha1 = $this->input->post('fec1');
+        $fecha2 = $this->input->post('fec2');
+        
+        $this->load->model('a_surtido_model');
+        
+        $data['cabeza'] = $this->a_surtido_model->reporte_folio_tot_esp_encabezado($fecha1, $fecha2);
+        $data['detalle'] = $this->a_surtido_model->reporte_folio_tot_esp_detalle($fecha1, $fecha2);
+        
+        
+        $this->load->view('impresiones/reporte_folio_tot_esp', $data);  
+        
+    }
+    
+    public function folios_pendientes()
+    {   
+        $data['mensaje']= '';
+        $data['titulo']= 'FORMULADOS POR DEVOLVER';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');
+       
+
+		$data['contenido'] = "reporte_folios_pendientes";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }  
+    
+    public function reporte_folios_pendientes_submit ()
+    {
+        ini_set('memory_limit','2000M');
+        set_time_limit(0);
+        $fecha1 = $this->input->post('fec1');
+        $fecha2 = $this->input->post('fec2');
+        
+        $this->load->model('a_surtido_model');
+        
+        $data['cabeza'] = $this->a_surtido_model->reporte_folio_pendientes_encabezado($fecha1, $fecha2);
+        $data['detalle'] = $this->a_surtido_model->reporte_folio_pendientes_detalle($fecha1, $fecha2);
+        
+        
+        $this->load->view('impresiones/reporte_folio_pendientes', $data);  
+        
+    }
+    
+    public function folios_pendientes_esp()
+    {   
+        $data['mensaje']= '';
+        $data['titulo']= 'ESPECIALES POR DEVOLVER';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');
+       
+
+		$data['contenido'] = "reporte_folios_pendientes_esp";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }  
+    
+    public function reporte_folios_pendientes_esp_submit ()
+    {
+        ini_set('memory_limit','2000M');
+        set_time_limit(0);
+        $fecha1 = $this->input->post('fec1');
+        $fecha2 = $this->input->post('fec2');
+        
+        $this->load->model('a_surtido_model');
+        
+        $data['cabeza'] = $this->a_surtido_model->reporte_folio_pendientes_esp_encabezado($fecha1, $fecha2);
+        $data['detalle'] = $this->a_surtido_model->reporte_folio_pendientes_esp_detalle($fecha1, $fecha2);
+        
+        
+        $this->load->view('impresiones/reporte_folio_pendientes', $data);  
+        
+    }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

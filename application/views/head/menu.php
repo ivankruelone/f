@@ -279,6 +279,7 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
           <li<?php if(isset($selector) && $selector == "a_surtido") echo " class=\"selected\"";?>><?php echo anchor('a_surtido/index', 'Captura');?></li>
           <li<?php if(isset($selector) && $selector == "a_inv") echo " class=\"selected\"";?>><?php echo anchor('a_inv/index', 'Inventario');?></li>
           <li<?php if(isset($selector) && $selector == "captura_pedido1") echo " class=\"selected\"";?>><?php echo anchor('captura_pedido1', 'Captura de Pedido');?></li>
+          <li<?php if(isset($selector) && $selector == "reportes") echo " class=\"selected\"";?>><?php echo anchor('reportes', 'Reportes');?></li>
         </ul>
       </div>
 
@@ -389,6 +390,7 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
         <li<?php if(isset($selector) && $selector == "a_surtido") echo " class=\"selected\"";?>><?php echo anchor('a_surtido/tabla_control_his_busqueda', 'FOLIOS CERRADOS');?></li>
         <li<?php if(isset($selector) && $selector == "a_surtido") echo " class=\"selected\"";?>><?php echo anchor('a_surtido/surtidores', 'SURTIDORES');?></li>
         <li<?php if(isset($selector) && $selector == "a_rutas") echo " class=\"selected\"";?>><?php echo anchor('a_inv/rutas', 'RUTAS');?></li>
+        <li<?php if(isset($selector) && $selector == "reportes") echo " class=\"selected\"";?>><?php echo anchor('reportes', 'Reportes');?></li>
         </ul>
       </div>
 
@@ -430,9 +432,13 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
 
 <?php
 	}elseif($nivel == 31 || $nivel == 32){
+
 ?>
     <div id="menubar">
         <ul id="menu">
+<?php  if($tipo ==1){?>        
+        <li<?php if(isset($selector) && $selector == "juridico") echo " class=\"selected\"";?>><?php echo anchor('juridico/tabla_rentas', 'CATALOGO');?></li>
+       <?php }  ?>
         <li<?php if(isset($selector) && $selector == "juridico_r") echo " class=\"selected\"";?>><?php echo anchor('juridico/index_ger', 'MOVIMIENTOS');?></li>
         </ul>
       </div>
@@ -446,9 +452,13 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
     <div id="menubar">
         <ul id="menu">
         
- 
- <?php  if($tipo <2){?>
+  <?php  if($tipo == 0){?>
+        <li<?php if(isset($selector) && $selector == "recursos_humanos1") echo " class=\"selected\"";?>><?php echo anchor('recursos_humanos/reportes_depto', 'CHECADOR');?></li>
         <li<?php if(isset($selector) && $selector == "catalogo") echo " class=\"selected\"";?>><?php echo anchor('catalogo/tabla_empleados', 'CATALOGO');?></li>
+        
+ <?php }
+ if($tipo == 1){?>
+        <li<?php if(isset($selector) && $selector == "catalogo") echo " class=\"selected\"";?>><?php echo anchor('catalogo/tabla_empleados', 'RETENCION');?></li>
         <li<?php if(isset($selector) && $selector == "recursos_humanos1") echo " class=\"selected\"";?>><?php echo anchor('recursos_humanos/index', 'Supervisor');?></li>
         <li<?php if(isset($selector) && $selector == "recursos_humanos2") echo " class=\"selected\"";?>><?php echo anchor('recursos_humanos/tabla_pendiente_cambio', 'Pendientes');?></li>
         <li<?php if(isset($selector) && $selector == "calendario") echo " class=\"selected\"";?>><?php echo anchor('calendario/index', 'Calendario');?></li>
@@ -468,6 +478,7 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
   if($tipo == 3 || $tipo == 5){?>
         <li<?php if(isset($selector) && $selector == "recursos_humanos") echo " class=\"selected\"";?>><?php echo anchor('recursos_humanos/indexc', 'MOVIMIENTOS');?></li>
         <li<?php if(isset($selector) && $selector == "recursos_humanos5") echo " class=\"selected\"";?>><?php echo anchor('recursos_humanos/index_nom', 'NOMINA');?></li>
+        <li<?php if(isset($selector) && $selector == "recursos_humanos5") echo " class=\"selected\"";?>><?php echo anchor('recursos_humanos/index_vac', 'Vacaciones');?></li>
         <li<?php if(isset($selector) && $selector == "calendario") echo " class=\"selected\"";?>><?php echo anchor('calendario/index', 'Calendario');?></li>
  <?php }if($tipo == 6){?>
         <li<?php if(isset($selector) && $selector == "recursos_humanos") echo " class=\"selected\"";?>><?php echo anchor('recursos_humanos/indexc', 'INCAPACIDAD');?></li>
@@ -543,7 +554,9 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
           <li<?php if(isset($selector) && $selector == "catalogo") echo " class=\"selected\"";?>><?php echo anchor('compras/index', 'CATALOGO');?></li>
           <li<?php if(isset($selector) && $selector == "orden") echo " class=\"selected\"";?>><?php echo anchor('compras/index_ord', 'ORDEN DE COMPRA');?></li>
           <li<?php if(isset($selector) && $selector == "orden") echo " class=\"selected\"";?>><?php echo anchor('compras/index_d', 'Desplazamientos');?></li>
+          <li<?php if(isset($selector) && $selector == "orden") echo " class=\"selected\"";?>><?php echo anchor('compras/tabla_ventas', 'VENTAS');?></li>
           <li<?php if(isset($selector) && $selector == "orden") echo " class=\"selected\"";?>><?php echo anchor('compras/index_inv', 'Inv');?></li>
+          <li<?php if(isset($selector) && $selector == "licita") echo " class=\"selected\"";?>><?php echo anchor('compra_lic/index', 'Licita');?></li>
          
          </ul>
       </div>
@@ -637,6 +650,16 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
         <li<?php if(isset($selector) && $selector == "catalogo") echo " class=\"selected\"";?>><?php echo anchor('compras/index_lote', 'MEDICAMENTO POR LOTE');?></li>
         
       </div>      
+      
+<?php
+    }elseif($nivel == 58){
+?>
+
+    <div id="menubar">
+        <ul id="menu">
+        <li<?php if(isset($selector) && $selector == "a_rutas") echo " class=\"selected\"";?>><?php echo anchor('a_inv/rutas', 'RUTAS');?></li>
+        <li<?php if(isset($selector) && $selector == "reportes") echo " class=\"selected\"";?>><?php echo anchor('reportes/index', 'Rep');?></li>
+      </div>  
       
 <?php
     }elseif($nivel == 98){

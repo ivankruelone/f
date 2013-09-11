@@ -31,7 +31,7 @@ $("#forma-incidencias").on('submit', function(event){
          posting.done(function( data ) {
             if ( data > 0)
             {
-                window.location.href = '<?php echo site_url('checador/gerente_detalle_empleado_periodo').'/'.$this->uri->segment(3, 0).'/'.$this->uri->segment(4, 0).'/'.$this->uri->segment(5, 0);?>';
+                window.location.href = '<?php echo site_url('checador/'.$redirecciona).'/'.$this->uri->segment(3, 0).'/'.$this->uri->segment(4, 0).'/'.$this->uri->segment(5, 0);?>';
             }else{
                 alert("Algo fallo, comunicate a soporte.")
             }

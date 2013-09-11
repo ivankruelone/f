@@ -54,29 +54,29 @@
                             <?php 
                             $tope=0;
                             
-                            if( $tope < $ini & $this->session->userdata('tipo') == 0  and $tope > 0 or ($this->session->userdata('nivel')==50) ){
+                            if( $tope < $ini & $this->session->userdata('tipo') == 0  and $tope > 0 or ($this->session->userdata('nivel')== 50) ){
                             
-                                if($row->falta == 1 || $row->retardo == 1 ){
+                                if(($row->falta == 1 || $row->retardo == 1) && $this->session->userdata('tipo') == 1 ){
                                     
                                     if($row->justificada == 0 ){
                                         //Quitar justificaciones desde asistencias...
-                                        //echo anchor('checador/gerente_justificar/'.$row->id_registro, 'Just.', array('id' => 'justifica_'.$row->id)); 
+                                        echo anchor('checador/gerente_justificar/'.$row->id_registro, 'Just.', array('id' => 'justifica_'.$row->id)); 
                                     }else{
-                                        //echo anchor('checador/gerente_justificar_quita/'.$row->id_registro, 'No Just.', array('id' => 'quita_'.$row->id)); 
+                                        echo anchor('checador/gerente_justificar_quita/'.$row->id_registro, 'No Just.', array('id' => 'quita_'.$row->id)); 
                                     }
                                     
                                     ?>
-                                    
-                                    <!--</a><button id="upload_button_<?php echo $row->id_registro; ?>">Comprobante</button> -->
+                                    <!-- -->
+                                    </a><button id="upload_button_<?php echo $row->id_registro; ?>">Comprobante</button>
                                     <?php
                                 
-                                        echo anchor('checador/gerente_comprobantes/'.$row->id_registro, 'Comp.', array('id' => 'comprobantes_'.$row->id)); 
                                 }
+                                echo anchor('checador/gerente_comprobantes/'.$row->id_registro, 'Comp.', array('id' => 'comprobantes_'.$row->id)); 
                             }
                             
                             if ( $this->session->userdata('nivel') == 51 && ( $row->falta == 1 || $row->retardo == 1 ) && $row->incidencia == 0 && $row->justificada == 0)
                             {
-                                echo anchor('checador/gerente_incidencia_personal/'.$empleado_id.'/'.$inicio.'/'.$fin.'/'.$row->id, 'Llena incidencia');
+                                echo anchor('checador/gerente_incidencia_personal/'.$empleado_id.'/'.$inicio.'/'.$fin.'/'.$row->id.'/'.$this->uri->segment(2), 'Llena incidencia');
                             }elseif( $this->session->userdata('nivel') == 51 && $row->incidencia > 0 )
                             {
                                 echo anchor('checador/formato_incidencias/'.$row->incidencia, 'Imprime incidencia', array('target' => '_blank'));

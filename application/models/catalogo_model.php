@@ -1587,6 +1587,78 @@ if($row->nivelx==14){$l3='';}
 
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+    function empleados_pendientes_ret()
+    {
+     $id_user= $this->session->userdata('id');
+     $nivel= $this->session->userdata('nivel'); 
+     $tipo= $this->session->userdata('tipo');
+	 $id_plaza= $this->session->userdata('id_plaza'); 
+      
+     $sql = "SELECT a.*,b.nombre,b.dire,c.nivel as nivelx,b.id_plaza,c.nombre as captura, c.puesto
+      FROM catalogo.cat_alta_empleado a
+      left join catalogo.sucursal b on b.suc=a.suc
+      left join usuarios c on c.id=a.id_user
+      where a.id_user=$id_user and a.tipo=1
+	  or a.motivo='RETENCION' and b.id_plaza=$id_plaza and a.tipo=1
+      ";
+        $query = $this->db->query($sql);
+        $tabla= "
+        <table>
+        <thead>
+        <tr>
+        <th>Motivo  </th>
+        <th>Nomina<br />Nombre</th>
+        <th>Sucursal</th>
+        <th>RFC <br />CURP  </th>
+        <th>Afiliacion <br />Registro patronal</th>
+        <th>Salario Diario <br />Integrado</th>
+        <th>Fecha de captura</th>
+        <th>Recibo</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        
+        foreach($query->result() as $row)
+        {
+        
+            
+           
+            $l2 = anchor('catalogo/tabla_empleados_vista/'.$row->id, '<img src="'.base_url().'img/reportes2.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para ver formato!', 'class' => 'encabezado','target'=>'blank'));
+            $l3 = anchor('catalogo/tabla_empleados_borrar_c/'.$row->id.'/'.$row->motivo, '<img src="'.base_url().'img/error.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para borrar!', 'class' => 'encabezado'));
+            $l4 = anchor('catalogo/tabla_empleados_validar/'.$row->id.'/'.$row->motivo, '<img src="'.base_url().'img/icon_event.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para validar!', 'class' => 'encabezado'));
+if($row->nivelx==14){$l3='';}            
+            $tabla.="
+            <tr>
+            <td align=\"center\">".$row->motivo." ".$l4."</td>
+            <td align=\"center\">".$row->empleado."<br />  ".$row->nom." ".$row->pat." ".$row->mat."</td>
+            <td align=\"center\">".$row->suc." ".$row->nombre."</td>
+            <td align=\"left\">".$row->rfc." <BR />".$row->cur."</td>
+            <td align=\"left\">".$row->afilia."<br /> ".$row->registro_pat."</td>
+            <td align=\"right\">".number_format($row->salario,2)."<br /> ".number_format($row->integrado,2)."</td>
+            <td align=\"right\">".$row->fecha."</td>
+             <td align=\"right\">".$l3." ".$l2."</td>
+            </tr>
+            <td align=\"left\" colspan=\"8\"><font color=\"blue\">CAPTURA.:".$row->captura." <b>".$row->puesto."</b><br />".$row->causa."</font></td>
+            <tr>
+			</tr>
+            ";
+        }
+        
+        $tabla.="
+        </tbody>
+        </table>";
+        
+        return $tabla;
+    }
+
+
+
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
   /////////////////////////////////////////////////////
 
     function empleados_pendientes_his_val()
@@ -1654,7 +1726,7 @@ if($row->nivelx==14){$l3='';}
         </thead>
         <tbody>
         ";
-        
+       
         foreach($query->result() as $row)
         {
         if($row->activo==2){$color='red';}else{$color='black';}
@@ -1885,13 +1957,22 @@ $detalle.="
     function valida_member_empleados($id)
     {
      $nivel= $this->session->userdata('nivel');
+     $tipo= $this->session->userdata('tipo');
 	 if($nivel==14){
      $data = array('tipo'=>2, 'fecha_c'=>date('Y-m-d H:i:s'));
  	 $this->db->where('id', $id);
      $this->db->update('mov_supervisor', $data);
      return $this->db->affected_rows();
-   	 }elseif($nivel==33){
-	 $data = array('tipo'=>2, 'fecha_rh'=>date('Y-m-d H:i:s'));
+   	 }elseif($nivel==33 and $tipo==1){
+   	 $id_user= $this->session->userdata('id');   
+	 $data = array('tipo'=>3, 'fecha_rh'=>date('Y-m-d H:i:s'),'id_rh'=>$id_user);
+ 	 $this->db->where('id', $id);
+     $this->db->update('catalogo.cat_alta_empleado', $data);
+     return $this->db->affected_rows();
+	 }
+     elseif($nivel==33 and $tipo<>1){
+   	 $id_user= $this->session->userdata('id');   
+	 $data = array('tipo'=>2, 'fecha_rh'=>date('Y-m-d H:i:s'),'id_rh'=>$id_user);
  	 $this->db->where('id', $id);
      $this->db->update('catalogo.cat_alta_empleado', $data);
      return $this->db->affected_rows();
@@ -2177,13 +2258,24 @@ $detalle.="
             <td colspan=\"2\">Empleado :".$row->empleado." ".$row->pat." ".$row->mat." ".$row->nom."</td>
             <td colspan=\"1\"><strong>".$row->clavex."</strong></td>
             <td colspan=\"1\"><strong> Fecha mov.:</strong>".$row->fecha_i."</td>
+            <td></td>
             </tr>
+            <tr>
+            <td colspan=\"8\"><strong>CAUSA DE JURIDICO</strong>".$row->causaj."</td>
+            </tr>
+            
             <tr>
             <td align=\"left\">".$row->cia." ".$row->ciax."</td>
             <td align=\"left\">".$row->contador."</td>
             <td align=\"left\">".$row->fecha_ret."</td>
             <td align=\"left\">".$row->id_userx."<br /> ".$row->fecha." <br />".$row->id_rhx."<br /> ".$row->fecha_rh."</td>
             <td align=\"left\">$l1</td>
+            </tr>
+            <tr>
+            <td colspan=\"8\"><strong></td>
+            </tr>
+            <tr>
+            <td colspan=\"8\"><strong></td>
             </tr>
             ";
 $num=$num+1;
@@ -2528,7 +2620,7 @@ $detalle.="
     function busca_sucursal_toda()
     {
         
-        $sql = "SELECT suc,nombre FROM  catalogo.sucursal where  tlid=1 or suc>=90006 order by nombre"; 
+        $sql = "SELECT suc,nombre FROM  catalogo.sucursal where  tlid=1 or suc>=90002 order by nombre"; 
         $query = $this->db->query($sql,array($this->session->userdata('id')));
         $suc = array();
         $suc[0] = "Selecciona una Sucursal";
@@ -2825,7 +2917,6 @@ function busca_suc_unica($suc)
     }
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
-
     function busca_persona()
     {
         
@@ -2843,6 +2934,26 @@ function busca_suc_unica($suc)
         return $perr;  
     }
 /////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+    function busca_quin()
+    {
+        
+        $sql = "SELECT inicio,fin FROM  desarrollo.checador_quincenas ";
+        $query = $this->db->query($sql);
+        
+        $perr = array();
+        $perr[0] = "Selecciona un comprador";
+        
+        foreach($query->result() as $row){
+            $perr[$row->inicio.$row->fin] = $row->inicio.' - '.$row->fin;
+        }
+        
+        
+        return $perr;  
+    }
+/////////////////////////////////////////////////////
+
     function busca_concepto_cia($cia,$pla)
     {
         
@@ -3655,6 +3766,23 @@ function busca_cia_nom($cia)
     }
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+    function busca_emple_nomina($nomina,$fec)
+    {
+        
+        $id_user= $this->session->userdata('id');
+        $sql = "SELECT id,nomina,completo FROM entrega_nomina_d where aplicado='' and quincena='$fec' and nomina=? ";
+        $query = $this->db->query($sql,array($nomina));
+        $tabla="";
+        foreach($query->result() as $row)
+        {
+            $tabla.="
+            <option value =\"".$row->id."\">".$row->completo."</option>
+            ";
+        }
+        return $tabla;
+    }
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
     function busca_clave()

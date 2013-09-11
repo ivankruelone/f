@@ -26,7 +26,7 @@ echo anchor('catalogo/tabla_empleados3', 'BUSQUEDA DE PERSONAL<br />', 'class="b
 if($nivel==3 && $tipo==0){
 $time=date('H');
 if($time<22){
-echo anchor('catalogo/tabla_empleados_captura/', 'CAPTURA DE MOVIMIENTOS <br />', 'class="button-link green"');
+echo anchor('catalogo/tabla_empleados_captura/', 'CAP. DE MOVIMIENTOS <br />', 'class="button-link green"');
 echo ('<br /><br />');
 	
 }
@@ -47,13 +47,13 @@ echo ('<br /><br />');
 }
 if($nivel==33  and $tipo <= 1){
 if($tipo==1){
-echo anchor('catalogo/tabla_empleados_captura/', 'CAPTURA DE MOVIMIENTOS <br />', 'class="button-link gray"');
+echo anchor('catalogo/tabla_empleados_captura_ret/', 'CAPT.DE RETENCION <br />', 'class="button-link gray"');
 echo ('<br /><br />');    
 }
-echo anchor('catalogo/tabla_empleados_pendientes_his', 'MOV.CONTADOR SIN RESPUESTA RH<br />', 'class="button-link gray"');
+echo anchor('catalogo/tabla_empleados_pendientes_his', 'RETENCION CONTADOR<br />', 'class="button-link gray"');
 echo ('<br /><br />');
-echo anchor('catalogo/tabla_empleados_mov', 'REPORTE DE MOVIMIENTOS<br />', 'class="button-link gray"');
-echo ('<br /><br />');
+//echo anchor('catalogo/tabla_empleados_mov', 'REPORTE DE MOVIMIENTOS<br />', 'class="button-link gray"');
+//echo ('<br /><br />');
 echo anchor('catalogo/tabla_empleados_mov_ret', 'STATUS DE RETENCION', 'class="button-link gray"');
 }
 if($nivel==7){

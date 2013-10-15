@@ -606,6 +606,24 @@ function quitar_suc($suc,$nivel,$id)
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   public function tabla_p_plantilla()
+    {
+        
+        $this->load->model('catalogo_model');
+        $data['nivel']=14;
+        $this->load->model('catalogo_model_ger');
+        $data['tabla'] = $this->catalogo_model_ger->p_plantilla();
+        $data['titulo'] = "PARAMETROS DE PLANTILLA";
+        $data['contenido'] = "catalogo_1";
+        $data['selector'] = "catalogo";
+        $data['sidebar'] = "sidebar_catalogo";
+        
+        
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function imprime_sup($id,$nivel)
     {
         echo $id;

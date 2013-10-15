@@ -68,6 +68,51 @@ class Checador extends CI_Controller
         force_download($name, $data); 
     }
 
+    public function bajar_reglamento_incidencias()
+    {
+        $this->load->helper('download');
+        $name = 'REGLAMENTO DE INCIDENCIAS.pdf';
+        $data = file_get_contents("./documentos/".$name); // Read the file's contents
+
+        force_download($name, $data); 
+    }
+
+    public function bajar_reglamento_vacaciones()
+    {
+        $this->load->helper('download');
+        $name = 'REGLAMENTO DE VACACIONES DE LEY.pdf';
+        $data = file_get_contents("./documentos/".$name); // Read the file's contents
+
+        force_download($name, $data); 
+    }
+
+    public function bajar_reglamento_vacaciones_adicionales()
+    {
+        $this->load->helper('download');
+        $name = 'REGLAMENTO DE VACACIONES (PREST.ADIC.).pdf';
+        $data = file_get_contents("./documentos/".$name); // Read the file's contents
+
+        force_download($name, $data); 
+    }
+
+    public function bajar_codigo_conducta()
+    {
+        $this->load->helper('download');
+        $name = 'CODIGO DE CONDUCTA.pdf';
+        $data = file_get_contents("./documentos/".$name); // Read the file's contents
+
+        force_download($name, $data); 
+    }
+
+    public function bajar_codigo_vestimenta()
+    {
+        $this->load->helper('download');
+        $name = 'CODIGO DE VESTIR.pdf';
+        $data = file_get_contents("./documentos/".$name); // Read the file's contents
+
+        force_download($name, $data); 
+    }
+
     public function bajar_tutorial()
     {
         $this->load->helper('download');
@@ -1009,6 +1054,14 @@ class Checador extends CI_Controller
         $data['query2'] = $this->checador_model->get_periodos1($empleadox);
         $this->load->view('site2', $data);
     }
+      public function submit_periodo_nomina($nomina)
+    {
+        $this->load->model('checador_model');
+        $data['vista'] = 'sitio2/checador/tabla_periodo';
+        $data['menu'] = 'vacaciones';
+        $data['query2'] = $this->checador_model->get_periodos1($nomina);
+        $this->load->view('site2', $data);
+    }
 
     function editar_per($id)
     {
@@ -1025,10 +1078,11 @@ class Checador extends CI_Controller
     {
         $id = $this->input->post('id');
         $dias = $this->input->post('dias');
-
+        $nomina=$this->input->post('nomina');
         $id = $this->checador_model->editar_periodo_vacaciones($dias, $id);
+        redirect('checador/submit_periodo_nomina/'.$nomina);
 
-        redirect('checador/formato_periodos/' . $id);
+        //redirect('checador/formato_periodos/' . $id);
     }
 
 
@@ -1478,5 +1532,127 @@ order by succ, completo
         
         redirect('checador/cargar_datos');
     }
+    
+   public function asistencias_tablasasdasd()
+    {
+        $data['vista'] = 'sitio2/checador/asistencias_tabla';
+        $data['js'] = 'sitio2/checador/asistencias_elige_js';
+        $data['menu'] = 'asistencias';
+        $periodo = $this->checador_model->get_quincena($this->input->post('quincena'));
+        $row_periodo = $periodo->row();
+        $data['query'] = $this->checador_model->get_asistencias_periodo($row_periodo->
+            inicio, $row_periodo->fin);
+        $data['quincenas'] = $this->checador_model->get_quincenas();
+        $data['etiqueta'] = $row_periodo->inicio . " al " . $row_periodo->fin;
+        $data['dias_laborados'] = $row_periodo->dias_laborados;
+        $data['horas_laboradas'] = $row_periodo->horas_laboradas;
+        $data['grafica1'] = $this->checador_model->grafica1($row_periodo->inicio, $row_periodo->fin, $row_periodo->horas_laboradas);
+        $data['grafica2'] = $this->checador_model->grafica2($row_periodo->inicio, $row_periodo->fin, $row_periodo->dias_laborados);
+        $data['grafica3'] = $this->checador_model->grafica3($row_periodo->inicio, $row_periodo->fin, $row_periodo->dias_laborados);
+        
+        $this->load->helper('funciones');
+        $this->load->view('site2', $data);
+    }
+ 
+    
+
+        function actividad()
+        {
+        $data['vista'] = 'sitio2/diagnostico/actividad';
+        //$data['js'] = 'sitio2/diagnostico/asistencias_elige_js';
+        $data['menu'] = 'diagnostico';
+        $data['empleado'] = $this->checador_model->get_plantilla();
+        $data['puesto'] = $this->checador_model->get_puesto();
+        $data['query'] = $this->checador_model->get_tabla_depto();
+        $this->load->view('site2', $data);    
+        }
+        
+        function graba_actividad()
+        {
+        $this->checador_model->graba_actividad(
+        $this->input->post('empleado'),$this->input->post('puesto'),$this->input->post('actividad'));     
+        redirect('checador/actividad');
+        }
+        
+        function borrar_act($id)
+        {
+        $a=array('tipo'=>'X');
+        $this->db->where('id',$id);
+        $this->db->update('oficinas.actividad',$a);    
+        redirect('checador/actividad');
+        }
+        
+        function actividad_actualiza($id)
+        {
+        $data['vista'] = 'sitio2/diagnostico/actividad_actualiza';
+        $data['menu'] = 'diagnostico';
+        $data['query'] = $this->checador_model->get_tabla_depto_uno($id);
+        $this->load->view('site2', $data);    
+        }
+        function act_actividad()
+        {
+        $a=array('actividad'=>$this->input->post('actividad'));
+        $this->db->where('id',$this->input->post('id'));
+        $this->db->update('oficinas.actividad',$a);    
+        redirect('checador/actividad');
+        }
+        
+        function diagnostico()
+        {
+        $data['vista'] = 'sitio2/diagnostico/diagnostico';
+        //$data['js'] = 'sitio2/diagnostico/asistencias_elige_js';
+        $data['menu'] = 'diagnostico';
+        $data['empleado'] = $this->checador_model->get_plantilla();
+        $data['puesto'] = $this->checador_model->get_puesto();
+        $data['query'] = $this->checador_model->get_tabla_diagnostico('0');
+        $this->load->view('site2', $data);    
+        }
+        function graba_diagnostico()
+        {
+        $this->checador_model->graba_diagnostico(
+        $this->input->post('uno'),$this->input->post('tres'),$this->input->post('cinco'),$this->input->post('diez'));     
+        redirect('checador/diagnostico');
+        }
+        function diagnostico_act($mov)
+        {
+        $data['vista'] = 'sitio2/diagnostico/diagnostico_act';
+        //$data['js'] = 'sitio2/diagnostico/asistencias_elige_js';
+        $data['menu'] = 'diagnostico';
+        $data['empleado'] = $this->checador_model->get_plantilla();
+        $data['puesto'] = $this->checador_model->get_puesto();
+        $data['query'] = $this->checador_model->get_tabla_diagnostico($mov);
+        $this->load->view('site2', $data);
+        }
+        function act_propuesta()
+        {
+        $a=array('propuesta'=>$this->input->post('propuesta'));
+        $this->db->where('id',$this->input->post('id_d'));
+        $this->db->update('oficinas.diagnostico',$a);    
+        redirect('checador/diagnostico');
+        }
+        function act_plazo()
+        {
+        $a=array('plazo'=>$this->input->post('plazo'));
+        $this->db->where('id',$this->input->post('id_d'));
+        $this->db->update('oficinas.diagnostico',$a);    
+        redirect('checador/diagnostico');
+        }
+        function act_alinear()
+        {
+        $a=array('alinear'=>$this->input->post('alinear'));
+        $this->db->where('id',$this->input->post('id_d'));
+        $this->db->update('oficinas.diagnostico',$a);    
+        redirect('checador/diagnostico');
+        }
+        function act_diag()
+        {
+        $a=array('uno'=>$this->input->post('uno'),
+                  'tres'=>$this->input->post('tres'),
+                  'cinco'=>$this->input->post('cinco'),
+                  'diez'=>$this->input->post('diez'));
+        $this->db->where('id',$this->input->post('id_d'));
+        $this->db->update('oficinas.diagnostico',$a);    
+        redirect('checador/diagnostico');
+        }
 
 }

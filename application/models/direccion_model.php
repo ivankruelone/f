@@ -1382,7 +1382,310 @@ group by a.suc
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function cons_ventas($tit)
+{
+$totc1=0;$totc2=0;$totc3=0;$totc4=0;$totc5=0;$totc6=0;$totc7=0;$totc8=0;$totc9=0;$totc10=0;$totc11=0;$totc12=0;
+$totr1=0;$totr2=0;$totr3=0;$totr4=0;$totr5=0;$totr6=0;$totr7=0;$totr8=0;$totr9=0;$totr10=0;$totr11=0;$totr12=0;
+$tott1=0;$tott2=0;$tott3=0;$tott4=0;$tott5=0;$tott6=0;$tott7=0;$tott8=0;$tott9=0;$tott10=0;$tott11=0;$tott12=0;
+$totl1=0;$totl2=0;$totl3=0;$totl4=0;$totl5=0;$totl6=0;$totl7=0;$totl8=0;$totl9=0;$totl10=0;$totl11=0;$totl12=0;
+$totg=0;$general=0;
 
+        $id_user= $this->session->userdata('id');
+        $nivel= $this->session->userdata('nivel');
+       $s = "select aaa, tipo2,b.nombre,
+sum(ta1)as ta1,sum(ta2)as ta2,sum(ta3)as ta3,sum(ta4)as ta4,sum(ta5)as ta5,sum(ta6)as ta6,
+sum(ta7)as ta7,sum(ta8)as ta8,sum(ta9)as ta9,sum(ta10)as ta10,sum(ta11)as ta11,sum(ta12)as ta12,
+sum(con1)as con1,sum(con2)as con2,sum(con3)as con3,sum(con4)as con4,sum(con5)as con5,sum(con6)as con6,
+sum(con7)as con7,sum(con8)as con8,sum(con9)as con9,sum(con10)as con10,sum(con11)as con11,sum(con12)as con12,
+sum(cre1)as cre1,sum(cre2)as cre2,sum(cre3)as cre3,sum(cre4)as cre4,sum(cre5)as cre5,sum(cre6)as cre6,
+sum(cre7)as cre7,sum(cre8)as cre8,sum(cre9)as cre9,sum(cre10)as cre10,sum(cre11)as cre11,sum(cre12)as cre12
+from vtadc.gc_venta_nueva a 
+left join catalogo.cat_imagen b on b.tipo=a.tipo2 group by a.tipo2
+";
+$color1='blue';$color2='green';
+
+        $q = $this->db->query($s); 
+    
+       $tabla= "
+       
+        <table cellpadding=\"2\" border=\"0\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\">
+        <caption>$tit</caption>
+        <thead>
+        
+        <tr>
+        <th colspan=\"1\"></th>
+        <th colspan=\"4\">ENERO</th>
+        <th colspan=\"4\">FEBRERO</th>
+        <th colspan=\"4\">MARZO</th>
+        <th colspan=\"4\">ABRIL</th>
+        <th colspan=\"4\">MAYO</th>
+        <th colspan=\"4\">JUNIO</th>
+        <th colspan=\"4\">JULIO</th>
+        <th colspan=\"4\">AGOSTO</th>
+        <th colspan=\"4\">SEPTIEMBRE</th>
+        <th colspan=\"4\">OCTUBRE</th>
+        <th colspan=\"4\">NOVIEMBRE</th>
+        <th colspan=\"4\">DICIEMBRE</th>
+        <th colspan=\"1\"></th>
+        </tr>
+        <th colspan=\"1\">IMAGEN</th>
+        <th colspan=\"1\"><font color=\"$color1\">CONTADO</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">CREDITO</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">T.AIRE</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">TOTAL</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">CONTADO</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">CREDITO</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">T.AIRE</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">TOTAL</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">CONTADO</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">CREDITO</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">T.AIRE</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">TOTAL</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">CONTADO</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">CREDITO</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">T.AIRE</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">TOTAL</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">CONTADO</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">CREDITO</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">T.AIRE</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">TOTAL</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">CONTADO</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">CREDITO</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">T.AIRE</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">TOTAL</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">CONTADO</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">CREDITO</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">T.AIRE</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">TOTAL</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">CONTADO</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">CREDITO</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">T.AIRE</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">TOTAL</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">CONTADO</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">CREDITO</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">T.AIRE</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">TOTAL</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">CONTADO</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">CREDITO</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">T.AIRE</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">TOTAL</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">CONTADO</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">CREDITO</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">T.AIRE</font></th>
+        <th colspan=\"1\"><font color=\"$color1\">TOTAL</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">CONTADO</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">CREDITO</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">T.AIRE</font></th>
+        <th colspan=\"1\"><font color=\"$color2\">TOTAL</font></th>
+        <th colspan=\"1\"><font color=\"black\">TOTAL ANUAL</font></th>
+        
+        
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        $color='black';
+        $num=0;
+         foreach($q->result() as $r)
+        {
+         $general=$general+(
+$r->con1+$r->con2+$r->con3+$r->con4+$r->con5+$r->con6+$r->con7+$r->con8+$r->con9+$r->con10+$r->con11+$r->con12+
+$r->cre1+$r->cre2+$r->cre3+$r->cre4+$r->cre5+$r->cre6+$r->cre7+$r->cre8+$r->cre9+$r->cre10+$r->cre11+$r->cre12+
+$r->ta1+$r->ta2+$r->ta3+$r->ta4+$r->ta5+$r->ta6+$r->ta7+$r->ta8+$r->ta9+$r->ta10+$r->ta11+$r->ta12);
+            
+            $tabla.="
+            <tr>
+            <td align=\"left\"><font size=\"1\" color=\"black\">".$r->nombre."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->con1,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->cre1,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->ta1,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->con1+$r->ta1+$r->cre1,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->con2,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->cre2,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->ta2,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->con2+$r->ta2+$r->cre2,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->con3,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->cre3,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->ta3,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->con3+$r->ta3+$r->cre3,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->con4,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->cre4,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->ta4,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->con4+$r->ta4+$r->cre4,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->con5,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->cre5,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->ta5,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->con5+$r->ta5+$r->cre5,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->con6,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->cre6,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->ta6,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->con6+$r->ta6+$r->cre6,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->con7,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->cre7,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->ta7,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->con7+$r->ta7+$r->cre7,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->con8,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->cre8,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->ta8,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->con8+$r->ta8+$r->cre8,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->con9,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->cre9,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->ta9,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->con9+$r->ta9+$r->cre9,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->con10,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->cre10,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->ta10,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->con10+$r->ta10+$r->cre10,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->con11,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->cre11,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->ta11,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color1\">".number_format($r->con11+$r->ta11+$r->cre11,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->con12,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->cre12,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->ta12,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($r->con12+$r->ta12+$r->cre12,2)."</font></font></td>
+            <td align=\"right\"><font size=\"1\" color=\"$color2\">".number_format($general,2)."</font></font></td>
+            </tr>
+            ";
+$totc1=$totc1+$r->con1;$totc2=$totc2+$r->con2;$totc3=$totc3+$r->con3;$totc4=$totc4+$r->con4;
+$totc5=$totc5+$r->con5;$totc6=$totc6+$r->con6;$totc7=$totc7+$r->con7;$totc8=$totc8+$r->con8;
+$totc9=$totc9+$r->con9;$totc10=$totc10+$r->con10;$totc11=$totc11+$r->con11;$totc12=$totc12+$r->con12;
+$totr1=$totr1+$r->cre1;$totr2=$totr2+$r->cre2;$totr3=$totr3+$r->cre3;$totr4=$totr4+$r->cre4;
+$totr5=$totr5+$r->cre5;$totr6=$totr6+$r->cre6;$totr7=$totr7+$r->cre7;$totr8=$totr8+$r->cre8;
+$totr9=$totr9+$r->cre9;$totr10=$totr10+$r->cre10;$totr11=$totr11+$r->cre11;$totr12=$totr12+$r->cre12;
+$tott1=$tott1+$r->ta1;$tott2=$tott2+$r->ta2;$tott3=$tott3+$r->ta3;$tott4=$tott4+$r->ta4;
+$tott5=$tott5+$r->ta5;$tott6=$tott6+$r->ta6;$tott7=$tott7+$r->ta7;$tott8=$tott8+$r->ta8;
+$tott9=$tott9+$r->ta9;$tott10=$tott10+$r->ta10;$tott11=$tott11+$r->ta11;$tott12=$tott12+$r->ta12;
+$totl1=$totl1+$r->ta1+$r->cre1+$r->con1;$totl2=$totl2+$r->ta2+$r->cre2+$r->con2;
+$totl3=$totl3+$r->ta3+$r->cre3+$r->con3;$totl4=$totl4+$r->ta4+$r->cre4+$r->con4;
+$totl5=$totl5+$r->ta5+$r->cre5+$r->con5;$totl6=$totl6+$r->ta6+$r->cre6+$r->con6;
+$totl7=$totl7+$r->ta7+$r->cre7+$r->con7;$totl8=$totl8+$r->ta8+$r->cre8+$r->con8;
+$totl9=$totl9+$r->ta9+$r->cre9+$r->con9;$totl10=$totl10+$r->ta10+$r->cre10+$r->con10;
+$totl11=$totl11+$r->ta11+$r->cre11+$r->con11;$totl12=$totl12+$r->ta12+$r->cre12+$r->con12;
+$totg=$totg+$general;
+         
+$general=0;            
+         }
+         $tabla.="
+        </tbody>
+        <tfoot>
+            <tr>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color\"><strong>TOTAL</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totc1,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totr1,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($tott1,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totl1,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totc2,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totr2,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($tott2,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totl2,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totc3,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totr3,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($tott3,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totl3,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totc4,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totr4,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($tott4,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totl4,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totc5,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totr5,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($tott5,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totl5,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totc6,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totr6,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($tott6,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totl6,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totc7,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totr7,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($tott7,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totl7,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totc8,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totr8,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($tott8,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totl8,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totc9,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totr9,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($tott9,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totl9,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totc10,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totr10,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($tott10,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totl10,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totc11,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totr11,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($tott11,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($totl11,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totc12,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totr12,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($tott12,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color2\"><strong>".number_format($totl12,2)."</strong></font></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color\"><strong>".number_format($totg,2)."</strong></font></font></td>
+             </tr>
+        </tfoot>
+        </table>";
+        return $tabla;    
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function diagnostico($tit)
+{
+
+        $id_user= $this->session->userdata('id');
+        $nivel= $this->session->userdata('nivel');
+       $s = "select a.reporta,a.id_captura,a.depto,count(a.nomina)as empleados,b.nombre 
+       from oficinas.actividad a 
+       left join catalogo.sucursal b on b.suc=a.depto where a.tipo='A' 
+       group by id_captura
+       
+";
+$color1='blue';$color2='green';
+
+        $q = $this->db->query($s); 
+    
+       $tabla= "
+       
+        <table cellpadding=\"2\" border=\"0\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\">
+        <caption>$tit</caption>
+        <thead>
+        
+        <tr>
+        <th colspan=\"1\">DEPTO</th>
+        <th colspan=\"1\">DEPARTAMENTO</th>
+        <th colspan=\"1\">EMPLEADOS</th>
+        <th colspan=\"1\"></th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        $color='black';
+        $num=0;
+         foreach($q->result() as $r)
+        {
+            $l0 = anchor('direccion/imprime_diagnostico/'.$r->id_captura, '<img src="'.base_url().'img/reportes2.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para imprimir !', 'class' => 'encabezado'));
+            $tabla.="
+            <tr>
+            <td align=\"left\"><font size=\"1\" color=\"black\">".$r->depto."</font></td>
+            <td align=\"left\"><font size=\"1\" color=\"black\">".$r->nombre."</font></td>
+            <td align=\"right\"><font size=\"1\" color=\"black\">".$r->empleados."</font></td>
+            <td>$l0</td>
+            </tr>";           
+         $num=$num+1;
+         }
+         $tabla.="
+        </tbody>
+        <tfoot>
+            <tr>
+            <td align=\"right\" colspan=\"2\"><font size=\"1\" color=\"$color\"><strong>TOTAL</strong></font></td>
+            <td align=\"right\" colspan=\"1\"><font size=\"1\" color=\"$color1\"><strong>".number_format($num,0)."</strong></font></td>
+            <td></td>            
+        </tr>
+        </tfoot>
+        </table>";
+        return $tabla;    
+}
 
 
 

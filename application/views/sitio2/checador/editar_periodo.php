@@ -15,7 +15,7 @@
     </td>
 </tr> 
 </table>
-
+    <input type="hidden" value="<?php echo $row->nomina?>" name="nomina" id="nomina" />
     <input type="hidden" value="<?php echo $id?>" name="id" id="id" />
 	<input type="submit" value="Guardar" class="button-link blue" />
     

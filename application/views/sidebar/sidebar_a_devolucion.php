@@ -13,6 +13,9 @@ echo "<br/>";
 echo "<br/><strong>REPORTES DE DEVOLUCION</strong><br/><br/>";
 echo anchor('a_devolucion/reporte_diario', 'REPORTE DE DEVOLUCIONES PDF', 'class="button-link red"');
 echo anchor('a_devolucion/reporte_excedente', 'REPORTE POR MOTIVO', 'class="button-link blue"');
+echo ('<br /><br />');
+echo anchor('a_gerente/reporte_excedente_suc', 'DEVOLUCIONES SUC', 'class="button-link blue"');
+echo ('<br /><br />');
 }
 ?>
 <?php

@@ -1502,6 +1502,8 @@ if($qd->num_rows() == 0){
         $this->db->limit($limit, $offset);
         
         $query = $this->db->get();
+        //echo $this->db->last_query();
+        //echo die;
         
         $tabla = $this->pagination->create_links()."
         <table cellpadding=\"3\">
@@ -1758,55 +1760,10 @@ $numero=0;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   function imprime_rem_negados($fol)
     {
-$f='';
-       $s1 = "select *from pedidos where fol=$fol and tipo=1 and sur=0 and tipo=1 and ped>0 order by mue, sec";
+$f=0;
+       $s1 = "select * from pedidos where fol=$fol and tipo=1 and sur=0 and tipo=1 and ped>0 order by mue, sec";
        $q1 = $this->db->query($s1);
-       $f.="<table  border=\"1\" cellpadding=\"4\">
-       <thead>
-                 <tr>
-                 <td  width=\"640\" align=\"center\"><strong>PRODUCTOS NEGADOS</strong></td>
-                 </tr>
-            <tr>
-            <th width=\"40\" align=\"center\"><strong>MUE</strong></th>
-            <th width=\"40\" align=\"left\"><strong>SEC</strong></th>
-            <th width=\"250\" align=\"left\"><strong>SUSTANCIA ACTIVA</strong></th>
-            <th width=\"250\" align=\"left\"><strong>DESCRIPCION</strong></th>
-            <th width=\"60\" align=\"right\"><strong>PIEZAS</strong></th>
-            </tr>
-</thead>
-          ";
-        $totped=0;
-         foreach($q1->result() as $r1)
-         {
-        
-          $sx = "select *from catalogo.almacen where sec=$r1->sec and tsec='G'";
-          $qx = $this->db->query($sx);   
-          if($qx->num_rows() > 0){
-            $rx=$qx->row();
-            $des=$rx->susa2;
-            }else{
-            $des='';    
-            }
-       $f.="
-            <tr>
-            <td width=\"40\" align=\"center\">".$r1->mue."</td>
-            <td width=\"40\" align=\"left\">".$r1->sec."</td>
-            <td width=\"250\" align=\"left\">".$r1->susa."</td>
-            <td width=\"250\" align=\"left\">".$des."</td>
-            <td width=\"60\" align=\"right\">".number_format($r1->ped,0)."</td>
-            </tr>
-            ";   
-            
-        $totped=$totped+$r1->ped;
-        
-        }
-        
-       $f.="
-        <tr bgcolor=\"#E6E6E6\"><br />
-        <td width=\"580\" align=\"right\"><strong>TOTAL DE PIEZAS NEGADAS</strong></td>
-        <td width=\"60\" align=\"right\"><strong>".number_format($totped,0)."</strong></td>
-        </tr>
-        </table>";
+       $f=$q1->num_rows();
     return $f; 
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3213,7 +3170,7 @@ function actualiza_mue(id, valor){
         
         $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis f
         left join catalogo.sucursal s on f.suc=s.suc
-        where fechas>='2013-07-01' and validar=0;";
+        where fechas>='2013-07-01' and validar=0 and tid='C';";
         $query = $this->db->query($sql);
         
         $tabla= "
@@ -4242,7 +4199,7 @@ function actualiza_sob(id, valor){
         
         $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis_especial f
         left join catalogo.sucursal s on f.suc=s.suc
-        where fechas>='$fecha1'and fechas<='$fecha2' and tid='C' order by suc;";
+        where fechas>='$fecha1'and fechas<='$fecha2' and tid='C' order by suc, id;";
         $query = $this->db->query($sql);
         
         $tabla= "
@@ -4331,7 +4288,7 @@ function actualiza_sob(id, valor){
         
         $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis f
         left join catalogo.sucursal s on f.suc=s.suc
-        where fechas>='$fecha1'and fechas<='$fecha2' and tid='C' and validar=0 order by suc;";
+        where fechas>='$fecha1'and fechas<='$fecha2' and tid='C' and validar=0 order by suc, id;";
         $query = $this->db->query($sql);
         
         $tabla= "
@@ -4420,7 +4377,7 @@ function actualiza_sob(id, valor){
         
         $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis_especial f
         left join catalogo.sucursal s on f.suc=s.suc
-        where fechas>='$fecha1'and fechas<='$fecha2' and tid='C' and validar=0 order by suc;";
+        where fechas>='$fecha1'and fechas<='$fecha2' and tid='C' and validar=0 order by suc, id;";
         $query = $this->db->query($sql);
         
         $tabla= "
@@ -4485,6 +4442,58 @@ function actualiza_sob(id, valor){
         </tfoot>
         </table>";
         return  $tabla;
+    }
+    
+    function regresa_folio($fecha1, $fecha2)
+        {
+        
+        $sql = "SELECT s.nombre, f.* FROM catalogo.folio_pedidos_cedis f
+        left join catalogo.sucursal s on f.suc=s.suc
+        where fechas>='$fecha1'and fechas<='$fecha2' and tid='C' and validar=1;";
+        $query = $this->db->query($sql);
+        
+        $tabla= "
+        <table style=\"font-size: medium; \">
+        <thead>
+        <tr>
+        <th>Folio</th>
+        <th>Sucursal</th>
+        <th>Fecha</th>
+        <th>Faltante</th>
+        <th>Sobrante</th>
+        <th>Regresar</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+     
+        foreach($query->result() as $row)
+        {
+             $tabla.="
+            <tr>
+            <td align=\"right\">".$row->id."</td>
+            <td align=\"left\">".$row->suc." - ".$row->nombre."</td>
+            <td align=\"left\">".$row->fechas."</td>
+            <td aling=\"left\">".$row->faltante."</td> 
+            <td align=\"left\">".$row->sobrante."</td>
+            <td align=\"left\">".anchor('a_surtido/regresa_falsob/'.$row->id.'/'.$row->validar, '<img src="'.base_url().'img/error.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para regresar a captura', 'class' => 'encabezado'))."</td>
+            </tr>
+            ";
+        }
+        
+       $tabla.="
+       </tbody>
+       </table>";
+        
+        return $tabla;
+    }
+    
+    
+
+    function regresa_falsob_model($id)
+    {
+        $sql="update catalogo.folio_pedidos_cedis set validar=0 where id=$id";
+        $query = $this->db->query($sql);
     }
 
 

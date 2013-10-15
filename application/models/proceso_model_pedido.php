@@ -18,7 +18,7 @@ if($dianombre=='Tue'){$dia='MAR';}
 if($dianombre=='Wed'){$dia='MIE';}
 if($dianombre=='Thu'){$dia='JUE';}
 if($dianombre=='Fri'){$dia='VIE';}
-    $s="select a.tlid,SUBDATE(date(now()),INTERVAL 2 DAY)as dia_lim, DATEDIFF(SUBDATE(date(now()),INTERVAL 2 DAY), fechai) AS diferencia, b.fechai,fechag, sum(cantidad)as can, a.suc,a.nombre from catalogo.sucursal a
+    $s="select a.tlid,SUBDATE(date(now()),INTERVAL 2 DAY)as dia_lim, DATEDIFF(SUBDATE(date(now()),INTERVAL 1 DAY), fechai) AS diferencia, b.fechai,fechag, sum(cantidad)as can, a.suc,a.nombre from catalogo.sucursal a
 left join desarrollo.inv b on b.suc=a.suc
 where a.dia='$dia' and sec>0
 group by a.suc ORDER BY FECHAI";
@@ -44,7 +44,7 @@ $tabla= "
   $num=1;      
         foreach($q->result() as $r)
         {
-            if($r->diferencia>2){
+            if($r->diferencia>1){
             $l= anchor('procesos/editar_dia/'.$r->suc, '<img src="'.base_url().'img/Edit.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para editar', 'class' => 'encabezado'));
             }else{
                 $l=null;

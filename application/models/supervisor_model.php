@@ -2763,7 +2763,6 @@ where a.id=$id_emp";
             if($id_mov==6 and $r->domingo<>1){$graba='NO';}
 $sql="select *from mov_supervisor where nomina=$r->nomina and cia=$r->cia and fecha_mov='$fecha_i' and motivo=$id_mov";
 $query = $this->db->query($sql);
-            
 if($graba=='SI' and $query->num_rows() == 0){                  
             $new_member_insert_data = array(
             'cia'=>$r->cia,

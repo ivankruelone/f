@@ -165,7 +165,7 @@ order by s.nombre;";
         $this->db->where("fecha between '$inicio' and '$fin'", null, FALSE);
         $this->db->order_by('c.fecha', 'ASC');
         $query = $this->db->get();
-        
+
         return $query;
     }
 
@@ -2364,7 +2364,7 @@ order by nombre, e.completo, fecha;";
                 left join catalogo.cat_empleado b on b.id=a.id_empleado
                 where a.suc=$succ
         ";
-       
+      
        $q1 = $this->db->query($s1);
        
        $r1 = $q1->row();
@@ -2772,7 +2772,7 @@ where c.incidencia = ?;";
     
     function get_periodos1($empleado)
     {
-        $sql = "SELECT a.*, b.completo FROM periodo_vacas_detaller a left join catalogo.cat_empleado b on a.nomina=b.nomina where a.nomina = ? order by aaa1;";
+        $sql = "SELECT a.*, b.completo, b.nomina as nomina_per FROM periodo_vacas_detaller a left join catalogo.cat_empleado b on a.nomina=b.nomina where a.nomina = ? and b.tipo=1 order by aaa1;";
         $query = $this->db->query($sql, $empleado);
         //echo $this->db->last_query();
         
@@ -3516,20 +3516,17 @@ order by s.nombre;";
     
     function grafica1($inicio, $fin, $horas_laboradas)
     {
-        $this->db->select("sum(c.retardo) as retardo, sum(c.falta) as falta, sum(c.justificada) as justificada, sum(c.horas_decimal) as horas", FALSE);
+        $this->db->select("sum(c.retardo) as retardo, sum(c.falta) as falta, sum(c.justificada) as justificada, sum(c.horas_decimal) as horas, sum(CASE when c.falta = 1 and c.justificada = 1 then 9 else 0 end) as adicionales", FALSE);
         $this->db->from('checador_asistencia c');
         $this->db->join('catalogo.cat_empleado e', 'c.empleado_id = e.id', 'LEFT');
         $this->db->where('empleado_id', $this->id);
         $this->db->where("fecha between '$inicio' and '$fin'", null, FALSE);
         $this->db->order_by('c.fecha', 'ASC');
         $query = $this->db->get();
-        //echo $this->db->last_query();
-        //die();
-        
         
         $row = $query->row();
         
-        $b = round(($row->horas / $horas_laboradas) * 100, 0);
+        $b = round((($row->horas + $row->adicionales) / $horas_laboradas ) * 100, 0);
         $c = 100 - $b;
         
         $a = "[['Trabajadas',$b],['Pendientes',$c]]
@@ -3541,7 +3538,7 @@ order by s.nombre;";
     
     function grafica2($inicio, $fin, $dias_laborados)
     {
-        $this->db->select("sum(c.retardo) as retardo, sum(c.falta) as falta, sum(c.justificada) as justificada, sum(c.horas_decimal) as horas", FALSE);
+        $this->db->select("sum(c.retardo) as retardo, sum(c.falta) as falta, sum(c.justificada) as justificada, sum(c.horas_decimal) as horas, sum(CASE when c.falta = 1 and c.justificada = 1 then 1 else 0 end) as adicionales", FALSE);
         $this->db->from('checador_asistencia c');
         $this->db->join('catalogo.cat_empleado e', 'c.empleado_id = e.id', 'LEFT');
         $this->db->where('empleado_id', $this->id);
@@ -3551,7 +3548,7 @@ order by s.nombre;";
         
         $row = $query->row();
         
-        $b = round(($row->falta / $dias_laborados) * 100, 0);
+        $b = round((($row->falta - $row->adicionales) / $dias_laborados) * 100, 0);
         $c = 100 - $b;
         
         $a = "[['Faltas',$b],['Asistencias',$c]]
@@ -3750,5 +3747,113 @@ order by succ, completo;";
         
         return $query;
     }
-
+function get_plantilla()
+    {
+        $suc=$this->session->userdata('suc');
+        $sql = "SELECT * FROM catalogo.cat_empleado c where depto=$suc and tipo=1  or  succ=$suc and tipo=1;";
+        $query = $this->db->query($sql);
+        $a = array();
+        $a[0]='Seleccione Empleado';
+        foreach($query->result() as $row)
+        {
+            $a[$row->id] = $row->completo." ".$row->nomina;
+        }
+        
+        return $a;
+    }
+function get_puesto()
+    {
+        $sql = "SELECT * FROM catalogo.cat_puesto";
+        $query = $this->db->query($sql);
+        $a = array();
+        $a[0]='Seleccione el Puesto';
+        foreach($query->result() as $row)
+        {
+            $a[$row->id] = $row->puesto;
+        }
+        
+        return $a;
+    }
+    function get_tabla_depto()
+    {
+        $suc=$this->session->userdata('suc');
+        $id_user=$this->session->userdata('id');
+        if($id_user==826){
+        $sql = "SELECT a.*,b.puesto as puestox FROM oficinas.actividad a 
+        left join catalogo.cat_puesto b on a.puesto=b.id  
+        where 
+        a.depto=$suc and tipo='A' and id_captura<>931
+        or
+        a.depto=90028 and tipo='A' and id_captura<>931
+        or
+        a.depto=90014 and tipo='A' and id_captura<>931
+        ";
+        $query = $this->db->query($sql);
+        return $query;    
+        }elseif($id_user==899){
+        $sql = "SELECT a.*,b.puesto as puestox 
+        FROM oficinas.actividad a left join catalogo.cat_puesto b on a.puesto=b.id  
+        where 
+        a.depto=$suc and tipo='A' and id_captura<>931
+        or
+        a.depto=90002 and tipo='A' and id_captura<>931
+        or
+        a.depto=900 and tipo='A' and id_captura<>931
+        or
+        a.depto=6050 and tipo='A' and id_captura<>931
+        ";
+        $query = $this->db->query($sql);
+        return $query;
+        
+        }else{
+        $sql = "SELECT a.*,b.puesto as puestox FROM oficinas.actividad a 
+        left join catalogo.cat_puesto b on a.puesto=b.id  
+        where a.depto=$suc and tipo='A'";
+        $query = $this->db->query($sql);
+        return $query;    
+        }
+        
+        
+    }
+    function get_tabla_depto_uno($id)
+    {
+        $suc=$this->session->userdata('suc');
+        $sql = "SELECT a.*,b.puesto as puestox FROM oficinas.actividad a left join catalogo.cat_puesto b on a.puesto=b.id  where a.id=$id";
+       $query = $this->db->query($sql);
+        
+        
+        return $query;
+    }
+    function graba_actividad($empleado,$puesto,$actividad)
+    {
+        $suc=$this->session->userdata('suc');$id_user=$this->session->userdata('id');
+        $sql="insert into oficinas.actividad(suc, cia, nomina, completo, puesto, fecha_cap, depto, reporta, id_captura, actividad)
+        (select suc,cia,nomina,completo,$puesto,date(now()),$suc,0,$id_user,'$actividad' from catalogo.cat_empleado where id=$empleado)
+        on duplicate key update actividad=values(actividad)
+        ";
+        $query = $this->db->query($sql);
+    }
+    function act_actividad()
+    {
+        $id=$this->input->post('id');$actividad=$this->input->post('actividad');
+        $sql="update oficinas.actividad set actvidad='$actividad' where id=$id";
+        $query = $this->db->query($sql);
+    }
+    
+    function graba_diagnostico($uno,$tres,$cinco,$diez)
+    {
+        $suc=$this->session->userdata('suc');$id_user=$this->session->userdata('id');
+        $sql="insert into oficinas.diagnostico(depto, uno, tres, cinco, diez, propuesta, plazo, alinear,id_captura)
+        values($suc,'$uno','$tres','$cinco','$diez','','','',$id_user)
+        on duplicate key update uno=values(uno),tres=values(tres),cinco=values(cinco),diez=values(diez)
+        ";
+        $query = $this->db->query($sql);
+    }
+    function get_tabla_diagnostico($mov)
+    {
+        $suc=$this->session->userdata('suc');$id_user=$this->session->userdata('id');
+        $sql = "SELECT a.*,$mov as mov FROM oficinas.diagnostico a where a.depto=$suc and id_captura=$id_user";
+       $query = $this->db->query($sql);
+        return $query;
+    }
 }

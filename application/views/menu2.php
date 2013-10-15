@@ -58,6 +58,7 @@ $id = $this->session->userdata('id');
                                     <li><?php echo anchor('checador/admin_gerente_asistencias_sin_huella', 'Sin huella');?></li>
                                 </ul>
                             </li>
+                            
                             <li <?php if($menu == 'reportes'){?>class="dropdown active" <?php }else{?> class="dropdown"<?php }?>>
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reportes <b class="caret"></b></a>                                
                                 <ul class="dropdown-menu">
@@ -110,6 +111,13 @@ $id = $this->session->userdata('id');
                                     <li><?php echo anchor('checador/gerente_asistencias_elige_quincena', 'Asistencias');?></li>
                                 </ul>
                             </li>
+                            <li <?php if($menu == 'diagnostico'){?>class="dropdown active" <?php }else{?> class="dropdown"<?php }?>>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">diagnostico <b class="caret"></b></a>                                
+                                <ul class="dropdown-menu">
+                                    <li><?php echo anchor('checador/actividad', 'Actividades');?></li>
+                                    <li><?php echo anchor('checador/diagnostico', 'Diagnostico');?></li>
+                                </ul>
+                            </li>
                             <?php
                                 if($id == 939 || $id == 3613){
                             ?>
@@ -128,6 +136,13 @@ $id = $this->session->userdata('id');
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Asistencias <b class="caret"></b></a>                                
                                 <ul class="dropdown-menu">
                                     <li><?php echo anchor('checador/gerente_asistencias_elige_quincena_ger', 'Asistencias');?></li>
+                                </ul>
+                            </li>
+                            <li <?php if($menu == 'diagnostico'){?>class="dropdown active" <?php }else{?> class="dropdown"<?php }?>>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">diagnostico <b class="caret"></b></a>                                
+                                <ul class="dropdown-menu">
+                                    <li><?php echo anchor('checador/actividad', 'Actividades');?></li>
+                                    <li><?php echo anchor('checador/diagnostico', 'Diagnostico');?></li>
                                 </ul>
                             </li>
                             <li <?php if($menu == 'reportes'){?>class="dropdown active" <?php }else{?> class="dropdown"<?php }?>>

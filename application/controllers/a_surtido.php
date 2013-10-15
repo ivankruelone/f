@@ -421,6 +421,55 @@ class A_surtido extends CI_Controller
         $this->load->view('impresiones/reporte_folio_pendientes', $data);  
         
     }
+    
+        public function regresa_folio()
+    {   
+        $data['mensaje']= '';
+        $data['titulo']= 'REGRESAR FOLIO PARA CAPTURA';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');
+       
+
+		$data['contenido'] = "regresa_folio";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }  
+    
+    public function regresa_folio_submit ()
+    {
+        
+        $fecha1 = $this->input->post('fec1');
+        $fecha2 = $this->input->post('fec2');
+        
+        $this->load->model('a_surtido_model');
+         $data['mensaje']= '';
+        $data['titulo']= 'REGRESAR A CAPTURA FORMULADOS';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');
+        $data['tabla'] = $this->a_surtido_model->regresa_folio($fecha1, $fecha2);
+
+		$data['contenido'] = "a_folio_sob_fal";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+        
+    }
+    
+    public function regresa_falsob($id)
+    {
+        $this->load->model('a_surtido_model');
+        $this->a_surtido_model->regresa_falsob_model($id);
+        redirect('a_surtido/regresa_folio_submit');
+        
+        
+     }   
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -746,7 +795,7 @@ function imprime_pedidos_pre1($fol,$suc)
         $config['last_link'] = '<font size="+1">Ultimo</font>';
         $config['next_link'] = '<font size="+1">Siguiente</font>';
         $config['prev_link'] = '<font size="+1">Anterior</font>';
-        $config['per_page'] = '25'; 
+        $config['per_page'] = '100'; 
 
         $this->pagination->initialize($config);
         
@@ -960,8 +1009,9 @@ $data['cabeza']= "<table width=\"690\">
 
            
             $data['detalle']= $this->a_surtido_model->imprime_rem($fol);
-            $data['detalle1']= $this->a_surtido_model->imprime_rem_negados($fol);
-			$data['detalle1'].= $this->a_surtido_model->imprime_rem_descontinuados($fol);  
+            $data['total']= $this->a_surtido_model->imprime_rem_negados($fol);
+			//$data['detalle1'].= $this->a_surtido_model->imprime_rem_descontinuados($fol);
+            $data['total']= $this->a_surtido_model->imprime_rem_negados($fol);  
             $this->load->view('impresiones/a_pedidos_rem', $data);
             
 		}      
@@ -999,7 +1049,8 @@ $data['cabeza']= "<table width=\"690\">
         
         $fol= $this->input->post('fol');
         $con= $this->input->post('con');
-        if($con=='NO'.date('Y-m-d')){
+        
+        if($con=='f'.date('Y-m-d')){
         
         $data['fechac']= date('Y-m-d');
         $data['fol']= $fol;
@@ -1662,6 +1713,21 @@ public function tiket_captura($id)
         $data = array('mueble' => $this->input->post('valor'));
         $this->db->where('sec', $this->input->post('id'));
         $this->db->update('catalogo.almacen_mue', $data);
+    }
+    
+    public function salida_codigo()
+    {
+        $data['mensaje']= '';
+        $data['titulo']= 'CAPTURA DE  PEDIDOS';
+        $data['titulo1']= '';
+        $data['tabla']= 'BUENOS DIAS A TODO EL PERSONAL';
+        $data['contenido'] = "a_surtido_salida";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+                
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

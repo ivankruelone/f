@@ -920,7 +920,7 @@ if($r15->can>100){$can=round(($r15->can/10000),2)*10000;}
 if($r15->metro<=10){$metro=$r15->metro;}
 if($r15->metro>10 and $r15->metro<=100){$metro=round(($r15->metro/1000),2)*1000;}
 if($r15->metro>100){$metro=round(($r15->metro/10000),2)*10000;}        
-$s16="insert into almacen.compra (tipo, sec, nped, aaap, mesp, diap, susa, descri, costo, prv, cprv, persona, lin, canp, canm, cans, tipo3, codigo, cia, clabo, canpbo, maxbo,metro,metrom)
+$s16="insert ignore into almacen.compra (tipo, sec, nped, aaap, mesp, diap, susa, descri, costo, prv, cprv, persona, lin, canp, canm, cans, tipo3, codigo, cia, clabo, canpbo, maxbo,metro,metrom)
 values('alm',$r15->sec,$num,$aaa,$mes,$dia,'','',0,0,'','',0,$r15->can,$can,$can,'B',0,13,0,0,0,$metro,$metro);";
 $this->db->query($s16);    
         }

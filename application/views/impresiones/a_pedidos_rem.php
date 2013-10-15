@@ -2,7 +2,7 @@
 global $cabezota;
 
 $cabezota=$cabeza;
-
+$tot='TOTAL DE PRODUCTOS NEGADOS '.$total;
 require_once('tcpdf/config/lang/eng.php');
 require_once('tcpdf/tcpdf.php');
 
@@ -85,7 +85,7 @@ $pdf->writeHTML($tbl, true, false, false, false, '');
 /////////////////////////////////////////////////////////////////
 $pdf->SetFont('helvetica', '', 8	);
 $tbl = <<<EOD
-$detalle1
+$tot
 EOD;
 $pdf->writeHTML($tbl, true, false, false, false, '');
 //Close and output PDF document

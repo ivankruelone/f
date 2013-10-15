@@ -167,7 +167,11 @@ $cos=0;$vta=0;
         }
     }
     
-    
+   function rv_compra_sola($in, $carpeta, $archivo)
+    {
+
+//die();
+}   
     function rv_ad($in, $carpeta, $archivo)
     {
         $sql = "LOAD DATA INFILE ? REPLACE INTO TABLE vtadc.venta_detalle
@@ -208,11 +212,27 @@ can = TRIM(SUBSTR(@var1, 46, 7)),
 costo = ROUND(TRIM(SUBSTR(@var1, 90, 11))/100, 2),
 iva = ROUND(TRIM(SUBSTR(@var1, 79, 11))/100, 2),
 totfac = ROUND(TRIM(SUBSTR(@var1, 109, 11))/100, 2)
-;
-        ";
+;";
+$this->db->query($sql, $in.$carpeta.'/'.$archivo);
 
-
-        $this->db->query($sql, $in.$carpeta.'/'.$archivo);
+$sa = "LOAD DATA INFILE ? REPLACE INTO TABLE vtadc.gc_compra_det
+LINES STARTING BY 'CO0000'
+(@var2)
+SET
+suc = SUBSTR(@var2, 1, 4),
+aaa = SUBSTR(@var2, 5, 4),
+mes = SUBSTR(@var2, 9, 2),
+fecha = SUBSTR(@var2, 5, 8),
+factura =UCASE(TRIM(SUBSTR(@var2,13, 17))),
+codigo = SUBSTR(@var2, 30, 13),
+can = TRIM(SUBSTR(@var2, 43, 7)),
+costo = ROUND((TRIM(SUBSTR(@var2, 50, 11))/100), 2),
+iva = ROUND((TRIM(SUBSTR(@var2, 76, 11))/100), 2),
+impo = ROUND((TRIM(SUBSTR(@var2, 87, 11))/100), 2),
+imp_fac = ROUND((TRIM(SUBSTR(@var2, 106, 11))/100), 2)
+;"; 
+ 
+$this->db->query($sa, $in.$carpeta.'/'.$archivo);
 //echo $this->db->last_query();
 //die();
         //$this->db->query($sql2, $in.$carpeta.'/'.$archivo);

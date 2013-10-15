@@ -16,6 +16,7 @@
                             <th>Fal</th>
                             <th>Ret</th>
                             <th>Jus</th>
+                            <th>Motivo</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,8 +42,13 @@
                             <td style="text-align: center;"><?php echo $a[$row->falta]; ?></td>
                             <td style="text-align: center;"><?php echo $a[$row->retardo]; ?></td>
                             <td style="text-align: center;"><?php echo $a[$row->justificada]; ?></td>
+                            <td><?php echo $row->motivo; ?></td>
                         </tr>
                         <?php
+                        
+                        if($row->falta == 1 && $row->justificada == 1){
+                            $horas = $horas + 9;
+                        }
                         
                         $horas = $horas + $row->horas_decimal;
                         $faltas = $faltas + $row->falta;
@@ -60,16 +66,19 @@
                             <td style="text-align: center;" id="faltas"><?php echo $faltas; ?></td>
                             <td style="text-align: center;" id="retardos"><?php echo $retardos; ?></td>
                             <td style="text-align: center;" id="justificadas"><?php echo $justificadas; ?></td>
+                            <td>&nbsp;</td>
                         </tr>
                         <tr>
                             <td colspan="5" style="text-align: right;">Horas a trabajar en el periodo</td>
                             <td style="text-align: right;" id="referencia_horas"><?php echo $horas_laboradas; ?></td>
                             <td style="text-align: center;" colspan="3">&nbsp;</td>
+                            <td>&nbsp;</td>
                         </tr>
                         <tr>
                             <td colspan="5" style="text-align: right;">Dias a trabajar en el periodo</td>
                             <td style="text-align: right;" id="referencia_dias"><?php echo $dias_laborados; ?></td>
                             <td colspan="3">&nbsp;</td>
+                            <td>&nbsp;</td>
                         </tr>
                     </tfoot>
                 </table>

@@ -89,6 +89,8 @@ echo ('<br /><br />');
 echo anchor('catalogo_ger/tabla_gener', 'CATALOGOS DE GENERICOS', 'class="button-link green"');
 echo ('<br /><br />');
 echo anchor('catalogo_ger/tabla_gener_patente', 'CATALOGOS DE PATENTE ALM', 'class="button-link green"');
+echo ('<br /><br />');
+echo anchor('catalogo_ger/tabla_p_plantilla', 'PARM.PLANTILLA', 'class="button-link green"');
 }
 if( $nivel==9){
 echo  anchor('catalogo_ger/tabla_sup_asignadas_ger_ger', 'GERENTES  ', 'class="button-link blue" style="position:relative; width:140px; height:20px;"');
@@ -100,6 +102,8 @@ echo ('<br /><br />');
 echo anchor('catalogo_ger/tabla_natur', 'NATURISTAS', 'class="button-link blue" style="position:relative; width:140px; height:20px;"');
 echo ('<br /><br />');
 echo anchor('catalogo_ger/tabla_gener', 'GENERICOS Y DDR', 'class="button-link blue" style="position:relative; width:140px; height:20px;"');
+echo ('<br /><br />');
+echo anchor('catalogo_ger/tabla_p_plantilla', 'PARM.PLANTILLA', 'class="button-link  blue" style="position:relative; width:140px; height:20px;"');
 echo ('<br /><br />');
 //echo anchor('catalogo_ger/tabla_gener_patente', 'CATALOGOS DE PATENTE ALM', 'class="button-link green"');
 }

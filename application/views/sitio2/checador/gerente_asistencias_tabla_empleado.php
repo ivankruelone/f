@@ -60,11 +60,12 @@
                                     
                                     if($row->justificada == 0 ){
                                         //Quitar justificaciones desde asistencias...
+                                        if($empleado->succ<>90030){
                                         echo anchor('checador/gerente_justificar/'.$row->id_registro, 'Just.', array('id' => 'justifica_'.$row->id)); 
                                     }else{
                                         echo anchor('checador/gerente_justificar_quita/'.$row->id_registro, 'No Just.', array('id' => 'quita_'.$row->id)); 
                                     }
-                                    
+                                    }
                                     ?>
                                     <!-- -->
                                     </a><button id="upload_button_<?php echo $row->id_registro; ?>">Comprobante</button>

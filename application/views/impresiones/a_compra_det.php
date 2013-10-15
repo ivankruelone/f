@@ -43,7 +43,7 @@ $pdf = new MYPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 // set document information 
 $pdf->SetCreator(PDF_CREATOR); 
 $pdf->SetAuthor('Lidia Velazquez'); 
-$pdf->SetTitle('Cueque'); 
+$pdf->SetTitle('Orden de compra'); 
 $pdf->SetSubject('TCPDF Tutorial'); 
 $pdf->SetKeywords('TCPDF, PDF, example, test, guide'); 
 

@@ -462,9 +462,180 @@ $num=0;
         
         return $tabla;
     }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    
+    function reporte_devolucion_suc($tit,$fecha1, $fecha2, $motivox)
+    {
+       
+        $s="SELECT c.tipo2,a.id,a.tipo,a.suc,c.nombre,
+case when c.tipo2<>'G'
+then sum(can)*(vtaddr)
+else
+sum(can)*(vtagen)
+end as importe
+FROM desarrollo.devolucion_c a
+left join desarrollo.devolucion_d b on b.id_cc=a.id
+left join catalogo.sucursal c on c.suc=a.suc
+left join catalogo.sec_generica d on d.sec=b.sec
+where date_format(a.fecha,'%Y-%m-%d') between '$fecha1' and '$fecha2' and a.mov=$motivox and a.tipo2='C'
+group by a.suc";
+$q=$this->db->query($s);
+if($q->num_rows()> 0){        
+        
 
+        $tabla = "
+        <table cellpadding=\"2\" border=\"0\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\">
+        <caption>$tit</caption>
+        <thead>
+       
+        <tr>
+        <th cospan=\"6\"><strong>CENTRO DE DISTRIBUCION DE FARMACIAS EL FENIX</strong></th>
+        </tr>
+        <tr>
+        <th cospan=\"6\"><strong>REPORTE DEL DIA $fecha1 AL $fecha2</strong></th>
+        </tr>
+        
+        <tr>
+        <th colspan=\"6\" align=\"right\"> Fecha de Impresion: ".date('d/m/Y H:i:s')."</th>
+        </tr>
+       
+        <tr>
+        <th><strong>#</strong></th>
+        <th><strong>M</strong></th>
+        <th><strong>TIPO</strong></th>
+        <th><strong>NID</strong></th>
+        <th><strong>SUCURSAL</strong></th>
+        <th><strong>IMPORTE</strong></th>
+       
+        </tr>
+
+        </thead>
+        <tbody>
+        ";
+        
+        $n = 1;
+        $total = 0;
+        
+        foreach($q->result() as $r)
+       
+       {
+        $l1 = anchor('a_gerente/a_detalle/'.$fecha1.'/'.$fecha2.'/'.$motivox.'/'.$r->suc, $r->nombre, array('title' => 'Haz Click aqui para imprimir !', 'class' => 'encabezado'));
+            $tabla.="
+            <tr>
+            <td align=\"left\" width=\"3%\">".$n."</td>
+            <td align=\"left\" width=\"7%\">".$r->tipo."</td>
+            <td align=\"center\" width=\"7%\">".$r->tipo2."</td>
+            <td align=\"left\" width=\"20%\">".$r->suc."</td>
+            <td align=\"left\" width=\"8%\">".$l1."</td>
+            <td align=\"right\" width=\"8%\">".number_format($r->importe,2)."</td>
+            </tr>
+            ";
+            
+  $n=$n+1;
+  $total=$total+$r->importe;
+        }
+        
+       
+        $tabla.="</tbody>
+        <tfoot>
+        <tr>
+        <td align=\"right\" colspan=\"5\">TOTALES</td>
+        <td align=\"right\">".number_format($total,2)."</td>
+        </tr>
+        </tfoot>
+        </table>";
+        return $tabla;
+        
+        }else{
+            echo "No hay Resultados que mostrar.";
+        }
+        
+    }
+
+    function reporte_devolucion_suc_det($tit,$fecha1, $fecha2, $motivox,$suc)
+    {
+       
+        $s="SELECT a.fecha,c.tipo2,a.id,a.tipo,a.suc,c.nombre,sum(can)as can,b.sec,d.susa1,
+case when c.tipo2<>'G'
+then sum(can)*(vtaddr)
+else
+sum(can)*(vtagen)
+end as importe
+FROM desarrollo.devolucion_c a
+left join desarrollo.devolucion_d b on b.id_cc=a.id
+left join catalogo.sucursal c on c.suc=a.suc
+left join catalogo.sec_generica d on d.sec=b.sec
+where date_format(a.fecha,'%Y-%m-%d') between '$fecha1' and '$fecha2' and a.mov=$motivox and a.tipo2='C'
+and a.suc=$suc
+group by  b.sec";
+$q=$this->db->query($s);
+if($q->num_rows()> 0){        
+        
+
+        $tabla = "
+        <table cellpadding=\"2\" border=\"0\" id=\"tabla\" class=\"display\" style=\"font-size: 10px;\">
+        <caption>$tit</caption>
+        <thead>
+       
+        
+        
+        <tr>
+        <th colspan=\"6\" align=\"right\"> Fecha de Impresion: ".date('d/m/Y H:i:s')."</th>
+        </tr>
+       
+        <tr>
+        <th><strong>#</strong></th>
+        <th><strong>Fecha</strong></th>
+        <th><strong>Sec</strong></th>
+        <th><strong>Sustancia Activa</strong></th>
+        <th><strong>Cantidad</strong></th>
+        
+        <th><strong>Importe</strong></th>
+       
+        </tr>
+
+        </thead>
+        <tbody>
+        ";
+        
+        $n = 1;
+        $total = 0;
+        
+        foreach($q->result() as $r)
+       
+       {
+        
+            $tabla.="
+            <tr>
+            <td align=\"left\" width=\"3%\">".$n."</td>
+            <td align=\"left\" width=\"7%\">".$r->fecha."</td>
+            <td align=\"center\" width=\"7%\">".$r->sec."</td>
+            <td align=\"left\" width=\"20%\">".$r->susa1."</td>
+            <td align=\"left\" width=\"8%\">".$r->can."</td>
+            <td align=\"right\" width=\"8%\">".number_format($r->importe,2)."</td>
+            </tr>
+            ";
+            
+  $n=$n+1;
+  $total=$total+$r->importe;
+        }
+        
+       
+        $tabla.="</tbody>
+        <tfoot>
+        <tr>
+        <td align=\"right\" colspan=\"5\">TOTALES</td>
+        <td align=\"right\">".number_format($total,2)."</td>
+        </tr>
+        </tfoot>
+        </table>";
+        return $tabla;
+        
+        }else{
+            echo "No hay Resultados que mostrar.";
+        }
+        
+    }
 
 
 

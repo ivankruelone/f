@@ -1641,6 +1641,55 @@ left join usuarios b on b.plaza=a.superv and nivel=14
     }
     
     ///////////////////////////////////////////////////////////////////////////////////
+function p_plantilla()
+    {
+     
+     $nivel= $this->session->userdata('nivel');
+     $id= $this->session->userdata('id');
+     $sql = "SELECT b.nombre,
+a.* FROM catalogo.cat_plantilla a
+left join catalogo.cat_imagen b on a.tipo=b.tipo";
+  
+     
+	 $query = $this->db->query($sql);
+        $tabla= "
+        <table>
+        <thead>
+        <tr>
+        
+        <th>IMAGEN</th>
+        <th>IMPORTE 1</th>
+        <th>IMPORTE 2</th>
+        <th>PERSONAS</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+        
+        $tot1=0;$tot2=0; $color='black';
+        foreach($query->result() as $row)
+        {
+          $tabla.="
+            <tr>
+            
+            <td align=\"left\"><font color=\"$color\">".$row->nombre."</font></td>
+            <td align=\"right\"><font color=\"$color\">".number_format($row->monto1,2)."</font></td>
+            <td align=\"right\"><font color=\"$color\">".number_format($row->monto2,2)."</font></td>
+            <td align=\"right\"><font color=\"$color\">".$row->persona."</font></td>
+            
+            </tr>
+            ";
+        
+        }
+        
+        $tabla.="
+        </tbody>
+        </table>";
+        
+        return $tabla;
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////////////
 
     function cat_farmabodega()
     {

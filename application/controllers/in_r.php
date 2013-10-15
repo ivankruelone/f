@@ -70,11 +70,7 @@ class In_r extends CI_Controller
             if(strtolower($valida_ex[1]) == 'crt'){
                 //$this->__crt($in, $carpeta, $archivo);
             }elseif(strtolower($valida_ex[1]) == 'txt'){
-                $this->in_model->rv($in, $carpeta, $archivo);
-            }elseif(strtolower($valida_ex[1]) == 'inv'){
-            	echo $valida_ex[1];
-				die();
-                $this->in_model->inv($in, $carpeta, $archivo);
+                $this->in_model->rv_compra_sola($in, $carpeta, $archivo);
             }
         
         }

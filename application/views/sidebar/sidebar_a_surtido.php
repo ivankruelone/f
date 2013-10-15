@@ -31,6 +31,10 @@ echo "<br/><br/>";
 echo anchor('a_surtido/folios_totales', 'FORMULADOS ENVIADOS', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo "<br/><br/>";
 echo anchor('a_surtido/folios_pendientes', 'FORMULADOS PENDIENTES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo "<br/><br/>";
+echo anchor('a_surtido/regresa_folio', 'REGRESAR  A CAPTURA', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+
+
 echo "<br/><br/><br/><br/>";
 echo anchor('a_surtido/captura_sob_fal_esp', 'SOBRANTE/FALTANTE ESPECIALES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo "<br/><br/>";
@@ -56,6 +60,10 @@ if($nivel== 12){
 echo "<br/><br/>";    
 echo anchor('a_surtido/tabla_sob_fal', 'FOLIOS FORMULADOS', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo anchor('a_surtido/tabla_sob_fal_esp', 'FOLIOS ESPECIALES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo anchor('a_surtido/folios_totales', 'FORMULADOS ENVIADOS', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo anchor('a_surtido/folios_totales_esp', 'ESPECIALES ENVIADOS', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo anchor('a_surtido/folios_pendientes', 'FORMULADOS PENDIENTES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo anchor('a_surtido/folios_pendientes_esp', 'ESPECIALES PENDIENTES', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
 echo "<br/><br/><br/><br/>";
 }
 }

@@ -629,7 +629,7 @@ order by sec";
         $this->db->select("t.sec, a.susa1, a.susa2, t.lote, t.cadu, t.fechai, p.nombre, (can) as can, c.tipo, x.nom, s.nombre as sucursal, case
 when s.tipo2 = 'D' then a.vtaddr
 when s.tipo2 = 'G' then a.vtagen
-when s.tipo2 = 'F' then a.publico
+when s.tipo2 = 'F' then a.vtaddr
 end as precio", false);
         $this->db->from('desarrollo.devolucion_d t');
         $this->db->join('desarrollo.devolucion_c c', 'c.fechai=t.fechai', 'LEFT');
@@ -638,6 +638,7 @@ end as precio", false);
         $this->db->join('catalogo.sucursal s', 's.suc=c.suc', 'LEFT');
         $this->db->join('catalogo.devolucion x', 'x.num=c.mov', 'LEFT');
         $this->db->where("date(t.fechai) between '$fecha1' and '$fecha2'", '', false);
+        //$this->db->where('tipo2=C');
         $this->db->where('mov',$motivox);
         $this->db->group_by('lote');
         $this->db->group_by('sec');

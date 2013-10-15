@@ -150,7 +150,7 @@ class A_gerente extends CI_Controller
        
        
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function reporte_excedente()
     {
@@ -167,8 +167,47 @@ function reporte_excedente()
         $this->load->view('main', $data);
         $this->load->view('extrafooter');
     }
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function reporte_excedente_suc()
+    {
+        $data['titulo'] = "Reporte Diario";
+        $data['titulo1'] = "";
+        $data['contenido'] = "reporte_excedente_suc";
+        $data['selector'] = "a_devolucion";
+        $data['sidebar'] = "sidebar_a_gerente_inv";
+        $this->load->model('catalogo_model');
+       $data['motivox'] = $this->catalogo_model->busca_motivo();
+        
+        
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
     
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     public function reporte_excedente_submit()
+    {
+        $this->load->model('a_gerente_model');
+        
+        $tit = ' DEVOLUCIONES GENERADAS DEL '.$this->input->post('fec1').' A '.$this->input->post('fec2');
+        $data['tabla'] = $this->a_gerente_model->reporte_devolucion_suc(
+        $tit,
+        $this->input->post('fec1'),
+        $this->input->post('fec2'),
+        $this->input->post('motivo')); 
+        $this->load->view('contenidos/viu_6', $data);
+     }
+     public function a_detalle($fec1,$fec2,$mot,$suc)
+    {
+        $this->load->model('a_gerente_model');
+        
+        $tit = ' DEVOLUCIONES GENERADAS DEL '.$fec1.' A '.$fec2;
+        $data['tabla'] = $this->a_gerente_model->reporte_devolucion_suc_det($tit,$fec1,$fec2,$mot,$suc); 
+        $this->load->view('contenidos/viu_6', $data);
+     }    
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
      public function tabla_inv_farma()
     {

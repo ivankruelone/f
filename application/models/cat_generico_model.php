@@ -608,9 +608,9 @@ $this->db->query($s);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 function agrega_member($sec,$cod,$per,$descri,$costo,$prov,$claves,$slin,$lin,$susa,$pub)
 {
-$s="insert into catalogo.almacen 
+$s="insert ignore into catalogo.almacen 
 (sec, tsec, susa1, susa2, prv, prvx, lin, sublin, costo, publico, farmacia, vtagen, vtaddr, codigo,  persona, claves, clavep, clabo, maxbo, vtabo, mue, antibio, sim, metro)
-(select ($sec+1), 'G', '$susa', '$descri', $prov, b.corto, $lin, $slin, $costo, $pub, 0, 0, 0, $cod,  '$per', '$claves', '$claves', 0, 0, 0, 0, 'N', 0, 'S' from catalogo.almacen a left join catalogo.provedor b on b.prov=$prov where sec=$sec and b.prov=$prov)";
+(select ($sec+1), 'G', '$susa', '$descri', $prov, b.corto, $lin, $slin, $costo, $pub, 0, 0, 0, $cod,  '$per', '$claves', '$claves', 0, 0, 0, 0, 'N', 0, 'S' from catalogo.almacen a left join catalogo.provedor b on b.prov=$prov where sec=$sec and b.prov=$prov group by a.sec)";
 $this->db->query($s);
 
          $new_member_insert_data = array(
@@ -651,7 +651,7 @@ $data = array(
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function catalogo_cat_compras(){
 $ss="load data infile 'c:/wamp/www/subir10/catprvw.txt' replace into table catalogo.cat_nuevo_general_prv FIELDS TERMINATED BY '||' LINES TERMINATED BY '\r\n'
-(tipo,codigo, prv,prvxx, costo, farmacia, publico, preferencia, clagob, sec, motivo)";
+(tipo,codigo, prv,prvxx, costo, farmacia, publico, preferencia, preg, clagob, sec, motivo)";
 $this->db->query($ss);
 $ss1="load data infile 'c:/wamp/www/subir10/catralw.txt' replace into table catalogo.cat_nuevo_general FIELDS TERMINATED BY '||' LINES TERMINATED BY '\r\n'
 (tipo,codigo, clagob, sec_cedis, susa, gramaje, contenido, presenta,lin, iva, marca_comercial, registro,fechareg, lab, ramo, motivo,esp)";

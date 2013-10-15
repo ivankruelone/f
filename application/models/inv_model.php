@@ -55,12 +55,14 @@ order by suc;";
         $sql = "SELECT tipo2, s.suc, nombre, ifnull(fechai, 'PENDIENTE') as fechai, ifnull(sum(cantidad), 0) as can FROM
 catalogo.sucursal s
 left join inv i on s.suc = i.suc and dayofweek(fechai) in(3, 4, 5, 6) and fechai in(date(now()), date(DATE_SUB(now(), INTERVAL 1 DAY)), date(DATE_SUB(now(), INTERVAL 2 DAY)), date(DATE_SUB(now(), INTERVAL 3 DAY)))
-where tlid = 1 and s.suc between 101 and 2000
+where tlid = 1 and s.suc between 101 and 2000 and s.suc<> 177 and s.suc<>178 and s.suc<>180 and s.suc<>188 and s.suc<>189 and s.suc<>190 and s.suc<>191 and s.suc<>1289
 group by s.suc
 having sum(cantidad) is null
 order by suc
 ;";
+//echo $this->db->last_query();
         return $this->db->query($sql);
+        
     }
     
     function inv_pendientes_findemes()
@@ -68,7 +70,7 @@ order by suc
         $sql = "SELECT tipo2, s.suc, nombre, ifnull(fechai, 'PENDIENTE') as fechai, ifnull(sum(cantidad), 0) as can FROM
 catalogo.sucursal s
 left join inv i on s.suc = i.suc and dayofweek(fechai) in(1, 2, 7) and fechai in(date(now()), date(DATE_SUB(now(), INTERVAL 1 DAY)), date(DATE_SUB(now(), INTERVAL 2 DAY)), date(DATE_SUB(now(), INTERVAL 3 DAY)))
-where tlid = 1 and s.suc between 101 and 2000
+where tlid = 1 and s.suc between 101 and 2000 and s.suc<> 177 and s.suc<>178 and s.suc<>180 and s.suc<>188 and s.suc<>189 and s.suc<>190 and s.suc<>191 and s.suc<>1289
 group by s.suc
 having sum(cantidad) is null
 order by suc

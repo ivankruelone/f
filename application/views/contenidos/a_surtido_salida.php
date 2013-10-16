@@ -11,7 +11,18 @@
             );
 
         echo form_input($data_folio);
-        ?>
+    ?>
+        
+    <h4>Codigo</h4>
+    <?php    
+        $data_codigo = array(
+              'name'        => 'codigo',
+              'id'          => 'codigo',
+              'type'        => 'number'
+            );
+
+        echo form_input($data_codigo);
+?>
         
 
 <br /><br />

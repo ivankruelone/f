@@ -47,7 +47,7 @@ class Direc extends CI_Model
         <th>Sucursal</th>
         <th>Telefono</th>
         <th>Extension</th>
-        <th>Iusacell</th>
+        <th>Tel. Act</th>
         <th>Correo</th>
         <th>Accion</th>
         ";
@@ -72,7 +72,7 @@ class Direc extends CI_Model
         <td>$row->nom_suc</td>
         <td>$row->tel</td>
         <td>$row->tel1</td>
-        <td>$row->tel_iu</td>
+        <td>$row->tel_actual</td>
         <td>$row->correo</td>
         <td><a href=\"#\" onClick=\"busca($row->lat, $row->lon, '$row->nom_suc', $row->suc); return false;\">Ver en Mapa</a></td>
              ";

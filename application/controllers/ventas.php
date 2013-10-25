@@ -1396,6 +1396,7 @@ $data['aaa']=$aaa;
 public function agrega_targ()
     {
         $this->load->model('catalogo_model');
+        $data['tabla']= $this->catalogo_model->targetas_validar();
         $data['contenido'] = "targetas";
         $data['selector'] = "ventas";
         $data['sidebar'] = "sidebar_ventas";
@@ -1411,7 +1412,24 @@ public function agrega_targ()
         
         $this->load->model('catalogo_model');
         $id = $this->catalogo_model->guardar_tarjeta();
-        redirect('ventas/index/'.$id);
+        redirect('ventas/agrega_targ/'.$id);
+    }
+    
+    function validar()
+    {
+        
+        $this->load->model('catalogo_model');
+        $id=$this->catalogo_model->validar_targeta($id);
+        redirect('ventas/agrega_targ/'.$id);
+        
+       
+    }
+    
+    public function eliminar($id)
+    {
+        $this->load->model('catalogo_model');
+        $this->catalogo_model->eliminar_targeta($id);
+        redirect('ventas/agrega_targ/');
     }
     
     

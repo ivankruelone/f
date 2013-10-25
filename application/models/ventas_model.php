@@ -255,6 +255,7 @@ $num=0;
         $s = "SELECT a.*,(a.fol2-a.fol1+1)as tar ,d.nombre as sucx,d.tipo2
           from vtadc.tarjetas_suc a
           left join catalogo.sucursal d on d.suc=a.suc
+          where a.tipo=1
           order by suc";
         $q = $this->db->query($s);
         foreach($q->result() as $r)

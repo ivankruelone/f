@@ -40,8 +40,7 @@
           <li<?php if(isset($selector) && $selector == "sucursales") echo " class=\"selected\"";?>><?php echo anchor('sucursales/index', 'Sucursales');?></li>
           <li<?php if(isset($selector) && $selector == "directorio") echo " class=\"selected\"";?>><?php echo anchor('directorio/index', 'Directorio');?></li>
           <li<?php if(isset($selector) && $selector == "contacto") echo " class=\"selected\"";?>><?php echo anchor('contacto/index', 'Contacto');?></li>
-          <li<?php if(isset($selector) && $selector == "archivos") echo " class=\"selected\"";?>><?php echo anchor('contacto/archivos', 'Archivos recibidos');?></li>
-          <li<?php if(isset($selector) && $selector == "vacaciones") echo " class=\"selected\"";?>><?php echo anchor('vacaciones/index', 'Formatos');?></li>
+          
         </ul>
       </div>
 
@@ -176,8 +175,6 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
     <div id="menubar">
         <ul id="menu">
         <li<?php if(isset($selector) && $selector == "directorio") echo " class=\"selected\"";?>><?php echo anchor('directorio/index', 'Direc');?></li>
-          <li<?php if(isset($selector) && $selector == "audita") echo " class=\"selected\"";?>><?php echo anchor('audita/cortes', 'CORTES');?></li>
-          <li<?php if(isset($selector) && $selector == "catalogo") echo " class=\"selected\"";?>><?php echo anchor('catalogo', 'Catalogo');?></li>
           <li<?php if(isset($selector) && $selector == "pedidos") echo " class=\"selected\"";?>><?php echo anchor('pedido/pedido', 'PEDIDOS');?></li>
           <li<?php if(isset($selector) && $selector == "ventas") echo " class=\"selected\"";?>><?php echo anchor('ventas/index', 'Ventas');?></li>
           <li<?php if(isset($selector) && $selector == "inv") echo " class=\"selected\"";?>><?php echo anchor('inv/index', 'Inv');?></li>
@@ -262,6 +259,7 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
 
 <div id="menubar">
  <ul id="menu">
+ <li<?php if(isset($selector) && $selector == "directorio") echo " class=\"selected\"";?>><?php echo anchor('directorio/index', 'Direc');?></li>
  <li<?php if(isset($selector) && $selector == "mercadotecniav") echo " class=\"selected\"";?>><?php echo anchor('mercadotecnia/indexv', 'VENTAS DIRECCION');?></li>
   <li<?php if(isset($selector) && $selector == "catalogo") echo " class=\"selected\"";?>><?php echo anchor('catalogo/index', 'Catalogo');?></li>
   <li<?php if(isset($selector) && $selector == "ventas") echo " class=\"selected\"";?>><?php echo anchor('ventas/index', 'Ventas');?></li>

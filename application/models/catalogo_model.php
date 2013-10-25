@@ -2037,12 +2037,14 @@ $detalle.="
       FROM catalogo.cat_alta_empleado a
       left join catalogo.sucursal b on b.suc=a.suc
       left join catalogo.cat_compa_nomina c on c.cia=a.cia
-      left join usuarios d on d.id=a.id_user
+      left join desarrollo.usuarios d on d.id=a.id_user
       left join catalogo.cat_puesto e on e.id=a.puesto
-      left join usuarios f on f.id=a.id_rh
+      left join desarrollo.usuarios f on f.id=a.id_rh
       where 
       a.id_user=$id_user and date_format(fecha,'%Y-%m-%d')>='$fec1' and date_format(fecha,'%Y-%m-%d')<='$fec2' and motivo='$mot' and a.tipo>=2";
       $query = $this->db->query($sql);
+      
+      
       }
       if($nivel==33 && $tipo==1 || $nivel==33 && $tipo==0){
      $sql = "SELECT a.*,b.nombre, d.nombre as id_userx,d.puesto as contador,c.ciax,e.puesto as puestox,f.nombre as id_rhx,f.puesto as puesto_val
@@ -5137,4 +5139,84 @@ function guardar_tarjeta()
      return $deptox; 
     }
 //////////////////////////////////////////////////////////////////////////////////////////
+
+    function targetas_validar()
+    {
+        $nivel = $this->session->userdata('nivel');
+        
+        
+        $s = "SELECT a.*, b.nombre FROM vtadc.tarjetas_suc a
+            left join catalogo.sucursal b on a.suc=b.suc
+            where tipo=0 order by suc;";
+        $q = $this->db->query($s);
+        $tabla="
+        <table cellpadding=\"3\">
+        <thead>
+        
+        <tr>
+        <th>#</th>
+        <th>SUCURSAL</th>
+        <th>FOLIO INICIAL</th>
+        <th>FOLIO FINAL</th>
+        ";
+
+        if($nivel == 10){
+            
+        $tabla.= "
+        <th>Validar</th>
+        <th>Eliminar</th>
+        ";
+            }
+        
+        $tabla.= "
+        
+        </tr>
+        </thead>";
+        
+        $num=0;
+        foreach($q->result() as $r)
+        {
+	   if($r->tipo==0){$color='red';}else{$color='black';}
+	   $num=$num+1;
+       $l= anchor('ventas/validar/'.$r->id, '<img src="'.base_url().'img/good.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para validar', 'class' => 'encabezado'));
+       $l1 = anchor('ventas/eliminar/'.$r->id, '<img src="'.base_url().'img/error.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para eliminar', 'class' => 'encabezado'));
+       //$l1 = anchor('supervisor/corte_detalle/'.$r->id.'/'.$fec.'/'.$suc,$r->fechacorte.' </a>', array('title' => 'Haz Click aqui para ver el detalle!', 'class' => 'encabezado'));  
+           //id, tipo, cel, equipo, nomina, cia, act
+            $tabla.="
+            <tr>
+            <td align=\"left\"><font color=\"$color\">".$num."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->suc." ".$r->nombre."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->fol1."</font></td>
+            <td align=\"left\"><font color=\"$color\">".$r->fol2."</font></td> 
+            ";
+    
+    if($nivel == 10){
+            
+        $tabla.= "
+        <td align=\"center\">".$l."</td> 
+        <td align=\"center\">".$l1."</td>
+        ";
+            }
+        
+        $tabla.= "</tr>";
+        }
+
+    $tabla.="</table>";
+return $tabla;
+
+}
+
+function validar_targeta($id)
+    {
+        $sql="update vtadc.tarjetas_suc set tipo=1 where tipo=0";
+        $query = $this->db->query($sql);
+        
+    }
+    
+    function eliminar_targeta($id)
+    {
+        $this->db->delete('vtadc.tarjetas_suc',  array('id' => $id));
+    }
+
+
 }

@@ -314,7 +314,7 @@ left join catalogo.cat_empleado b on b.nomina=a.nomina and a.cia=b.cia
 left join usuarios c on c.id=a.id_user
 left join catalogo.sucursal d on d.suc=b.succ
 left join catalogo.cat_alta_empleado e on e.cia=a.cia and e.empleado=a.nomina and e.motivo='RETENCION'
-where a.motivo=2 and b.tipo=1 and a.tipo<>4";
+where a.motivo=2 and b.tipo=1 and a.tipo<>4 group by nomina";
         $q = $this->db->query($s); 
     
        $tabla= "
@@ -389,7 +389,7 @@ function rh_cambios($tit)
         $id_user= $this->session->userdata('id');
         $nivel= $this->session->userdata('nivel');
         
-       $s = "select count(a.*)as num_suc,e.motivo,a.id_user,c.nombre as supx,b.succ,d.nombre as sucx, b.tipo,a.cia,a.nomina,b.completo,b.puestox,
+       $s = "select count(*) as num_suc,e.motivo,a.id_user,c.nombre as supx,b.succ,d.nombre as sucx, b.tipo,a.cia,a.nomina,b.completo,b.puestox,
 a.causa,obser2,a.fecha_c,fecha_mov,a.id_plaza
 from mov_supervisor a
 left join catalogo.cat_empleado b on b.nomina=a.nomina and a.cia=b.cia

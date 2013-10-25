@@ -27,7 +27,7 @@ class Equipos extends CI_Controller
         
         $this->load->model('equipos_model');
        
-        $data['tabla']= $this->equipos_model->equipos_validar();;
+        $data['tabla']= $this->equipos_model->equipos_validar();
         $data['contenido'] = "equipos1";
         $data['selector'] = "equipos";
         $data['sidebar'] = "sidebar_equipos";

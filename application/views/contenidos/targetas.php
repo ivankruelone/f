@@ -49,14 +49,19 @@
 	echo form_close();
 ?>
 
+<?php
+
+	echo $tabla;
+?>
+
 <script language="javascript" type="text/javascript">
 
         $('#agrega_tarjeta').submit(function() {
             
             
-            var equipo = $('#sucursal').attr("value");
-            var data_celular = $('#inicial').attr("value");
-            var data_modelo = $('#final').attr("value");
+            var sucursal = $('#sucursal').attr("value");
+            var folio1 = $('#inicial').attr("value");
+            var folio2 = $('#final').attr("value");
             
             
     	 

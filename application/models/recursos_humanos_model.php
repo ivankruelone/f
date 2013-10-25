@@ -628,7 +628,8 @@ function pendiente_disposicion()
     $id_user= $this->session->userdata('id');
     $id_plaza= $this->session->userdata('id_plaza');
     
-    $sql="SELECT a.causa, a.motivo,a.fecha_c,fecha_mov,a.nomina,a.cia,a.suc2,a.suc_as400,a.fecha_rh,a.id_user,a.id_rh,
+    $sql="SELECT a.causa, a.motivo,max(a.fecha_c)as fecha_c,max(fecha_mov)as fecha_mov,a.nomina,a.cia,a.suc2,a.suc_as400,
+    max(a.fecha_rh)as fecha_rh,a.id_user,a.id_rh,
  b.nombre as suc2x, c.nombre as suc_as400x,d.nombre as id_userx,e.nombre as id_rhx,f.id_plaza,
  concat(trim(f.pat),' ',trim(f.mat),' ',trim(f.nom))as nominax,g.ciax,f.afiliacion,f.registro_pat,f.puestox,
  f.rfc,f.curp,f.succ,i.nombre as contador,i.puesto as conpuesto,j.puesto as asignado
@@ -644,8 +645,7 @@ left join usuarios i on i.id=h.id_user
 left join usuarios j on j.id_plaza=f.id_plaza 
 where a.suc2<>a.suc_as400 and a.motivo=2 and a.activo=1 and a.borrar<>'X' and f.tipo=1
 group by a.cia,a.nomina
-
-order by fecha_mov";
+order by  fecha_mov desc";
       	$query = $this->db->query($sql);
         
 $tabla= "

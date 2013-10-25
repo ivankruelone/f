@@ -170,8 +170,8 @@ fclose($da);
     {
 $aaa=date('Y');
 
-$fec1='2013-10-01';
-$fec2='2013-10-05';
+$fec1='2013-10-13';
+$fec2='2013-10-19';
 $fec1x=substr($fec1,0,4).substr($fec1,5,2).substr($fec1,7,2);
 $fec2x=substr($fec2,0,4).substr($fec2,5,2).substr($fec2,7,2);
 

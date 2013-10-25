@@ -29,7 +29,7 @@ class Facturas_juridico extends CI_Controller
     $data_c['extraheader'] = "
         <script type=\"text/javascript\" src=\"".base_url()."scripts/jquery.dataTables.min.js\"></script>
         <link type=\"text/css\" href=\"".base_url()."css/demo_table.css\" rel=\"stylesheet\" />
-        ";
+    ";
     
     $this->load->view('header', $data_c);
     $this->load->view('main', $data);

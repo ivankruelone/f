@@ -224,6 +224,7 @@ $nuevafecha = date ( 'Y-m-d' , $nuevafecha );
         $q = $this->db->query($s);  
         if($q->num_rows() >0){ 
             $r= $q->row();
+            $cos=$r->costo;
             $solicita=$r->cans-$r->aplica+22200;
         $sx = "SELECT sec,sum(can)can FROM desarrollo.compra_d where id_cc = $id_cc and sec=$sec group by sec ";
         $qx = $this->db->query($sx);  
@@ -241,6 +242,8 @@ $nuevafecha = date ( 'Y-m-d' , $nuevafecha );
             'cadu'  =>$cadu,
             'can'   =>$can,
             'canr'  =>$canr,
+            'codigo'=>$cod,
+            'costo' =>$cos,
             'inv'   =>'N'
 		);
 		$insert = $this->db->insert('desarrollo.compra_d', $new_member_insert_data);
@@ -293,7 +296,9 @@ if($query->num_rows() >0){
          $lote=$row->lote;
          $cadu=$row->cadu;
          $orden=$row->orden;
-         $this->__inv1($sec,$can,$id_cc,$lote,$cadu);
+         $codigo=$row->codigo;
+         $costo=$row->costo;
+         $this->__inv1($sec,$can,$id_cc,$lote,$cadu,$codigo,$costo);
          
         $data = array(
         'inv'     => 'S',
@@ -355,7 +360,7 @@ $scxp = "SELECT *from catalogo.foliador1 where clav='cxp' ";
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function __inv1($sec,$can,$id_cc,$lote,$cadu)
+function __inv1($sec,$can,$id_cc,$lote,$cadu,$codigo,$costo)
 {
    $id_user= $this->session->userdata('id');
    $sx = "SELECT * FROM inv_cedis where sec=$sec and lote='$lote'";
@@ -367,7 +372,9 @@ function __inv1($sec,$can,$id_cc,$lote,$cadu)
             $id_inv=$rx->id;
                     $des=$exi+$can;
                     $datax1 = array(
-                    'inv1'     => $des
+                    'inv1'     => $des,
+                    'costo'     => $costo,
+                    'codigo'   => $codigo
                     );
                     $this->db->where('id', $id_inv);
                     $this->db->update('desarrollo.inv_cedis', $datax1);
@@ -379,6 +386,8 @@ $invi=0;
             		'lote'  =>$lote,
             		'inv1'  =>$can,
             		'inv2'	=>0,
+                    'codigo'   => $codigo,
+                    'costo'   => $costo,
             		'fechai'=>date('Ymd')
                     );
                     $this->db->insert('desarrollo.inv_cedis', $datax4);  

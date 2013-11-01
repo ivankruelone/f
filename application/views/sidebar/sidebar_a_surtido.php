@@ -13,15 +13,15 @@ if($nivel==30){
 echo "<br/>";
 echo anchor('captura_pedido1/historico_de_pedidos_esp', 'HISTORICO DE PEDIDOS ESPECIALES', 'class="button-link green"');
 }
-echo "<br/>";
+//echo "<br/>";
 if($nivel==12 || $nivel==16 || $nivel== 30 || $nivel== 34 || $nivel== 24){
 echo "<br/><strong>LISTADO DE PEDIDOS CERRADOS</strong><br/><br/>";
 echo anchor('a_surtido/tabla_control_his', 'FOLIOS CERRADOS', 'class="button-link pink" style="position:relative; width:190px; height:20px;"');
 echo anchor('a_surtido/tabla_control_his1', 'FOLIOS CERRADOS ESPECIALES', 'class="button-link pink" style="position:relative; width:190px; height:20px;"');
-echo "<br/>";
-echo "<br/><strong>REPORTES DE PEDIDOS CERRADOS</strong><br/><br/>";
+//echo "<br/>";
+//echo "<br/><strong>REPORTES DE PEDIDOS CERRADOS</strong><br/><br/>";
 //echo anchor('a_surtido/reporte_diario', 'REPORTES DE CAPTURA PDF', 'class="button-link red" style="position:relative; width:190px; height:20px;"');
-echo "<br/><br/><br/><br/>";
+//echo "<br/><br/><br/><br/>";
 if($nivel== 24){
 echo "<br/><strong>CAPTURA</strong><br/><br/>";
 echo anchor('a_surtido/captura_sob_fal', 'SOBRANTE/FALTANTE FORMULADO', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
@@ -49,7 +49,7 @@ echo anchor('a_surtido/folios_pendientes_esp', 'ESPECIALES PENDIENTES', 'class="
 echo "<br/>";
 if($nivel==12){
 echo "<br/><strong>REPORTE DE PEDIDOS ABIERTOS</strong><br/><br/>";
-echo anchor('a_surtido/folios_abiertos', 'REPORTE DE FOLIOS PENDIENTES <br />POR CERRAR PDF', 'class="button-link green" style="position:relative; width:190px; height:20px;"');
+echo anchor('a_surtido/folios_abiertos', 'REPORTE DE FOLIOS PENDIENTES <br />POR CERRAR', 'class="button-link green" style="position:relative; width:190px; height:40px;"');
 }
 echo "<br/>";
 if($nivel==12){

@@ -36,7 +36,7 @@
                         if($row->estatus == 0 && $this->session->userdata('tipo') == 1){
                         
                             $l1 = anchor('checador/validar_incidencia/'.$row->incidencia.'/'.$row->asistencia, '<img src="'.base_url().'img/good.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para validar', 'id' => 'validar_'.$row->incidencia));
-                            $l3 = anchor('checador/rechazar_incidencia/'.$row->incidencia, '<img src="'.base_url().'img/error.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para rechazar', 'id' => 'rechazar_'.$row->incidencia));
+                            $l3 = anchor('checador/rechazar_incidencia/'.$row->incidencia.'/'.$row->asistencia, '<img src="'.base_url().'img/error.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para rechazar', 'id' => 'rechazar_'.$row->incidencia));
 
                         }else{
                             $l1 = null;

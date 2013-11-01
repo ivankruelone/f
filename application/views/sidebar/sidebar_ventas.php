@@ -62,6 +62,14 @@ echo anchor('ventas/fecha_cli', 'VTA POR CLIENTE PREF.', 'class="button-link ora
    
 ?>
 
+<?php
+	}elseif($is_logged_in == TRUE && $nivel == 15 && $tipo==1){
+?>
+
+<?php
+	echo anchor('ventas/agrega_targ', 'AGREGAR TARJETAS <br/>DE CLIENTE PREFERENTE', 'class="button-link orange"');
+   
+?>
 
 
 <?php

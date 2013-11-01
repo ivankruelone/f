@@ -281,7 +281,7 @@ where ped>0 and fecg='$fec' and id_user=0  and a.mue<>6 and a.suc=$suc and tid='
 on duplicate key update sec=values(sec)";
 $this->db->query($sx11);
 
-$sx12="update  pedidos set sur=0 where fecha='$fec' and invcedis=0  and suc=$suc";
+$sx12="update  pedidos set sur=0 where fecha='$fec' and invcedis=0 and sur>0 and suc=$suc";
 $this->db->query($sx12);
 $sx13="insert into desarrollo.pedido_formulado_resp
 (promant, fecg, tsuc, suc, sec, porce, descri, promact, maxi, inv, ped, exc, costo, venta, impo, fecha, id, descon, producto, inv_cedis, lin, mue, bloque, iva,fec_respaldo)
@@ -536,7 +536,7 @@ where ped>0 and fecg='$fec' and id_user=0  and a.mue<>6 order by a.suc)
 on duplicate key update sec=values(sec)";
 $this->db->query($sx11);
 
-$sx12="update  pedidos set sur=0 where fecha='$fec' and invcedis=0";
+$sx12="update  pedidos set sur=0 where fecha='$fec' and sur>0 and invcedis=0 and suc=$suc";
 $this->db->query($sx12);
 
 

@@ -802,6 +802,8 @@ class Checador extends CI_Controller
     public function admin_reporte_asistencias_elige_quincena()
     {
         $data['vista'] = 'sitio2/checador/admin_reporte_asistencias_elige';
+        $data['js'] = 'sitio2/checador/admin_reporte_asistencias_elige_js';
+        
         $data['menu'] = 'reportes';
         $data['quincenas'] = $this->checador_model->get_quincenas();
         $data['sucursales'] = $this->checador_model->get_sucursales();
@@ -925,9 +927,9 @@ class Checador extends CI_Controller
         echo $this->checador_model->actualiza_incidencia($incidencia, 1, $asistencia);
     }
 
-    function rechazar_incidencia($incidencia)
+    function rechazar_incidencia($incidencia, $asistencia)
     {
-        echo $this->checador_model->actualiza_incidencia($incidencia, 2);
+        echo $this->checador_model->actualiza_incidencia($incidencia, 2, $asistencia);
     }
 
     public function formato_incidencias_historico()

@@ -1335,7 +1335,7 @@ function control_ventas_producto_nat_empleado($fec,$suc,$nomina,$meta)
         left join catalogo.cat_naturistas c on c.sec=a.sec
         left join catalogo.cat_empleado d on d.nomina=a.nomina
         
-        where a.nomina=$nomina and a.suc=$suc and date_format(fecha, '%Y-%m')='$fec'";   
+        where a.nomina=$nomina and a.suc=$suc and date_format(fecha, '%Y-%m')='$fec' group by a.nomina,fecha,tiket,codigo";   
  		$q = $this->db->query($s);
         
         $num=0;

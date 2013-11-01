@@ -790,12 +790,14 @@ function imprime_pedidos_pre1($fol,$suc)
           
         $this->load->model('a_surtido_model');
         $config['base_url'] = site_url()."/a_surtido/tabla_control_his";
-        $config['total_rows'] = $this->a_surtido_model->cuenta_historico_pedidos();
+        //$config['total_rows'] = $this->a_surtido_model->cuenta_historico_pedidos();
+        $config['total_rows'] = 500;
         $config['first_link'] = '<font size="+1">Primero</font>';
         $config['last_link'] = '<font size="+1">Ultimo</font>';
         $config['next_link'] = '<font size="+1">Siguiente</font>';
         $config['prev_link'] = '<font size="+1">Anterior</font>';
-        $config['per_page'] = '100'; 
+        $config['per_page'] = '100';
+        $config['display_pages'] = TRUE;
 
         $this->pagination->initialize($config);
         

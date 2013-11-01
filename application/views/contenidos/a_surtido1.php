@@ -45,6 +45,19 @@
 ?>
 </div>
 </div>
+</div>    
+  <script language="javascript" type="text/javascript">
+    $(window).load(function () {
+        $("#fol").focus();
+    });
+    
+    $(document).ready(function(){
+    
+    $('#fecha').datepicker();
+    
+    });
+          
+  </script>
 
 <script language="javascript" type="text/javascript">
 
@@ -54,13 +67,24 @@ function tabla_folio(){
     var fecha = document.getElementById("fecha").value;
     var suc = document.getElementById("suc").value;
     
-    $.post("<?php echo site_url();?>/a_surtido/busca_folio/", { folio: folio, fecha: fecha, suc: suc }, function(data){
-                    $("#tabla1").html(data);
-                });
-    $('#fol').val('');
-    $('#fecha').val('');
-    $('#suc').val('');
-                
+    var folio_len = folio.length;
+    var fecha_len = fecha.length;
+    var suc_len = suc.length;
+    
+    if(folio_len >= 7 || fecha_len >= 10 || suc_len >= 3){
+        
+        $("#tabla1").html("Buscando informacion, espere...");
+        
+    
+        $.post("<?php echo site_url();?>/a_surtido/busca_folio/", { folio: folio, fecha: fecha, suc: suc }, function(data){
+            $("#tabla1").html(data);
+        });
+        $('#fol').val('');
+        $('#fecha').val('');
+        $('#suc').val('');
+    }else{
+        alert("Ingresa algun criterio de busqueda.");
+    }
                 
 }
 

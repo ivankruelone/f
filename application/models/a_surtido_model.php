@@ -289,6 +289,17 @@ if($query->num_rows() >0){
         $this->db->update('catalogo.folio_pedidos_cedis', $dataf);
 		echo $this->db->last_query();
 
+}else{
+$dataf = array(
+        'tid'     => 'C',
+        'id_captura' => $id_user,
+        'id_surtido'   => $surti,
+        'id_empaque'    => $emp,
+        'fechasur'=> date('Y-m-d H:i')
+        );
+        $this->db->where('id', $fol);
+        $this->db->update('catalogo.folio_pedidos_cedis', $dataf);
+		echo $this->db->last_query();    
 }
 }
         /////////////////////////////////////////////////////////**************************pedido especial
@@ -355,6 +366,17 @@ if($query->num_rows() >0){
         $this->db->where('id', $fol);
         $this->db->update('catalogo.folio_pedidos_cedis_especial', $dataf);
 
+}else{
+ $dataf = array(
+        'tid'     => 'C',
+        'id_captura' => $id_user,
+        'id_surtido'   => $surti,
+        'id_empaque'    => $emp,
+        
+        'fechasur'=> date('Y-m-d H:i')
+        );
+        $this->db->where('id', $fol);
+        $this->db->update('catalogo.folio_pedidos_cedis_especial', $dataf);    
 }
 }
         /////////////////////////////////////////////////////////**************************pedido especial
@@ -2027,7 +2049,7 @@ function busca_folio_cerrado()
         $this->db->join('usuarios d', 'd.id=a.id_captura', 'LEFT');
         $this->db->where('a.tid', 'C');
         $this->db->where('p.tipo', '1');
-        $this->db->order_by('a.id');
+        $this->db->order_by('a.id', 'DESC');
         
         if(strlen($folio)>0){
         $this->db->where('a.id =', $folio);
@@ -2058,7 +2080,7 @@ function busca_folio_cerrado()
         $this->db->join('usuarios d', 'd.id=a.id_captura', 'LEFT');
         $this->db->where('a.tid', 'C');
         $this->db->where('p.tipo', '1');
-        $this->db->order_by('a.id');
+        $this->db->order_by('a.id', 'DESC');
         
         if(strlen($folio)>0){
         $this->db->where('a.id =', $folio);

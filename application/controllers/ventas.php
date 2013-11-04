@@ -1415,7 +1415,7 @@ public function agrega_targ()
         redirect('ventas/agrega_targ/'.$id);
     }
     
-    function validar()
+    function validar($id)
     {
         
         $this->load->model('catalogo_model');

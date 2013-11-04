@@ -5158,6 +5158,7 @@ function guardar_tarjeta()
         <th>SUCURSAL</th>
         <th>FOLIO INICIAL</th>
         <th>FOLIO FINAL</th>
+        <th># Targetas</th>
         ";
 
         if($nivel == 10){
@@ -5174,10 +5175,17 @@ function guardar_tarjeta()
         </thead>";
         
         $num=0;
+        
+        
         foreach($q->result() as $r)
+        
+        
         {
 	   if($r->tipo==0){$color='red';}else{$color='black';}
-	   $num=$num+1;
+	   
+       $num=$num+1;
+       $targe=$r->fol2 - $r->fol1 +1;
+       
        $l= anchor('ventas/validar/'.$r->id, '<img src="'.base_url().'img/good.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para validar', 'class' => 'encabezado'));
        $l1 = anchor('ventas/eliminar/'.$r->id, '<img src="'.base_url().'img/error.png" border="0" width="20px" /></a>', array('title' => 'Haz Click aqui para eliminar', 'class' => 'encabezado'));
        //$l1 = anchor('supervisor/corte_detalle/'.$r->id.'/'.$fec.'/'.$suc,$r->fechacorte.' </a>', array('title' => 'Haz Click aqui para ver el detalle!', 'class' => 'encabezado'));  
@@ -5187,7 +5195,8 @@ function guardar_tarjeta()
             <td align=\"left\"><font color=\"$color\">".$num."</font></td>
             <td align=\"left\"><font color=\"$color\">".$r->suc." ".$r->nombre."</font></td>
             <td align=\"left\"><font color=\"$color\">".$r->fol1."</font></td>
-            <td align=\"left\"><font color=\"$color\">".$r->fol2."</font></td> 
+            <td align=\"left\"><font color=\"$color\">".$r->fol2."</font></td>
+            <td align=\"right\"><font color=\"$color\">".$targe."</font></td>
             ";
     
     if($nivel == 10){
@@ -5208,8 +5217,11 @@ return $tabla;
 
 function validar_targeta($id)
     {
-        $sql="update vtadc.tarjetas_suc set tipo=1 where tipo=0";
+        $sql="update vtadc.tarjetas_suc set tipo=1 where tipo=0 and id=$id";
         $query = $this->db->query($sql);
+        //echo $this->db->last_query();
+        //echo die();
+        
         
     }
     

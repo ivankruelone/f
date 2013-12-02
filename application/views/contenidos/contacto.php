@@ -1,12 +1,27 @@
-<h1 style="color: red;" align="justify">IMPORTANTE: A TODAS LAS SUCURSALES SE LES INFORMA QUE EL NUEVO GERENTE NACIONAL ES EL ING. AGUSTIN ARZATE VILLEGAS SU CORREO ES: agustin.arzate@farfenix.com.mx   </h1>
 
+
+
+
+
+<h3 style="color: blue;" align="justify">A partir de hoy y hasta el 31 de diciembre se estar&aacute;n otorgando $5.00 por cada pieza vendida en los siguientes productos:
+<br /><br /></h3>
+<h2 style="color: blue;">
+<li>7502248230599 UBIKAL CALCIO SULFATADO, VIT D Y MAGNESIO</li>
+
+<li>7502248230575 KAMPACH GLUCOSAMIDA LIQUIDA, CONDROITINA, MSM Y COLAGENO</li>
+
+<li>7503001467375 DCI  SOLUCI&Oacute;N ANTI-ACNE</li> 
+</h2>
+<br /><br />
+<h3 style="color: blue;" align="justify">ESTOS PRODUCTOS YA SE ENCUENTRAN EN LA LISTA DE COMISIONABLES</h3>
+
+
+<h1 style="color: red;" align="justify">IMPORTANTE: Se les notifica que a partir de ma&ntilde;ana el producto
+<br /><br />
+<li>327 PRAVASTATINA 10 MG 30 TAB</li>  
+<br />
+Cambia su precio de $220.00 a $34.00  a partir de 27 de noviembre del 2013</h1>
 <!--
-
-
-<h1 style="color: red;" align="justify">TAMBIEN PUEDEN CAPTURAR SU INVENTARIO EL LINK SE LLAMA CAPTURA DE INVENTARIO Y ES UN RECTANGULO VERDE ESTA OPCION ES POR SI NO FUNCIONA SU PUNTO DE VENTA O NO TIENEN CPU (PARA QUE NO LO HAGAN EN EXEL)</h1>
-
-<h1 style="color: red;" align="justify">IMPORTANTE: A LAS SUCURSALES QUE TRANSMITEN PEDIDO EL DIA DE HOY JUEVES 03 RECUERDEN QUE SU PEDIDO TIENE QUE SER DOBLE YA QUE NO SE LABORARA EL DIA 10 DE MAYO.</h1>
-
 <h1 style="color: red;" align="justify">EL BOTON PARA CAPTURAR SU PEDIDO EN LA PAGINA SE ENCUENTRA EN EL MENU PEDIDOS</h1>
 
 <h1 style="color: red;" align="justify">IMPORTANTE: A TODAS LAS SUCURSALES SE LES INFORMA QUE EL NUEVO GERENTE NACIONAL ES EL ING. AGUSTIN ARZATE VILLEGAS SU CORREO ES agustin.arzate@farfenix.com.mx   </h1>
@@ -58,8 +73,8 @@ echo anchor('contacto/descarga_memo', 'ARCHIVO PARA CORREGIR INVENTARIO')?>.</p>
 -->
 
 <br /><br />
-<h1 style="color: blue;" align="justify">YA NO ES NECESARIO ENVIAR REPORTE DE VENTAS, INVENTARIO Y CORTES. EN CASO DE NECESITAR ALGUN ARCHIVO SE LES LLAMARA A SU SUCURSAL.</h1> 
-<!-- <h4 style="color: blank;" align="justify">IMPORTANTE: LAS CLAVES DE INVENTARIO DE GENERICOS  Y DR. DESCUENTO DEBEN DE SER  DE LA 1  A LA 885 MAS LA CLAVE 2000 , LAS SUCURSALES DE FARMABODEGA DE LA 1  A LA  8391 ....&iexcl;&iexcl;TRANSMITIR ANTES DE LAS 2:00!!</h4> -->
+<!--<h1 style="color: blue;" align="justify">YA NO ES NECESARIO ENVIAR REPORTE DE VENTAS, INVENTARIO Y CORTES. EN CASO DE NECESITAR ALGUN ARCHIVO SE LES LLAMARA A SU SUCURSAL.</h1> 
+ <h4 style="color: blank;" align="justify">IMPORTANTE: LAS CLAVES DE INVENTARIO DE GENERICOS  Y DR. DESCUENTO DEBEN DE SER  DE LA 1  A LA 885 MAS LA CLAVE 2000 , LAS SUCURSALES DE FARMABODEGA DE LA 1  A LA  8391 ....&iexcl;&iexcl;TRANSMITIR ANTES DE LAS 2:00!!</h4> -->
 <?php
 	        $is_logged_in = $this->session->userdata('is_logged_in');
         

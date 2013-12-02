@@ -1022,9 +1022,12 @@ $data['cabeza']= "<table width=\"690\">
 
    public function tabla_control_his_mod()
     {
+        
         $aaa=date('Y');
         $mes=date('m');
         $dia=date('d');
+        ini_set('memory_limit','2000M');
+        set_time_limit(0);
         $this->load->model('catalogo_model');
         $mesx = $this->catalogo_model->busca_mes_unico($mes);
           

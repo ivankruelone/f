@@ -168,7 +168,7 @@ function supervisor_motivo_his($motivo)
     $id_user= $this->session->userdata('id');
     $id_plaza=$this->session->userdata('id_plaza');
     
-if($motivo==2){
+if($motivo==2 || $motivo==8){
 $sql="SELECT a.*,b.nombre as sucx, d.nombre as id_userx,d.puesto as contador,c.ciax, aa.nom,aa.pat,aa.mat,bb.nombre as motivox,e.nombre as id_rhx,e.puesto as rhpuesto 
       FROM mov_supervisor a
       left join catalogo.cat_empleado aa on aa.cia=a.cia and aa.nomina=a.nomina
@@ -984,7 +984,11 @@ function empleados_mov_ab($fec1,$fec2,$mot)
       FROM catalogo.cat_alta_empleado a
       left join catalogo.sucursal b on b.suc=a.suc
       left join catalogo.cat_compa_nomina d on d.cia=a.cia
-      where tipo=2 and motivo='RETENCION'
+      where 
+      tipo=2 and motivo='RETENCION'
+      || tipo=2 and motivo='ALTA'
+      || tipo=2 and motivo='BAJA'
+      
       order by fecha desc
       ";
       $query = $this->db->query($sql);

@@ -4277,6 +4277,7 @@ $num=1;
         $suc= $this->session->userdata('username');
         
 if($quincena==15){$dia=01;}else{$dia=16;}
+
 if($id_mov<>7){
         $sql = "SELECT a.*
 FROM catalogo.cat_empleado a

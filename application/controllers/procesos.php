@@ -541,7 +541,14 @@ class Procesos extends CI_Controller
 ///////////***********************************************///////////// 
 ///////////***********************************************///////////// 
 ///////////***********************************************/////////////   
-    
+ public function factura_nadro_e()
+  {
+    ini_set('memory_limit','2000M');
+    set_time_limit(0);
+     $this->load->model('envio_model_as400');
+     $this->envio_model_as400->factura_nadro();
+    redirect('procesos/index');
+  }   
     
     
     

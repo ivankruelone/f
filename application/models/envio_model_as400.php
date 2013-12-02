@@ -20,17 +20,17 @@ date_format(fechasur,'%d')as dia, b.plaza,b.suc_contable,a.lin,b.iva,
 a.suc,
 
 case when b.cia=13
-then sum(sur*costo)
+then sum(sur*costo)*1.2
 else
-sum(sur*costo)*1.15
+sum(sur*costo)*1.2
 end as sub,
 
 case when a.lin=5 or a.lin=2
 then (
 (case when b.cia=13
-then sum(sur*costo)
+then sum(sur*costo)*1.2
 else
-sum(sur*costo)*1.15
+sum(sur*costo)*1.2
 end)
 *b.iva)
 else
@@ -40,15 +40,15 @@ end as ivaimp,
 
 
 (case when b.cia=13
-then sum(sur*costo)
+then sum(sur*costo)*1.2
 else
-sum(sur*costo)*1.15
+sum(sur*costo)*1.2
 end)+(case when a.lin=5 or a.lin=2
 then (
 (case when b.cia=13
-then sum(sur*costo)
+then sum(sur*costo)*1.2
 else
-sum(sur*costo)*1.15
+sum(sur*costo)*1.2
 end)
 *b.iva)
 else
@@ -142,17 +142,17 @@ $sqlx="SELECT b.cia,34 as pol,date_format(fechasur,'%Y')as aaa,date_format(fecha
 a.costo,
 
 case when b.cia=13
-then sum(sur*costo)
+then sum(sur*costo)*1.20
 else
-sum(sur*costo)*1.15
+sum(sur*costo)*1.20
 end as sub,
 
 case when a.lin=5 or a.lin=2
 then (
 (case when b.cia=13
-then sum(sur*costo)
+then sum(sur*costo)*1.20
 else
-sum(sur*costo)*1.15
+sum(sur*costo)*1.20
 end)
 *b.iva)
 else
@@ -162,15 +162,15 @@ end as ivaimp,
 
 
 (case when b.cia=13
-then sum(sur*costo)
+then sum(sur*costo)*1.20
 else
-sum(sur*costo)*1.15
+sum(sur*costo)*1.20
 end)+(case when a.lin=5 or a.lin=2
 then (
 (case when b.cia=13
-then sum(sur*costo)
+then sum(sur*costo)*1.20
 else
-sum(sur*costo)*1.15
+sum(sur*costo)*1.20
 end)
 *b.iva)
 else
@@ -314,6 +314,173 @@ fclose($da);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+public function factura_nadro()
+{
+$sqlx="SELECT concat(prefijo,factura)as factura,'P'as fija,0 as codigo_arti,lin,
+(select descripcion from catalogo.cat_nadro where codigo=a.codigo group by codigo)as descri
+
+,piezas,0 as regalo,round(oferta*100)as oferta,round(farmacia*100)as farmacia,
+0 as venta,round((piezas*farmacia)*100)as importe,0 as venta_renglon,round(iva*100)as iva,0 as ieps,
+0 as acomodo,codigo,round((financiero*100))as financiero,0,
+0 as clasifica,''as referencia,' 'as venta_neta,0 as des_limi,round(((piezas*farmacia)*(oferta/100))*100)as bonifica
+ FROM compras.factura_nadro A";
+$queryx = $this->db->query($sqlx);
+if($queryx->num_rows() > 0){//cia, suc, sem, aaaa, mes, lin, plaza, succ, importe
+    
+    $File = "./txt/facdet.txt";
+    $Handle = fopen($File, 'w');
+$cero=0;
+foreach($queryx->result() as $rowx)  
+{
+$Data=
+         str_pad($rowx->factura,10," ",STR_PAD_RIGHT)
+        .str_pad($rowx->fija,1," ",STR_PAD_RIGHT)
+        .str_pad($rowx->codigo_arti,8," ",STR_PAD_RIGHT)
+        .str_pad($rowx->lin,2,"0",STR_PAD_LEFT)
+        .str_pad($rowx->descri,35," ",STR_PAD_RIGHT)
+        .str_pad($rowx->piezas,6,"0",STR_PAD_LEFT)
+        .str_pad($rowx->regalo,6,"0",STR_PAD_LEFT)
+        .str_pad($rowx->oferta,5,"0",STR_PAD_LEFT)
+        .str_pad($rowx->farmacia,8,"0",STR_PAD_LEFT)
+        .str_pad($rowx->venta,8,"0",STR_PAD_LEFT)
+        .str_pad($rowx->importe,8,"0",STR_PAD_LEFT)
+        .str_pad($rowx->venta_renglon,8,"0",STR_PAD_LEFT)
+        .str_pad($rowx->iva,8,"0",STR_PAD_LEFT)
+        .str_pad($rowx->ieps,8,"0",STR_PAD_LEFT)
+        .str_pad($rowx->acomodo,1,"0",STR_PAD_LEFT)
+        .str_pad($rowx->codigo,14," ",STR_PAD_RIGHT)
+        .str_pad($rowx->financiero,4,"0",STR_PAD_LEFT)
+        .str_pad($rowx->clasifica,1," ",STR_PAD_RIGHT)
+        .str_pad($rowx->referencia,1," ",STR_PAD_RIGHT)
+        .str_pad($rowx->venta_neta,1," ",STR_PAD_RIGHT)
+        .str_pad($rowx->des_limi,8,"0",STR_PAD_LEFT)
+        .str_pad($rowx->bonifica,8,"0",STR_PAD_LEFT)
+        ."\r\n";
+    //echo $linea;
+    
+    fwrite($Handle, $Data);
+}
+
+fclose($Handle); 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//die();
+$servidor_ftp    = "10.10.0.5";
+$ftp_nombre_usuario = "lidia";
+$ftp_contrasenya = "puepue19";
+
+$archivo = './txt/facdet.txt';
+$da = fopen($archivo, 'r');
+$archivo_remoto = 'catalogo/detnad';
+
+
+$id_con = ftp_connect($servidor_ftp);
+$resultado_login = ftp_login($id_con, $ftp_nombre_usuario, $ftp_contrasenya);
+
+
+if (ftp_put($id_con, $archivo_remoto, $archivo, FTP_ASCII)) {
+    $mensaje=1;
+} else {
+    $mensaje=2;
+}
+
+ftp_close($id_con);
+fclose($da);
+}
+  
+    return $mensaje; 
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+public function factura_nadro_c()
+{
+$sqlx="SELECT a.suc,b.cia,400 as prv,codigo_nadro,a.fecha_fac,concat(prefijo,factura)as factura,lin,count(*)as reg,0 as codigo_cliente,
+sum(piezas*farmacia)as importe,
+sum((piezas*farmacia)*(oferta/100))+sum(((piezas*farmacia)-(piezas*farmacia)*(oferta/100))*(financiero/100))as descuento,
+sum(a.iva)as iva,
+
+(sum(piezas*farmacia))-
+(sum((piezas*farmacia)*(oferta/100))+sum(((piezas*farmacia)-(piezas*farmacia)*(oferta/100))*(financiero/100)))+
+(sum(a.iva))as total
+
+ FROM compras.factura_nadro a
+left join catalogo.sucursal b on b.suc=a.suc
+ where prefijo='PM' and a.factura=7554438
+group by prefijo,a.factura";
+$queryx = $this->db->query($sqlx);
+if($queryx->num_rows() > 0){//cia, suc, sem, aaaa, mes, lin, plaza, succ, importe
+    
+    $File = "./txt/facdet.txt";
+    $Handle = fopen($File, 'w');
+$cero=0;
+foreach($queryx->result() as $rowx)  
+{
+$Data=
+         str_pad('B',1," ",STR_PAD_RIGHT)
+        .str_pad('FE',2," ",STR_PAD_RIGHT)
+        .str_pad($rowx->cia,2," ",STR_PAD_RIGHT)
+        .str_pad($rowx->suc,2,"0",STR_PAD_LEFT)
+        .str_pad($rowx->prv,35," ",STR_PAD_RIGHT)
+        .str_pad('C',1," ",STR_PAD_LEFT)
+        .str_pad($rowx->codigo_nadro,6,"0",STR_PAD_LEFT)
+        .str_pad($rowx->fecha_fac,5,"0",STR_PAD_LEFT)
+        .str_pad($rowx->reg,8,"0",STR_PAD_LEFT)
+        .str_pad('C:',2," ",STR_PAD_LEFT)
+        .str_pad($rowx->codigo_clente,8,"0",STR_PAD_LEFT)
+        .str_pad('F',8,"0",STR_PAD_LEFT)
+        .str_pad($rowx->factura,8,"0",STR_PAD_LEFT)
+        .str_pad(' ',4," ",STR_PAD_LEFT)
+        .str_pad($rowx->fecha_fac,1,"0",STR_PAD_LEFT)
+        .str_pad($rowx->total,14," ",STR_PAD_RIGHT)
+        .str_pad($rowx->descuento,4,"0",STR_PAD_LEFT)
+        .str_pad($rowx->iva,1," ",STR_PAD_RIGHT)
+        .str_pad(0,1,"0",STR_PAD_RIGHT)
+        .str_pad($rowx->reg,1," ",STR_PAD_RIGHT)
+        
+        
+        
+        .str_pad('0',1,"0",STR_PAD_LEFT)
+        .str_pad('0',1,"0",STR_PAD_LEFT)
+        ."\r\n";
+    //echo $linea;
+    
+    fwrite($Handle, $Data);
+}
+
+fclose($Handle); 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//die();
+$servidor_ftp    = "10.10.0.5";
+$ftp_nombre_usuario = "lidia";
+$ftp_contrasenya = "puepue19";
+
+$archivo = './txt/facdet.txt';
+$da = fopen($archivo, 'r');
+$archivo_remoto = 'catalogo/detnad';
+
+
+$id_con = ftp_connect($servidor_ftp);
+$resultado_login = ftp_login($id_con, $ftp_nombre_usuario, $ftp_contrasenya);
+
+
+if (ftp_put($id_con, $archivo_remoto, $archivo, FTP_ASCII)) {
+    $mensaje=1;
+} else {
+    $mensaje=2;
+}
+
+ftp_close($id_con);
+fclose($da);
+}
+  
+    return $mensaje; 
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 

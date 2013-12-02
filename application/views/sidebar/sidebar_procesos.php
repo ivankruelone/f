@@ -48,9 +48,10 @@ $tipo = $this->session->userdata('tipo');
         echo ('<br /><br />');
         echo ('<br /><br />');
         echo ('<br /><br />');
-        
         echo ('<br /><br />');
         echo anchor('procesos/tabla_orden_cedis', 'PREVIO ORDEN DE COMPRAS', 'class="button-link red"');
+        echo ('<br /><br />');
+        echo anchor('procesos/factura_nadro_e', 'procesos nadro', 'class="button-link red"');
         echo ('<br /><br />');
         echo anchor('procesos/formulario_completo', 'Facturas', 'class="button-link green"');
         echo ('<br /><br />');

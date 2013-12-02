@@ -230,35 +230,35 @@ var $is_logged_in;
             
             </tr>";	
        	}
-  $sx1 = "SELECT b.tipo as equipox, a.* from desarrollo.equipos_comunicaciones a left join desarrollo.equipos_tipo b on b.id=a.tipo
- where id_user=$id";
- $qx1 = $this->db->query($sx1);
-      
- $tabla.="
- <tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr>
-        <tr>
-        <th colspan=\"3\" align=\"center\">EQUIPOS DE COMUNICACIONES</th>
-        </tr>
-        <tr>
-        <th>EQUIPO</th>
-        <th>MODELO</th>
-        <th>TELEFONO</th>
-        </tr>
-        ";
-         
-  foreach($qx1->result() as $rx1)
-        {
-        	
-        $tabla.="
-            <tr>
-            <tr>
-            <td align=\"left\"><font color=\"$color\">".$rx1->equipox." </font></td>
-            <td align=\"left\"><font color=\"$color\">".$rx1->equipo." </font></td>
-            <td align=\"left\"><font color=\"$color\">".$rx1->cel."</font></td>
-           
-            
-            </tr>";	
-       	}        
+//  $sx1 = "SELECT b.tipo as equipox, a.* from desarrollo.equipos_comunicaciones a left join desarrollo.equipos_tipo b on b.id=a.tipo
+// where id_user=$id";
+// $qx1 = $this->db->query($sx1);
+//      
+// $tabla.="
+// <tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr>
+//        <tr>
+//        <th colspan=\"3\" align=\"center\">EQUIPOS DE COMUNICACIONES</th>
+//        </tr>
+//        <tr>
+//        <th>EQUIPO</th>
+//        <th>MODELO</th>
+//        <th>TELEFONO</th>
+//        </tr>
+//        ";
+//         
+//  foreach($qx1->result() as $rx1)
+//        {
+//        	
+//        $tabla.="
+//            <tr>
+//            <tr>
+//            <td align=\"left\"><font color=\"$color\">".$rx1->equipox." </font></td>
+//            <td align=\"left\"><font color=\"$color\">".$rx1->equipo." </font></td>
+//            <td align=\"left\"><font color=\"$color\">".$rx1->cel."</font></td>
+//           
+//            
+//            </tr>";	
+//       	}        
         }
         
         $tabla.="

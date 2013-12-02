@@ -1874,7 +1874,7 @@ $f='';
         $fec=date('Y-m-d')-1;
         $s = "SELECT a.*,d.nombre as sucx,d.dia  FROM catalogo.folio_pedidos_cedis a
           left join catalogo.sucursal d on d.suc=a.suc
-          where a.tid='C' order by a.id";
+          where a.tid='C' order by a.id desc limit 500";
         $q = $this->db->query($s);
         foreach($q->result() as $r)
         {

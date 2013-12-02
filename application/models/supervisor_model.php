@@ -3802,7 +3802,7 @@ function captura_de_mov_his_alta()
       left join catalogo.cat_compa_nomina c on c.cia=a.cia
       left join usuarios d on d.id=a.id_user
       left join usuarios e  on e.id=a.id_rh
-      where superv=$plaza and a.tipo>2 and id_super=0 and empleado>0 and superv>0";
+      where superv=$plaza and a.tipo>2 and id_super=0 and empleado>0 and superv>0 and aa.tipo=1";
       
 
 

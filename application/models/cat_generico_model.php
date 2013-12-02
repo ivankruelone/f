@@ -692,6 +692,13 @@ $susa2=substr($rowx->susa2,0,50);
 $s1="select *from catalogo.cat_naturistas where sec=$rowx->sec";
 $q1 = $this->db->query($s1);
 if($q1->num_rows() > 0){$natur=1;}else{$natur=0;}
+////////////////////////////////////////////////////////////////////////////Solo al 31 de diciembre
+if(
+($rowx->codigo==7502248230599 and date('Y')==2013) || 
+($rowx->codigo==7502248230575  and date('Y')==2013)|| 
+($rowx->codigo==7503001467375  and date('Y')==2013))
+{ $natur=1;}
+
 $s2="select *from catalogo.antibiotico where sec=$rowx->sec or cod=$rowx->codigo";
 $q2 = $this->db->query($s2);
 if($q2->num_rows() > 0){$antibio='S';}else{$antibio='N';} 
@@ -735,6 +742,12 @@ if($rowx->sec>=3032 and $rowx->sec<=3043){$inv='N';}
 $s1="select *from catalogo.cat_naturistas where sec=$rowx->sec";
 $q1 = $this->db->query($s1);
 if($q1->num_rows() > 0){$natur=1;}else{$natur=0;}
+////////////////////////////////////////////////////////////////////////////Solo al 31 de diciembre
+if(
+($rowx->codigo==7502248230599 and date('Y')==2013) || 
+($rowx->codigo==7502248230575  and date('Y')==2013)|| 
+($rowx->codigo==7503001467375  and date('Y')==2013))
+{ $natur=1;}
 $s2="select *from catalogo.antibiotico where sec=$rowx->sec or cod=$rowx->codigo";
 $q2 = $this->db->query($s2);
 if($q2->num_rows() > 0){$antibio='S';}else{$antibio='N';} 

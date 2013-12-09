@@ -406,8 +406,8 @@ $lp = anchor('supervisor/venta_producto_naturistas_premio/'.$fec,'PREMIOS</a>', 
             $totimp_b_c=0;
             $totimp_b_c_iva=0;
             $totcomision=0;
-        
-        $tabla= "
+        $tabla = $this->__concurso_venta($fec,$suc);
+        $tabla.= "
         <table cellpadding=\"3\" border=\"1\">
         <tbody>
         ";
@@ -497,7 +497,125 @@ $lp = anchor('supervisor/venta_producto_naturistas_premio/'.$fec,'PREMIOS</a>', 
 
 //**************************************************************
 //**************************************************************
+function __concurso_venta($fec,$suc)
+{
+        $s="select a.nomina, a.suc,b.nombre as sucx,codigo,descri, sum(can)as piezas,
+(select completo from catalogo.cat_empleado b where b.nomina=a.nomina and b.tipo=1)as completo,
+(select  sum(can)as piezas
+from vtadc.venta_detalle a
+where a.codigo in(7502248230599,7502248230575,7503001467375) and fecha>'2013-11-22' and fecha<='2013-12-31')as gral
+from vtadc.venta_detalle a
+left join catalogo.sucursal b on b.suc=a.suc
+where a.codigo in(7502248230599,7502248230575,7503001467375) 
+and date_format(a.fecha,'%Y-%m')='$fec' and fecha>='2013-11-23' and fecha<='2013-12-31'
+and a.suc=$suc
+group by a.suc,a.nomina
+order by a.suc";   
+ 		$q = $this->db->query($s);
+        
+        $num=0;
+        $tabla= "
+        <table cellpadding=\"3\">
+        <thead>
+        <tr>
+        <th colspan=\"3\">Productos de concurso del 23 de noviembre al 31 de diciembre del 2013</th>
+        </tr>
+        <tr>
+        <th>Nomina</th>
+        <th>Empleado</th>
+        <th>Vendidas</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        ";
+        
+        $totcan=0; $color='green';
+        foreach($q->result() as $r)
+        {
+        $gral=$r->gral;
+        $l1 = anchor('encargado/tabla_control_concurso/'.$fec.'/'.$suc.'/'.$r->nomina,$r->nomina.'</font>');
+		    
+            $tabla.="
+            <tr>
+            <td align=\"left\">$l1</td>
+            <td align=\"left\"><font color='$color'>".$r->completo."</font></td>
+            <td align=\"right\"><font color='$color'>".number_format($r->piezas,0)."</font></td>
+            </tr>
+            ";
+        $totcan=$totcan+$r->piezas;
+        }
+         $tabla.="
+            <tr>
+            <td align=\"right\" colspan=\"2\">TOTAL</td>
+            <td align=\"right\">".number_format($totcan,0)."</td>
+            </tr>
+             <tr>
+            <td align=\"center\"colspan=\"3\"><font color=\"green\" size=\"+2\">TOTAL DE PIEZAS VENDIDAS <br />
+            EN GENERICOS Y DDR ..:".number_format($gral,0)."</font></td>
+            </tr>
+        </tbody>
+        </table>";
+        
+        return $tabla;
+    
+}
 //**************************************************************
+function concurso_venta_empl($fec,$suc,$nomina)
+{
+        $s="select a.fecha,a.nomina, a.suc,b.nombre as sucx,codigo,descri, (can)as piezas
+
+from vtadc.venta_detalle a
+left join catalogo.sucursal b on b.suc=a.suc
+where a.codigo in(7502248230599,7502248230575,7503001467375) 
+and date_format(a.fecha,'%Y-%m')='$fec' and fecha>='2013-11-23' and fecha<='2013-12-31'
+and a.suc=$suc and a.nomina=$nomina
+order by a.suc";   
+ 		$q = $this->db->query($s);
+        
+        $num=0;
+        $tabla= "
+        <table cellpadding=\"3\">
+        <thead>
+        <tr>
+        <th colspan=\"4\">Productos de concurso del 23 de noviembre al 31 de diciembre del 2013</th>
+        </tr>
+        <tr>
+        <th>Fecha</th>
+        <th>Codigo</th>
+        <th>Descripcion</th>
+        <th>Vendidas</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        ";
+        
+        $totcan=0; $color='green';
+        foreach($q->result() as $r)
+        {
+            $tabla.="
+            <tr>
+            <td align=\"left\">".$r->fecha."</td>
+            <td align=\"left\">".$r->codigo."</td>
+            <td align=\"left\">".$r->descri."</td>
+            <td align=\"right\"><font color='$color'>".number_format($r->piezas,0)."</font></td>
+            </tr>
+            ";
+        $totcan=$totcan+$r->piezas;
+        }
+         $tabla.="
+        	 <tr>
+            <td align=\"right\" colspan=\"3\">TOTAL</td>
+            <td align=\"right\">".number_format($totcan,0)."</td>
+            </tr>
+        </tbody>
+        </table>";
+        
+        return $tabla;
+    
+}
+
 //**************************************************************
    function control_ventas_producto_naturistas($fec,$suc,$meta)
     {

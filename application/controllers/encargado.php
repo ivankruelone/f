@@ -372,6 +372,30 @@ public function ventas_naturistas()
         $this->load->view('extrafooter');
     }
     /////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////
+     public function tabla_control_concurso($fec,$suc,$nomina)
+    {
+        $aaa= substr($fec,0,4);
+        $mes=substr($fec,5,2);
+        $fec=$aaa."-".str_pad($mes,2,0,STR_PAD_LEFT);
+        $this->load->model('catalogo_model');
+        $mesx = $this->catalogo_model->busca_mes_unico($mes);
+          
+        $this->load->model('encargado_model');
+        $data['fechac']= date('Y-m-d');
+        $data['tabla'] = $this->encargado_model->concurso_venta_empl($fec,$suc,$nomina);
+        
+        $data['titulo'] = "REPORTE DE VENTAS DE PRODUCTOS DE CONCURSO DEL MES DE $mesx DEL $aaa";
+        $data['titulo1'] = "";
+        $data['contenido'] = "supervisor";
+        $data['selector'] = "supervisor";
+        $data['sidebar'] = "sidebar_encargado_mov";
+        
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////
    public function venta_producto_naturistas($suc,$fec,$meta)
     {
         $aaa=substr($fec,0,4);

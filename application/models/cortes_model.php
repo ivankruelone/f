@@ -4758,7 +4758,7 @@ $tabla.=
         $this->load->library('nuSoap_lib');
         
         
-        $client = new nusoap_client("http://192.168.1.79/comanche/index.php/wsta/MontoSucursalDia_/wsdl", false, '', '', '', '', 5);
+        $client = new nusoap_client("http://201.156.18.162/comanche/index.php/wsta/MontoSucursalDia_/wsdl", false, '', '', '', '', 5);
         $client->soap_defencoding = 'UTF-8';
         
         $err = $client->getError();
@@ -4844,7 +4844,7 @@ $tabla.=
         $this->load->library('nuSoap_lib');
         
         
-        $client = new nusoap_client("http://192.168.1.79/comanche/index.php/wsta/MontoSucursalMes_/wsdl", false);
+        $client = new nusoap_client("http://201.156.18.162/comanche/index.php/wsta/MontoSucursalMes_/wsdl", false);
         $client->soap_defencoding = 'UTF-8';
         
         $err = $client->getError();

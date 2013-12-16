@@ -4519,8 +4519,105 @@ function actualiza_sob(id, valor){
     }
 
 
+function facturas_cedis($fecha1, $fecha2)
+        {
+        
+        $sql = "SELECT f.id, f.suc, s.nombre, f.fechas, s.rfc FROM catalogo.folio_pedidos_cedis f
+        left join catalogo.sucursal s on f.suc=s.suc
+        where fechas>='2013-12-01' and fechas>='$fecha1'and fechas<='$fecha2' and tid='C' and s.cia<>'13'";
+        $query = $this->db->query($sql);
+        
+        
+        $tabla= "
+        <table style=\"font-size: medium; \">
+        <thead>
+        <tr>
+        <th>#</th>
+        <th>Id</th>
+        <th>Sucursal</th>
+        <th>Fecha</th>
+        <th>Rfc</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+                $num=1;
+                foreach($query->result() as $row)
+        {
+             $tabla.="
+            <tr>
+            <td align=\"left\"><font color=\"orange\">".$num."</font></td>
+            <td align=\"right\">".$row->id."</td>
+            <td align=\"left\">".$row->suc." - ".$row->nombre."</td>
+            <td align=\"left\">".$row->fechas."</td>
+            <td aling=\"left\">".$row->rfc."</td> 
+            
+            </tr>
+            
+            ";
+            $num=$num+1;
+        }
+       $tabla.="
+       
+       </tbody>
+       
+       </table>";
+        
+        return $tabla;
+        
+        
+    }
+    
+    
 
-
+function facturas_cedis_especial($fecha1, $fecha2)
+        {
+        
+        $sql = "SELECT f.id, f.suc, s.nombre, f.fechas, s.rfc FROM catalogo.folio_pedidos_cedis_especial f
+        left join catalogo.sucursal s on f.suc=s.suc
+        where fechas>='2013-12-01' and fechas>='$fecha1'and fechas<='$fecha2' and tid='C' and s.cia<>'13'";
+        $query = $this->db->query($sql);
+        
+        
+        $tabla1= "
+        <table style=\"font-size: medium; \">
+        <thead>
+        <tr>
+        <th>#</th>
+        <th>Id</th>
+        <th>Sucursal</th>
+        <th>Fecha</th>
+        <th>Rfc</th>
+        </tr>
+        </thead>
+        <tbody>
+        ";
+                $num=1;
+                foreach($query->result() as $row)
+        {
+             $tabla1.="
+            <tr>
+            <td align=\"left\"><font color=\"orange\">".$num."</font></td>
+            <td align=\"right\">".$row->id."</td>
+            <td align=\"left\">".$row->suc." - ".$row->nombre."</td>
+            <td align=\"left\">".$row->fechas."</td>
+            <td aling=\"left\">".$row->rfc."</td> 
+            
+            </tr>
+            
+            ";
+            $num=$num+1;
+        }
+       $tabla1.="
+       
+       </tbody>
+       
+       </table>";
+        
+        return $tabla1;
+        
+        
+    }
 
 
 

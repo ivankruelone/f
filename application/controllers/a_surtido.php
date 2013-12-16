@@ -1734,6 +1734,47 @@ public function tiket_captura($id)
         $this->load->view('main', $data);
         $this->load->view('extrafooter');
     }
+    
+        public function tabla_facturas()
+    {   $data['mensaje']= '';
+        $data['titulo']= 'Facturas Cedis';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');
+       
+
+		$data['contenido'] = "facturas";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+    }  
+    
+    public function facturas_submit ()
+    {
+        
+        $fecha1 = $this->input->post('fec1');
+        $fecha2 = $this->input->post('fec2');
+        
+        $this->load->model('a_surtido_model');
+         $data['mensaje']= '';
+        $data['titulo']= 'FACTURAR PEDIDOS CEDIS';
+        $data['titulo1']= '';
+        $this->load->model('a_surtido_model');
+        $data['tabla'] = $this->a_surtido_model->facturas_cedis($fecha1, $fecha2);
+        $data['tabla1'] = $this->a_surtido_model->facturas_cedis_especial($fecha1, $fecha2);
+    
+		$data['contenido'] = "a_folio_sob_fal";
+        $data['selector'] = "a_surtido";
+        $data['sidebar'] = "sidebar_a_surtido";
+              
+        $this->load->view('header');
+        $this->load->view('main', $data);
+        $this->load->view('extrafooter');
+        
+    }
+    
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

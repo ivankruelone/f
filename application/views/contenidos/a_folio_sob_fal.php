@@ -4,4 +4,5 @@
 <?php
 
 	echo $tabla;
+    echo $tabla1;
 ?>

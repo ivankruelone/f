@@ -882,7 +882,7 @@ order by a.fechacorte
         $this->load->library('nuSoap_lib');
         
         
-        $client = new nusoap_client("http://192.168.1.79/comanche/index.php/wsta/SucursalMes_/wsdl", false);
+        $client = new nusoap_client("http://201.156.18.162/comanche/index.php/wsta/SucursalMes_/wsdl", false);
         $client->soap_defencoding = 'UTF-8';
         
         $err = $client->getError();
@@ -926,7 +926,7 @@ order by a.fechacorte
         $this->load->library('nuSoap_lib');
         
         
-        $client = new nusoap_client("http://192.168.1.79/comanche/index.php/wsta/MontoMes_/wsdl", false);
+        $client = new nusoap_client("http://201.156.18.162/comanche/index.php/wsta/MontoMes_/wsdl", false);
         $client->soap_defencoding = 'UTF-8';
         
         $err = $client->getError();
@@ -969,7 +969,7 @@ order by a.fechacorte
         $this->load->library('nuSoap_lib');
         
         
-        $client = new nusoap_client("http://192.168.1.79/comanche/index.php/wsta/CiaMes_/wsdl", false);
+        $client = new nusoap_client("http://201.156.18.162/comanche/index.php/wsta/CiaMes_/wsdl", false);
         $client->soap_defencoding = 'UTF-8';
         
         $err = $client->getError();
@@ -1012,7 +1012,7 @@ order by a.fechacorte
         $this->load->library('nuSoap_lib');
         
         
-        $client = new nusoap_client("http://192.168.1.79/comanche/index.php/wsta/Comisiones_/wsdl", false);
+        $client = new nusoap_client("http://201.156.18.162/comanche/index.php/wsta/Comisiones_/wsdl", false);
         $client->soap_defencoding = 'UTF-8';
         
         $err = $client->getError();

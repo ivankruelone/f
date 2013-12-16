@@ -669,6 +669,17 @@ if($suc==102 ||$suc==103 ||$suc==105 ||$suc==141 ||$suc==108
           <li<?php if(isset($selector) && $selector == "reportes") echo " class=\"selected\"";?>><?php echo anchor('sistemas', 'REPORTES');?></li>
     </ul>
       </div>
+      
+      <?php
+    }elseif($nivel == 99){
+?>
+
+    <div id="menubar">
+        <ul id="menu">
+          <li<?php if(isset($selector) && $selector == "contacto") echo " class=\"selected\"";?>><?php echo anchor('contacto/index', 'Contacto');?></li>
+          <li<?php if(isset($selector) && $selector == "a_surtido") echo " class=\"selected\"";?>><?php echo anchor('a_surtido/tabla_facturas', 'FACTURAS');?></li>
+    </ul>
+      </div>
 
 <?php
     }
